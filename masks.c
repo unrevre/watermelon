@@ -1,7 +1,5 @@
 #include "masks.h"
 
-#include "structs.h"
-
 #include <stdint.h>
 
 __uint128_t NMASK;
@@ -30,25 +28,19 @@ __uint128_t FMASKN01;
 __uint128_t FMASKN78;
 
 void init_masks(void) {
-   bitboard_t bmask;
-   bmask.internal.high = 0x3ffffff;
-   bmask.internal.low  = 0xffffffffffffffff;
-   BMASK = bmask.bits;
+   BMASK = 0x3ffffff;
+   BMASK = (BMASK << 64) + 0xffffffffffffffff;
 
    PMASK[0] = 0x1;
    for (uint32_t i = 1; i < 90; ++i)
       PMASK[i] = PMASK[i - 1] << 1;
 
-   bitboard_t R0MASK;
-   R0MASK.bits = 0x1ff;
-
-   bitboard_t F0MASK;
-   F0MASK.internal.high = 0x20100;
-   F0MASK.internal.low  = 0x8040201008040201;
-
+   __uint128_t R0MASK = 0x1ff;
+   __uint128_t F0MASK = 0x20100;
+   F0MASK = (F0MASK << 64) + 0x8040201008040201;
    for (uint32_t i = 0; i < 90; ++i) {
-      FMASK[i] = F0MASK.bits << (i % 9);
-      RMASK[i] = R0MASK.bits << 9 * (i / 9);
+      FMASK[i] = F0MASK << (i % 9);
+      RMASK[i] = R0MASK << 9 * (i / 9);
 
       UMASK[i] = PMASK[i] ^ -PMASK[i];
       LMASK[i] = ~PMASK[i] & (PMASK[i] - 1);
@@ -60,31 +52,21 @@ void init_masks(void) {
 
    OMASK[0] |= 0x1;
 
-   bitboard_t jmask[2];
-   jmask[0].internal.low  = 0xe07038;
-   jmask[1].internal.high = 0x70381c;
-   JMASK[0] = jmask[0].bits;
-   JMASK[1] = jmask[1].bits;
+   JMASK[0] = 0xe07038;
+   JMASK[1] = 0x70381c;
+   JMASK[1] = JMASK[1] << 64;
 
-   bitboard_t smask[2];
-   smask[0].internal.low  = 0xa02028;
-   smask[1].internal.high = 0x501014;
-   SMASK[0] = smask[0].bits;
-   SMASK[1] = smask[1].bits;
+   SMASK[0] = 0xa02028;
+   SMASK[1] = 0x501014;
+   SMASK[1] = SMASK[1] << 64;
 
-   bitboard_t xmask[2];
-   xmask[0].internal.low  = 0x44004440044;
-   xmask[1].internal.high = 0x880088;
-   xmask[1].internal.low  = 0x8008800000000000;
-   XMASK[0] = xmask[0].bits;
-   XMASK[1] = xmask[1].bits;
+   XMASK[0] = 0x44004440044;
+   XMASK[1] = 0x880088;
+   XMASK[1] = (XMASK[1] << 64) + 0x8008800000000000;
 
-   bitboard_t zmask[2];
-   zmask[0].internal.high = 0x3ffffff;
-   zmask[0].internal.low  = 0xfffff55aa8000000;
-   zmask[1].internal.low  = 0x556abfffffffffff;
-   ZMASK[0] = zmask[0].bits;
-   ZMASK[1] = zmask[1].bits;
+   ZMASK[0] = 0x3ffffff;
+   ZMASK[0] = (ZMASK[0] << 64) + 0xfffff55aa8000000;
+   ZMASK[1] = 0x556abfffffffffff;
 
    FMASKN0 = ~FMASK[0];
    FMASKN8 = ~FMASK[8];
