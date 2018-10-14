@@ -63,42 +63,38 @@ move_array_t generate(uint32_t side) {
    while (pset.bits) {
       uint32_t index = bsf(pset);
 
-      bitboard_t upper_f_occ, lower_f_occ, lower_f_msb, upper_f_lsb;
-      bitboard_t f_range, f_caps;
-      bitboard_t upper_r_occ, lower_r_occ, lower_r_msb, upper_r_lsb;
-      bitboard_t r_range, r_caps;
-
+      bitboard_t rocc, rloc, rcbn, rmov, rjmp, rljp, rujp;
+      bitboard_t focc, floc, fcbn, fmov, fjmp, fljp, fujp;
       bitboard_t moveset;
 
-      upper_r_occ.bits = ~GAME.empty.bits & UMASK[index];
-      lower_r_occ.bits = ~GAME.empty.bits & LMASK[index];
-      upper_f_occ.bits = upper_r_occ.bits & FMASK[index];
-      lower_f_occ.bits = lower_r_occ.bits & FMASK[index];
+      __uint128_t occupancy = (~GAME.empty.bits ^ PMASK[index]);
+      __uint128_t oocc = occupancy | OMASK[index];
 
-      upper_f_lsb.bits = upper_f_occ.bits & -upper_f_occ.bits;
-      lower_f_msb.bits = PMASK[0] << bsr(lower_f_occ);
-      f_range.bits = (upper_f_lsb.bits - lower_f_msb.bits) & GAME.empty.bits;
+      rocc.bits = oocc & RMASK[index];
+      rloc.bits = rocc.bits & LMASK[index];
+      rcbn.bits = C3U128 << bsr(rloc);
+      rmov.bits = rocc.bits ^ (rocc.bits - rcbn.bits);
+      moveset.bits = rmov.bits & RMASK[index];
 
-      upper_f_occ.bits ^= upper_f_lsb.bits;
-      f_caps.bits = upper_f_occ.bits & -upper_f_occ.bits;
-      lower_f_occ.bits ^= lower_f_msb.bits;
-      f_caps.bits |= PMASK[0] << bsr(lower_f_occ) &
-         ~(PMASK[index] - lower_f_msb.bits);
-      f_range.bits |= f_caps.bits & GAME.occupancy[!side].bits;
+      focc.bits = oocc & FMASK[index];
+      floc.bits = focc.bits & LMASK[index];
+      fcbn.bits = C3U128 << bsr(floc);
+      fmov.bits = focc.bits ^ (focc.bits - fcbn.bits);
+      moveset.bits |= fmov.bits & FMASK[index];
 
-      upper_r_lsb.bits = upper_r_occ.bits & -upper_r_occ.bits;
-      lower_r_msb.bits = PMASK[0] << bsr(lower_r_occ);
-      r_range.bits = (upper_r_lsb.bits - lower_r_msb.bits) & GAME.empty.bits;
+      moveset.bits &= GAME.empty.bits;
 
-      upper_r_occ.bits ^= upper_r_lsb.bits;
-      r_caps.bits = upper_r_occ.bits & -upper_r_occ.bits;
-      lower_r_occ.bits ^= lower_r_msb.bits;
-      r_caps.bits |= PMASK[0] << bsr(lower_r_occ) &
-         ~(PMASK[index] - lower_r_msb.bits);
-      r_range.bits |= r_caps.bits & GAME.occupancy[!side].bits;
+      rjmp.bits = (~rmov.bits & occupancy) & RMASK[index];
+      rljp.bits = rjmp.bits & LMASK[index];
+      rujp.bits = rjmp.bits & UMASK[index];
+      moveset.bits |= ((PMASK[0] << bsr(rljp)) | (rujp.bits & -rujp.bits))
+         & rjmp.bits & RMASK[index] & GAME.occupancy[!s].bits;
 
-      moveset.bits = f_range.bits & FMASK[index];
-      moveset.bits |= r_range.bits & RMASK[index];
+      fjmp.bits = (~fmov.bits & occupancy) & FMASK[index];
+      fljp.bits = fjmp.bits & LMASK[index];
+      fujp.bits = fjmp.bits & UMASK[index];
+      moveset.bits |= ((PMASK[0] << bsr(fljp)) | (fujp.bits & -fujp.bits))
+         & fjmp.bits & FMASK[index] & GAME.occupancy[!s].bits;
 
       add_piecewise(moveset, index, &moves);
       pset.bits = pset.bits & (pset.bits - 1);
