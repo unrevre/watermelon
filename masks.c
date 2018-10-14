@@ -15,6 +15,8 @@ __uint128_t LMASK[90] __attribute__((aligned(64)));
 __uint128_t RMASK[90] __attribute__((aligned(64)));
 __uint128_t FMASK[90] __attribute__((aligned(64)));
 
+__uint128_t OMASK[90] __attribute__((aligned(64)));
+
 __uint128_t JMASK[2];
 __uint128_t SMASK[2];
 __uint128_t XMASK[2];
@@ -50,7 +52,13 @@ void init_masks(void) {
 
       UMASK[i] = PMASK[i] ^ -PMASK[i];
       LMASK[i] = ~PMASK[i] & (PMASK[i] - 1);
+
+      OMASK[i] = PMASK[i - (i % 9)] | PMASK[i - (i % 9) + 8]
+         | PMASK[i % 9] | PMASK[81 + (i % 9)];
+      OMASK[i] &= ~PMASK[i];
    }
+
+   OMASK[0] |= 0x1;
 
    bitboard_t jmask[2];
    jmask[0].internal.low  = 0xe07038;

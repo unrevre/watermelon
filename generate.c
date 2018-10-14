@@ -10,28 +10,29 @@ move_array_t generate(uint32_t side) {
 
    uint32_t s = side >> 3;
 
+   __uint128_t C3U128 = 0x3;
+
    bitboard_t jset = GAME.pieces[side];
    while (jset.bits) {
       uint32_t index = bsf(jset);
 
-      bitboard_t upper_f, lower_f, f_range;
-      bitboard_t upper_r, lower_r, r_range;
+      bitboard_t rocc, rloc, rcbn;
+      bitboard_t focc, floc, fcbn;
       bitboard_t moveset;
 
-      upper_r.bits = ~GAME.empty.bits & UMASK[index];
-      lower_r.bits = ~GAME.empty.bits & LMASK[index];
-      upper_f.bits = upper_r.bits & FMASK[index];
-      lower_f.bits = lower_r.bits & FMASK[index];
+      __uint128_t occupancy = (~GAME.empty.bits ^ PMASK[index]) | OMASK[index];
 
-      upper_r.bits &= -upper_r.bits;
-      lower_r.bits = PMASK[0] << bsr(lower_r);
-      r_range.bits = 2 * upper_r.bits - lower_r.bits;
-      moveset.bits = r_range.bits & RMASK[index];
+      rocc.bits = occupancy & RMASK[index];
+      rloc.bits = rocc.bits & LMASK[index];
+      rcbn.bits = C3U128 << bsr(rloc);
+      rocc.bits = rocc.bits ^ (rocc.bits - rcbn.bits);
+      moveset.bits = rocc.bits & RMASK[index];
 
-      upper_f.bits &= -upper_f.bits;
-      lower_f.bits = PMASK[0] << bsr(lower_f);
-      f_range.bits = 2 * upper_f.bits - lower_f.bits;
-      moveset.bits |= f_range.bits & FMASK[index];
+      focc.bits = occupancy & FMASK[index];
+      floc.bits = focc.bits & LMASK[index];
+      fcbn.bits = C3U128 << bsr(floc);
+      focc.bits = focc.bits ^ (focc.bits - fcbn.bits);
+      moveset.bits |= focc.bits & FMASK[index];
 
       moveset.bits &= ~GAME.occupancy[s].bits;
 
