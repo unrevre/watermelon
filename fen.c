@@ -1,11 +1,11 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
 #include "fen.h"
 
 #include "masks.h"
 #include "state.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 void init_fen(const char* fen_str) {
    char* lines[10];

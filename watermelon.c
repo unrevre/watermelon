@@ -1,14 +1,14 @@
-#define __STDC_FORMAT_MACROS
-#include "inttypes.h"
-
-#include "stdio.h"
-#include "stdlib.h"
-#include "time.h"
-
 #include "fen.h"
 #include "generate.h"
 #include "masks.h"
 #include "state.h"
+#include "structs.h"
+
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 /*!
  * perft

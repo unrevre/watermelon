@@ -1,8 +1,9 @@
-#include "stdlib.h"
-
 #include "generate.h"
+
 #include "masks.h"
 #include "state.h"
+
+#include <stdlib.h>
 
 move_array_t generate(uint32_t side) {
    move_array_t moves = {(move_t*)malloc(111 * sizeof(move_t)), 0};
