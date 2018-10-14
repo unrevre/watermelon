@@ -22,14 +22,14 @@ uint32_t in_check(uint32_t side);
  * @ add moves (for fixed piece)
  */
 
-void add_piecewise(bitboard_t set, uint32_t from, move_array_t* moves);
+void add_piecewise(__uint128_t set, uint32_t from, move_array_t* moves);
 
 /*!
  * add_shiftwise
  * @ add moves (for fixed direction)
  */
 
-void add_shiftwise(bitboard_t set, int32_t shift, move_array_t* moves);
+void add_shiftwise(__uint128_t set, int32_t shift, move_array_t* moves);
 
 /*!
  * move
