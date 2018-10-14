@@ -190,12 +190,14 @@ void add_shiftwise(bitboard_t set, int32_t shift, move_array_t* moves) {
 uint32_t in_check(uint32_t side) {
    uint32_t index = bsf(GAME.pieces[side + 6]);
 
-   bitboard_t cross, jset, pset;
-   cross.bits = FMASK[index] | RMASK[index];
-   jset.bits = cross.bits
-      & (GAME.pieces[side ^ 0x8].bits | GAME.pieces[(side ^ 0x8) + 6].bits);
-   pset.bits = cross.bits & (GAME.pieces[(side ^ 0x8) + 2].bits);
+   uint32_t os = side ^ 0x8;
 
+   bitboard_t cross;
+   cross.bits = FMASK[index] | RMASK[index];
+
+   bitboard_t jset;
+   jset.bits = (GAME.pieces[os].bits | GAME.pieces[os + 6].bits)
+      & cross.bits;
    while (jset.bits) {
       bitboard_t hset, lset, btwn;
       uint32_t index_diff;
@@ -222,6 +224,8 @@ uint32_t in_check(uint32_t side) {
       jset.bits &= jset.bits - 1;
    }
 
+   bitboard_t pset;
+   pset.bits = GAME.pieces[os + 2].bits & cross.bits;
    while (pset.bits) {
       bitboard_t hset, lset, btwn;
       uint32_t index_diff;
@@ -258,7 +262,7 @@ uint32_t in_check(uint32_t side) {
       | (PMASK[index] << 0x0b & GAME.empty.bits << 0x1)
       | (PMASK[index] >> 0x0b & GAME.empty.bits >> 0x1);
 
-   mset.bits &= GAME.pieces[(side ^ 0x8) + 1].bits;
+   mset.bits &= GAME.pieces[os + 1].bits;
 
    if (mset.bits)
       return 1;
@@ -266,7 +270,7 @@ uint32_t in_check(uint32_t side) {
    bitboard_t zset;
    zset.bits = (PMASK[index] << 9) >> (18 * side >> 3)
       | PMASK[index] << 1 | PMASK[index] >> 1;
-   zset.bits &= GAME.pieces[(side ^ 0x8) + 3].bits;
+   zset.bits &= GAME.pieces[os + 3].bits;
 
    if (zset.bits)
       return 1;
