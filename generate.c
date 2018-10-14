@@ -43,14 +43,14 @@ move_array_t generate(uint32_t side) {
       uint32_t index = bsf(mset);
 
       bitboard_t moveset;
-      moveset.bits = (PMASK[index] << 17 & GAME.empty.bits << 8 & FMASKN8)
-         | (PMASK[index] << 19 & GAME.empty.bits << 10 & FMASKN0)
-         | (PMASK[index] >> 17 & GAME.empty.bits >> 8 & FMASKN0)
-         | (PMASK[index] >> 19 & GAME.empty.bits >> 10 & FMASKN8)
-         | (PMASK[index] << 7 & GAME.empty.bits << 8 & FMASKN78)
-         | (PMASK[index] >> 7 & GAME.empty.bits >> 8 & FMASKN01)
-         | (PMASK[index] << 11 & GAME.empty.bits << 10 & FMASKN01)
-         | (PMASK[index] >> 11 & GAME.empty.bits >> 10 & FMASKN78);
+      moveset.bits = (PMASK[index] << 0x11 & GAME.empty.bits << 0x8 & FMASKN8)
+         | (PMASK[index] >> 0x11 & GAME.empty.bits >> 0x8 & FMASKN0)
+         | (PMASK[index] << 0x13 & GAME.empty.bits << 0xa & FMASKN0)
+         | (PMASK[index] >> 0x13 & GAME.empty.bits >> 0xa & FMASKN8)
+         | (PMASK[index] << 0x07 & GAME.empty.bits << 0x8 & FMASKN78)
+         | (PMASK[index] >> 0x07 & GAME.empty.bits >> 0x8 & FMASKN01)
+         | (PMASK[index] << 0x0b & GAME.empty.bits << 0xa & FMASKN01)
+         | (PMASK[index] >> 0x0b & GAME.empty.bits >> 0xa & FMASKN78);
       moveset.bits &= BMASK & ~GAME.occupancy[s].bits;
 
       add_piecewise(moveset, index, &moves);
@@ -120,10 +120,10 @@ move_array_t generate(uint32_t side) {
       uint32_t index = bsf(xset);
 
       bitboard_t moveset;
-      moveset.bits = (PMASK[index] << 16 & GAME.empty.bits << 8)
-         | (PMASK[index] << 20 & GAME.empty.bits << 10)
-         | (PMASK[index] >> 16 & GAME.empty.bits >> 8)
-         | (PMASK[index] >> 20 & GAME.empty.bits >> 10);
+      moveset.bits = (PMASK[index] << 0x10 & GAME.empty.bits << 0x8)
+         | (PMASK[index] << 0x14 & GAME.empty.bits << 0xa)
+         | (PMASK[index] >> 0x10 & GAME.empty.bits >> 0x8)
+         | (PMASK[index] >> 0x14 & GAME.empty.bits >> 0xa);
       moveset.bits &= XMASK[s] & ~GAME.occupancy[s].bits;
 
       add_piecewise(moveset, index, &moves);
@@ -135,8 +135,8 @@ move_array_t generate(uint32_t side) {
       uint32_t index = bsf(sset);
 
       bitboard_t moveset;
-      moveset.bits = PMASK[index] << 8 | PMASK[index] << 10
-         | PMASK[index] >> 8 | PMASK[index] >> 10;
+      moveset.bits = PMASK[index] << 0x8 | PMASK[index] << 0xa
+         | PMASK[index] >> 0x8 | PMASK[index] >> 0xa;
       moveset.bits &= SMASK[s] & ~GAME.occupancy[s].bits;
 
       add_piecewise(moveset, index, &moves);
@@ -253,14 +253,14 @@ uint32_t in_check(uint32_t side) {
    }
 
    bitboard_t mset;
-   mset.bits = (PMASK[index] << 17 & GAME.empty.bits << 9)
-      | (PMASK[index] << 19 & GAME.empty.bits << 9)
-      | (PMASK[index] >> 17 & GAME.empty.bits >> 9)
-      | (PMASK[index] >> 19 & GAME.empty.bits >> 9)
-      | (PMASK[index] << 7 & GAME.empty.bits >> 1)
-      | (PMASK[index] >> 7 & GAME.empty.bits << 1)
-      | (PMASK[index] << 11 & GAME.empty.bits << 1)
-      | (PMASK[index] >> 11 & GAME.empty.bits >> 1);
+   mset.bits = (PMASK[index] << 0x11 & GAME.empty.bits << 0x9)
+      | (PMASK[index] >> 0x11 & GAME.empty.bits >> 0x9)
+      | (PMASK[index] << 0x13 & GAME.empty.bits << 0x9)
+      | (PMASK[index] >> 0x13 & GAME.empty.bits >> 0x9)
+      | (PMASK[index] << 0x07 & GAME.empty.bits >> 0x1)
+      | (PMASK[index] >> 0x07 & GAME.empty.bits << 0x1)
+      | (PMASK[index] << 0x0b & GAME.empty.bits << 0x1)
+      | (PMASK[index] >> 0x0b & GAME.empty.bits >> 0x1);
 
    mset.bits &= GAME.pieces[(side ^ 0x8) + 1].bits;
 
