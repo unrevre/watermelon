@@ -23,12 +23,12 @@ void init_fen(const char* fen_str) {
    for (uint32_t i = 0; i < 10; ++i)
       strcat(fstr_cat, lines[i]);
 
-   GAME.occupancy[0].bits = 0x0;
-   GAME.occupancy[1].bits = 0x0;
-   GAME.empty.bits = 0x0;
+   GAME.occupancy[0] = 0x0;
+   GAME.occupancy[1] = 0x0;
+   GAME.empty = 0x0;
 
    for (uint32_t i = 0; i < 15; ++i)
-      GAME.pieces[i].bits = 0x0;
+      GAME.pieces[i] = 0x0;
 
    for (uint32_t i = 0; i < 90; ++i)
       board[i] = 0x7;
@@ -42,31 +42,31 @@ void init_fen(const char* fen_str) {
             i += *fstr_p - '1';
             break;
          case 'r': case 'R':
-            GAME.pieces[side].bits |= PMASK[i];
+            GAME.pieces[side] |= PMASK[i];
             board[i] = side;
             break;
          case 'n': case 'N':
-            GAME.pieces[side + 1].bits |= PMASK[i];
+            GAME.pieces[side + 1] |= PMASK[i];
             board[i] = side + 1;
             break;
          case 'c': case 'C':
-            GAME.pieces[side + 2].bits |= PMASK[i];
+            GAME.pieces[side + 2] |= PMASK[i];
             board[i] = side + 2;
             break;
          case 'p': case 'P':
-            GAME.pieces[side + 3].bits |= PMASK[i];
+            GAME.pieces[side + 3] |= PMASK[i];
             board[i] = side + 3;
             break;
          case 'b': case 'B':
-            GAME.pieces[side + 4].bits |= PMASK[i];
+            GAME.pieces[side + 4] |= PMASK[i];
             board[i] = side + 4;
             break;
          case 'a': case 'A':
-            GAME.pieces[side + 5].bits |= PMASK[i];
+            GAME.pieces[side + 5] |= PMASK[i];
             board[i] = side + 5;
             break;
          case 'k': case 'K':
-            GAME.pieces[side + 6].bits |= PMASK[i];
+            GAME.pieces[side + 6] |= PMASK[i];
             board[i] = side + 6;
             break;
          default:
@@ -75,10 +75,10 @@ void init_fen(const char* fen_str) {
    }
 
    for (uint32_t i = 0; i < 7; ++i) {
-      GAME.occupancy[0].bits |= GAME.pieces[i].bits;
-      GAME.occupancy[1].bits |= GAME.pieces[i + 8].bits;
+      GAME.occupancy[0] |= GAME.pieces[i];
+      GAME.occupancy[1] |= GAME.pieces[i + 8];
    }
-   GAME.empty.bits = BMASK ^ (GAME.occupancy[0].bits | GAME.occupancy[1].bits);
+   GAME.empty = BMASK ^ (GAME.occupancy[0] | GAME.occupancy[1]);
 
    for (uint32_t i = 0; i < 10; ++i)
       free(lines[i]);
