@@ -16,24 +16,23 @@ move_array_t generate(uint32_t side) {
    while (jset.bits) {
       uint32_t index = bsf(jset);
 
-      bitboard_t rocc, rloc, rcbn;
-      bitboard_t focc, floc, fcbn;
+      bitboard_t rset, rloc, rcbn;
+      bitboard_t fset, floc, fcbn;
       bitboard_t moveset;
 
       __uint128_t occupancy = (~GAME.empty.bits ^ PMASK[index]) | OMASK[index];
 
-      rocc.bits = occupancy & RMASK[index];
-      rloc.bits = rocc.bits & LMASK[index];
+      rset.bits = occupancy;
+      rloc.bits = rset.bits & LMASK[index];
       rcbn.bits = C3U128 << bsr(rloc);
-      rocc.bits = rocc.bits ^ (rocc.bits - rcbn.bits);
-      moveset.bits = rocc.bits & RMASK[index];
+      rset.bits = rset.bits ^ (rset.bits - rcbn.bits);
 
-      focc.bits = occupancy & FMASK[index];
-      floc.bits = focc.bits & LMASK[index];
+      fset.bits = occupancy & FMASK[index];
+      floc.bits = fset.bits & LMASK[index];
       fcbn.bits = C3U128 << bsr(floc);
-      focc.bits = focc.bits ^ (focc.bits - fcbn.bits);
-      moveset.bits |= focc.bits & FMASK[index];
+      fset.bits = fset.bits ^ (fset.bits - fcbn.bits);
 
+      moveset.bits = (rset.bits & RMASK[index]) | (fset.bits & FMASK[index]);
       moveset.bits &= ~GAME.occupancy[s].bits;
 
       add_piecewise(moveset, index, &moves);
@@ -63,40 +62,37 @@ move_array_t generate(uint32_t side) {
    while (pset.bits) {
       uint32_t index = bsf(pset);
 
-      bitboard_t rocc, rloc, rcbn, rjmp;
-      bitboard_t focc, floc, fcbn, fjmp;
+      bitboard_t rset, rloc, rcbn;
+      bitboard_t fset, floc, fcbn;
       bitboard_t moveset;
 
       __uint128_t occupancy = (~GAME.empty.bits ^ PMASK[index]);
       __uint128_t oocc = occupancy | OMASK[index];
 
-      rocc.bits = oocc & RMASK[index];
-      rloc.bits = rocc.bits & LMASK[index];
+      rloc.bits = oocc & LMASK[index];
       rcbn.bits = C3U128 << bsr(rloc);
-      rocc.bits = rocc.bits ^ (rocc.bits - rcbn.bits);
-      moveset.bits = rocc.bits & RMASK[index];
+      rset.bits = oocc ^ (oocc - rcbn.bits);
 
-      focc.bits = oocc & FMASK[index];
-      floc.bits = focc.bits & LMASK[index];
+      fset.bits = oocc & FMASK[index];
+      floc.bits = fset.bits & LMASK[index];
       fcbn.bits = C3U128 << bsr(floc);
-      focc.bits = focc.bits ^ (focc.bits - fcbn.bits);
-      moveset.bits |= focc.bits & FMASK[index];
+      fset.bits = fset.bits ^ (fset.bits - fcbn.bits);
 
+      moveset.bits = (rset.bits & RMASK[index]) | (fset.bits & FMASK[index]);
       moveset.bits &= GAME.empty.bits;
 
-      rjmp.bits = (~rocc.bits & occupancy) & RMASK[index];
-      rloc.bits = rjmp.bits & LMASK[index];
+      rset.bits = ~rset.bits & occupancy;
+      rloc.bits = rset.bits & LMASK[index];
       rcbn.bits = C3U128 << bsr(rloc);
-      rocc.bits = rjmp.bits ^ (rjmp.bits - rcbn.bits);
-      rjmp.bits &= rocc.bits;
-      moveset.bits |= rjmp.bits & RMASK[index] & GAME.occupancy[!s].bits;
+      rset.bits &= ~(rset.bits - rcbn.bits);
 
-      fjmp.bits = (~focc.bits & occupancy) & FMASK[index];
-      floc.bits = fjmp.bits & LMASK[index];
+      fset.bits = (~fset.bits & occupancy) & FMASK[index];
+      floc.bits = fset.bits & LMASK[index];
       fcbn.bits = C3U128 << bsr(floc);
-      focc.bits = fjmp.bits ^ (fjmp.bits - fcbn.bits);
-      fjmp.bits &= focc.bits;
-      moveset.bits |= fjmp.bits & FMASK[index] & GAME.occupancy[!s].bits;
+      fset.bits &= ~(fset.bits - fcbn.bits);
+
+      moveset.bits |= ((rset.bits & RMASK[index]) | (fset.bits & FMASK[index]))
+         & GAME.occupancy[!s].bits;
 
       add_piecewise(moveset, index, &moves);
       pset.bits = pset.bits & (pset.bits - 1);
