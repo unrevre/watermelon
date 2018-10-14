@@ -33,11 +33,11 @@ typedef struct {
 
 /*!
  * bsf
- * - bitboard_t [__uint128_t]
+ * - __uint128_t
  * = returns index of least significant bit set
  */
 
-__inline__ uint32_t bsf(bitboard_t bitboard) {
+__inline__ uint32_t bsf(__uint128_t bits) {
    uint64_t index;
    asm ("                  \n\
         bsfq   %1, %0      \n\
@@ -50,7 +50,7 @@ __inline__ uint32_t bsf(bitboard_t bitboard) {
         1:                 \n\
         "
         : "=r" (index)
-        : "r" (bitboard.internal.low), "r" (bitboard.internal.high)
+        : "r" (bits), "r" (bits >> 64)
         :
    );
 
@@ -59,11 +59,11 @@ __inline__ uint32_t bsf(bitboard_t bitboard) {
 
 /*!
  * bsr
- * - bitboard_t [__uint128_t]
+ * - __uint128_t
  * = returns index of most significant bit set
  */
 
-__inline__ uint32_t bsr(bitboard_t bitboard) {
+__inline__ uint32_t bsr(__uint128_t bits) {
    uint64_t index;
    asm ("                  \n\
         bsrq   %2, %0      \n\
@@ -76,7 +76,7 @@ __inline__ uint32_t bsr(bitboard_t bitboard) {
         1:                 \n\
         "
         : "=r" (index)
-        : "r" (bitboard.internal.low), "r" (bitboard.internal.high)
+        : "r" (bits), "r" (bits >> 64)
         :
    );
 
@@ -85,14 +85,13 @@ __inline__ uint32_t bsr(bitboard_t bitboard) {
 
 /*!
  * popcnt
- * - bitboard_t [__uint128_t]
+ * - __uint128_t
  * @ implemented with intrinsics
  * + consider assembly
  */
 
-__inline__ uint32_t popcnt(bitboard_t bitfield) {
-   return __builtin_popcountll(bitfield.internal.high)
-      + __builtin_popcountll(bitfield.internal.low);
+__inline__ uint32_t popcnt(__uint128_t bits) {
+   return __builtin_popcountll(bits >> 64) + __builtin_popcountll(bits);
 }
 
 /*!
