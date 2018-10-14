@@ -25,10 +25,10 @@ typedef union {
  */
 
 typedef struct {
-   bitboard_t occupancy[2];
-   bitboard_t empty;
+   __uint128_t occupancy[2];
+   __uint128_t empty;
 
-   bitboard_t pieces[15];
+   __uint128_t pieces[15];
 } state_t;
 
 /*!
