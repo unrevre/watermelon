@@ -4,20 +4,6 @@
 #include <stdint.h>
 
 /*!
- * bitboard_t
- * board redisplayation
- * @ red pieces occupy bits 0 -- 8
- */
-
-typedef union {
-   __uint128_t bits;
-   struct {
-      uint64_t low  : 64;
-      uint64_t high : 64;
-   } __attribute__((packed)) internal;
-} bitboard_t;
-
-/*!
  * state_t
  * game status
  * @ occupancy bitboards
