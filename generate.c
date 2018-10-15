@@ -191,60 +191,44 @@ uint32_t in_check(uint32_t side) {
 
    uint32_t os = side ^ 0x8;
 
-   __uint128_t cross = FMASK[index] | RMASK[index];
+   __uint128_t jset = GAME.pieces[os] | GAME.pieces[os + 6];
+   __uint128_t jrset = jset & RMASK[index];
+   __uint128_t jfset = jset & FMASK[index];
 
-   __uint128_t jset = (GAME.pieces[os] | GAME.pieces[os + 6]) & cross;
-   while (jset) {
-      __uint128_t hset, lset, btwn;
-      uint32_t index_diff;
+   __uint128_t jmask = ~(jset | PMASK[index] | GAME.empty);
 
-      uint32_t pt_index = bsf(jset);
-      if (pt_index > index) {
-         index_diff = pt_index - index;
-         hset = jset & -jset;
-         lset = GAME.pieces[side + 6];
-      } else {
-         index_diff = index - pt_index;
-         hset = GAME.pieces[side + 6];
-         lset = jset & -jset;
-      }
-
-      btwn = hset - lset * 2;
-      btwn &= ~GAME.empty;
-      if (index_diff > 8)
-         btwn &= FMASK[index];
-
-      if (!btwn)
-         return 1;
-
-      jset &= jset - 1;
+   for (; jrset; jrset &= jrset - 1) {
+      __uint128_t lsb = jrset & -jrset;
+      __uint128_t range = ((lsb ^ (-lsb)) ^ UMASK[index]);
+      range = range & jmask & RMASK[index];
+      if (!range) { return 1; }
    }
 
-   __uint128_t pset = GAME.pieces[os + 2] & cross;
-   while (pset) {
-      __uint128_t hset, lset, btwn;
-      uint32_t index_diff;
+   for (; jfset; jfset &= jfset - 1) {
+      __uint128_t lsb = jfset & -jfset;
+      __uint128_t range = ((lsb ^ (-lsb)) ^ UMASK[index]);
+      range = range & jmask & FMASK[index];
+      if (!range) { return 1; }
+   }
 
-      uint32_t pt_index = bsf(pset);
-      if (pt_index > index) {
-         index_diff = pt_index - index;
-         hset = pset & -pset;
-         lset = GAME.pieces[side + 6];
-      } else {
-         index_diff = index - pt_index;
-         hset = GAME.pieces[side + 6];
-         lset = pset & -pset;
-      }
+   __uint128_t pset = GAME.pieces[os + 2];
+   __uint128_t prset = pset & RMASK[index];
+   __uint128_t pfset = pset & FMASK[index];
 
-      btwn = hset - lset * 2;
-      btwn &= ~GAME.empty;
-      if (index_diff > 8)
-         btwn &= FMASK[index];
+   __uint128_t pmask = ~(pset | PMASK[index] | GAME.empty);
 
-      if (popcnt(btwn) == 1)
-         return 1;
+   for (; prset; prset &= prset - 1) {
+      __uint128_t lsb = prset & -prset;
+      __uint128_t range = ((lsb ^ (-lsb)) ^ UMASK[index]);
+      range = range & pmask & RMASK[index];
+      if (popcnt(range) == 1) { return 1; }
+   }
 
-      pset &= pset - 1;
+   for (; pfset; pfset &= pfset - 1) {
+      __uint128_t lsb = pfset & -pfset;
+      __uint128_t range = ((lsb ^ (-lsb)) ^ UMASK[index]);
+      range = range & pmask & FMASK[index];
+      if (popcnt(range) == 1) { return 1; }
    }
 
    __uint128_t mset = (PMASK[index] << 0x11 & GAME.empty << 0x9)
@@ -255,18 +239,13 @@ uint32_t in_check(uint32_t side) {
       | (PMASK[index] >> 0x07 & GAME.empty << 0x1)
       | (PMASK[index] << 0x0b & GAME.empty << 0x1)
       | (PMASK[index] >> 0x0b & GAME.empty >> 0x1);
-
-   mset &= GAME.pieces[os + 1];
-
-   if (mset)
-      return 1;
+   mset = mset & GAME.pieces[os + 1];
+   if (mset) { return 1; }
 
    __uint128_t zset = (PMASK[index] << 9) >> (18 * side >> 3)
       | PMASK[index] << 1 | PMASK[index] >> 1;
-   zset &= GAME.pieces[os + 3];
-
-   if (zset)
-      return 1;
+   zset = zset & GAME.pieces[os + 3];
+   if (zset) { return 1; }
 
    return 0;
 }
