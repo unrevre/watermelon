@@ -18,6 +18,39 @@ typedef struct {
 } state_t;
 
 /*!
+ * bsfq
+ * - __uint64_t
+ * = assembly instrinsic for bsfq
+ */
+
+__inline__ uint32_t bsfq(uint64_t bits) {
+   uint64_t index;
+   asm ("                  \n\
+        bsfq   %1, %0      \n\
+        "
+        : "=r" (index)
+        : "r" (bits)
+        :
+   );
+
+   return index;
+}
+
+/*!
+ * bsf_branchless
+ * - __uint128_t
+ * = returns index of least significant bit set
+ */
+
+__inline__ uint32_t bsf_branchless(__uint128_t bits) {
+   uint64_t high = bits >> 64;
+   uint64_t low = bits;
+   uint32_t ret[3] = { bsfq(low), bsfq(high) + 64, 128 };
+   uint32_t index = !low + ((!low) & (!high));
+   return ret[index];
+}
+
+/*!
  * bsf
  * - __uint128_t
  * = returns index of least significant bit set
@@ -41,6 +74,39 @@ __inline__ uint32_t bsf(__uint128_t bits) {
    );
 
    return index;
+}
+
+/*!
+ * bsrq
+ * - __uint64_t
+ * = assembly instrinsic for bsrq
+ */
+
+__inline__ uint32_t bsrq(uint64_t bits) {
+   uint64_t index;
+   asm ("                  \n\
+        bsrq   %1, %0      \n\
+        "
+        : "=r" (index)
+        : "r" (bits)
+        :
+   );
+
+   return index;
+}
+
+/*!
+ * bsr_branchless
+ * - __uint128_t
+ * = returns index of most significant bit set
+ */
+
+__inline__ uint32_t bsr_branchless(__uint128_t bits) {
+   uint64_t high = bits >> 64;
+   uint64_t low = bits;
+   uint32_t ret[3] = { bsrq(high) + 64, bsrq(low), 128 };
+   uint32_t index = !high + ((!low) & (!high));
+   return ret[index];
 }
 
 /*!
