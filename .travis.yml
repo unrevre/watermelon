@@ -1,0 +1,29 @@
+language: c
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode10.1
+
+    - os: osx
+      osx_image: xcode9.2
+
+    - os: linux
+      env: MATRIX_EVAL="export CC=gcc-8"
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-8']
+
+    - os: linux
+      env: MATRIX_EVAL="export CC=clang-7"
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+          packages: ['clang-7', 'g++-7']
+
+before-install:
+  eval "${MATRIX_EVAL}"
+
+script:
+  make && ./watermelon 7
