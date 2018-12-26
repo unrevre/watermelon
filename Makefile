@@ -15,6 +15,8 @@ ASML = $(patsubst $(SRCDIR)/%.c,$(ASMDIR)/%.S,$(SRCS))
 DEPS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.d,$(SRCS))
 OBJS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.o,$(SRCS))
 
+all: $(BINDIR)/$(BIN) tests
+
 $(BINDIR)/$(BIN): $(SRCDIR)/$(BIN).c $(OBJS)
 	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $@
@@ -23,15 +25,33 @@ $(BLDDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(BLDDIR)
 	$(CC) $(CFLAGS) -MMD -c $< -o $@
 
+TESTDIR = ./tests
+
+TSRCDIR = $(TESTDIR)/$(SRCDIR)
+TBLDDIR = $(TESTDIR)/$(BLDDIR)
+TBINDIR = $(TESTDIR)/$(BINDIR)
+
+TSRCS = $(wildcard $(TSRCDIR)/*.c)
+TDEPS = $(patsubst $(TSRCDIR)/%.c,$(TBLDDIR)/%.d,$(TSRCS))
+TESTS = $(patsubst $(TSRCDIR)/%.c,$(TBINDIR)/%,$(TSRCS))
+
+tests: $(TESTS)
+
+$(TBINDIR)/%: $(TSRCDIR)/%.c $(OBJS)
+	@mkdir -p $(TBINDIR)
+	@mkdir -p $(TBLDDIR)
+	$(CC) $(CFLAGS) -MMD -MF $(TBLDDIR)/$(*F).d $^ -o $@
+
 asm: $(ASML)
 
 $(ASMDIR)/%.S: $(SRCDIR)/%.c
 	@mkdir -p $(ASMDIR)
 	$(CC) $(CFLAGS) -S $< -o $@
 
-.PHONY: asm clean
+.PHONY: all tests asm clean
 
 clean:
 	@$(RM) $(BINDIR)/$(BIN) $(OBJS) $(DEPS) $(ASML)
+	@$(RM) $(TESTS) $(TDEPS)
 
--include $(DEPS)
+-include $(DEPS) $(TDEPS)
