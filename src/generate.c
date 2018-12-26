@@ -1,5 +1,6 @@
 #include "generate.h"
 
+#include "inlines.h"
 #include "masks.h"
 #include "state.h"
 

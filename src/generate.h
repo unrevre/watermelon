@@ -3,6 +3,8 @@
 
 #include "structs.h"
 
+#include <stdint.h>
+
 /*!
  * generate
  * @ generate all moves
