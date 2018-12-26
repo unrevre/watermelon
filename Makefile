@@ -10,12 +10,12 @@ SRCDIR = ./src
 
 BIN = watermelon
 
-SRCS = $(wildcard $(SRCDIR)/*.c)
+SRCS = $(filter-out $(SRCDIR)/$(BIN).c,$(wildcard $(SRCDIR)/*.c))
 ASML = $(patsubst $(SRCDIR)/%.c,$(ASMDIR)/%.S,$(SRCS))
 DEPS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.d,$(SRCS))
 OBJS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.o,$(SRCS))
 
-$(BINDIR)/$(BIN): $(OBJS)
+$(BINDIR)/$(BIN): $(SRCDIR)/$(BIN).c $(OBJS)
 	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
@@ -32,6 +32,6 @@ $(ASMDIR)/%.S: $(SRCDIR)/%.c
 .PHONY: asm clean
 
 clean:
-	$(RM) $(BINDIR)/$(BIN) $(OBJS) $(DEPS) $(ASML)
+	@$(RM) $(BINDIR)/$(BIN) $(OBJS) $(DEPS) $(ASML)
 
 -include $(DEPS)
