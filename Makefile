@@ -3,32 +3,35 @@ CFLAGS += -O3 -std=gnu99 -march=native -Wall -Wextra \
 	  -fno-exceptions -fno-strict-aliasing -fno-stack-protector \
 	  -fomit-frame-pointer
 
+ASMDIR = ./asm
+BINDIR = ./bin
+BLDDIR = ./build
+SRCDIR = ./src
+
 BIN = watermelon
 
-BUILDDIR = ./build
-ASMDIR = ./asm
+SRCS = $(wildcard $(SRCDIR)/*.c)
+ASML = $(patsubst $(SRCDIR)/%.c,$(ASMDIR)/%.S,$(SRCS))
+DEPS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.d,$(SRCS))
+OBJS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.o,$(SRCS))
 
-SRCS = $(wildcard *.c)
-DEPS = $(patsubst %.c,$(BUILDDIR)/%.d,$(SRCS))
-OBJS = $(patsubst %.c,$(BUILDDIR)/%.o,$(SRCS))
-ASM = $(patsubst %.c,$(ASMDIR)/%.S,$(SRCS))
-
-$(BIN): $(OBJS)
+$(BINDIR)/$(BIN): $(OBJS)
+	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
-$(BUILDDIR)/%.o: %.c
-	@mkdir -p $(BUILDDIR)
+$(BLDDIR)/%.o: $(SRCDIR)/%.c
+	@mkdir -p $(BLDDIR)
 	$(CC) $(CFLAGS) -MMD -c $< -o $@
 
-asm: $(ASM)
+asm: $(ASML)
 
-$(ASMDIR)/%.S: %.c
+$(ASMDIR)/%.S: $(SRCDIR)/%.c
 	@mkdir -p $(ASMDIR)
 	$(CC) $(CFLAGS) -S $< -o $@
 
-.PHONY: clean
+.PHONY: asm clean
 
 clean:
-	$(RM) $(OBJS) $(DEPS) $(BIN) $(ASM)
+	$(RM) $(BINDIR)/$(BIN) $(OBJS) $(DEPS) $(ASML)
 
 -include $(DEPS)

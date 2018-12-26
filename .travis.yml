@@ -26,4 +26,4 @@ before-install:
   eval "${MATRIX_EVAL}"
 
 script:
-  make && ./watermelon 7
+  make && ./bin/watermelon 7
