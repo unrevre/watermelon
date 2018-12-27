@@ -40,7 +40,7 @@ tests: $(TESTS)
 $(TBINDIR)/%: $(TSRCDIR)/%.c $(OBJS)
 	@mkdir -p $(TBINDIR)
 	@mkdir -p $(TBLDDIR)
-	$(CC) $(CFLAGS) -MMD -MF $(TBLDDIR)/$(*F).d $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 asm: $(ASML)
 
