@@ -196,19 +196,18 @@ uint32_t in_check(uint32_t side) {
    __uint128_t jrset = jset & RMASK[index];
    __uint128_t jfset = jset & FMASK[index];
 
-   __uint128_t jmask = ~(jset | PMASK[index] | GAME.empty);
+   __uint128_t xmask = PMASK[index] | GAME.empty;
+   __uint128_t jxmask = ~(jset | xmask);
 
    for (; jrset; jrset &= jrset - 1) {
-      __uint128_t lsb = jrset & -jrset;
-      __uint128_t range = ((lsb ^ (-lsb)) ^ UMASK[index]);
-      range = range & jmask & RMASK[index];
+      __uint128_t range = jrset ^ -jrset ^ UMASK[index];
+      range = range & jxmask & RMASK[index];
       if (!range) { return 1; }
    }
 
    for (; jfset; jfset &= jfset - 1) {
-      __uint128_t lsb = jfset & -jfset;
-      __uint128_t range = ((lsb ^ (-lsb)) ^ UMASK[index]);
-      range = range & jmask & FMASK[index];
+      __uint128_t range = jfset ^ -jfset ^ UMASK[index];
+      range = range & jxmask & FMASK[index];
       if (!range) { return 1; }
    }
 
@@ -216,19 +215,17 @@ uint32_t in_check(uint32_t side) {
    __uint128_t prset = pset & RMASK[index];
    __uint128_t pfset = pset & FMASK[index];
 
-   __uint128_t xmask = PMASK[index] | GAME.empty;
-
    for (; prset; prset &= prset - 1) {
+      __uint128_t range = prset ^ -prset ^ UMASK[index];
       __uint128_t lsb = prset & -prset;
-      __uint128_t range = ((lsb ^ (-lsb)) ^ UMASK[index]);
       __uint128_t pxmask = ~(lsb | xmask);
       range = range & pxmask & RMASK[index];
       if (popcnt(range) == 1) { return 1; }
    }
 
    for (; pfset; pfset &= pfset - 1) {
+      __uint128_t range = pfset ^ -pfset ^ UMASK[index];
       __uint128_t lsb = pfset & -pfset;
-      __uint128_t range = ((lsb ^ (-lsb)) ^ UMASK[index]);
       __uint128_t pxmask = ~(lsb | xmask);
       range = range & pxmask & FMASK[index];
       if (popcnt(range) == 1) { return 1; }
