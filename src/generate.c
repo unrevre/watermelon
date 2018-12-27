@@ -216,19 +216,21 @@ uint32_t in_check(uint32_t side) {
    __uint128_t prset = pset & RMASK[index];
    __uint128_t pfset = pset & FMASK[index];
 
-   __uint128_t pmask = ~(pset | PMASK[index] | GAME.empty);
+   __uint128_t xmask = PMASK[index] | GAME.empty;
 
    for (; prset; prset &= prset - 1) {
       __uint128_t lsb = prset & -prset;
       __uint128_t range = ((lsb ^ (-lsb)) ^ UMASK[index]);
-      range = range & pmask & RMASK[index];
+      __uint128_t pxmask = ~(lsb | xmask);
+      range = range & pxmask & RMASK[index];
       if (popcnt(range) == 1) { return 1; }
    }
 
    for (; pfset; pfset &= pfset - 1) {
       __uint128_t lsb = pfset & -pfset;
       __uint128_t range = ((lsb ^ (-lsb)) ^ UMASK[index]);
-      range = range & pmask & FMASK[index];
+      __uint128_t pxmask = ~(lsb | xmask);
+      range = range & pxmask & FMASK[index];
       if (popcnt(range) == 1) { return 1; }
    }
 
