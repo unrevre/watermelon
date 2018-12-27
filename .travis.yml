@@ -26,4 +26,5 @@ before-install:
   eval "${MATRIX_EVAL}"
 
 script:
-  make && ./bin/watermelon 7
+  - make all && ./bin/watermelon 6
+  - cd tests && ./scripts/perft.sh 6 data/fen.dat
