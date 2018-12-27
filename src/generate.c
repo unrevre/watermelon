@@ -27,9 +27,9 @@ move_array_t generate(uint32_t side) {
       rcbn = C3U128 << bsr_branchless(rlow);
       rset = outer ^ (outer - rcbn);
 
-      fset = outer & FMASK[index];
-      flow = fset & LMASK[index];
+      flow = rlow & FMASK[index];
       fcbn = C3U128 << bsr_branchless(flow);
+      fset = outer & FMASK[index];
       fset = fset ^ (fset - fcbn);
 
       moveset = (rset & RMASK[index]) | (fset & FMASK[index]);
@@ -71,9 +71,9 @@ move_array_t generate(uint32_t side) {
       rcbn = C3U128 << bsr_branchless(rlow);
       rset = outer ^ (outer - rcbn);
 
-      fset = outer & FMASK[index];
-      flow = fset & LMASK[index];
+      flow = rlow & FMASK[index];
       fcbn = C3U128 << bsr_branchless(flow);
+      fset = outer & FMASK[index];
       fset = fset ^ (fset - fcbn);
 
       moveset = (rset & RMASK[index]) | (fset & FMASK[index]);
