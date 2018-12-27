@@ -27,4 +27,5 @@ before-install:
 
 script:
   - make all && ./bin/watermelon 6
-  - cd tests && ./scripts/perft.sh 6 data/fen.dat
+  - cd tests && ./scripts/perft.sh 6 data/fen.dat | tee ci-perft.dat
+  - diff data/ref.dat ci-perft.dat
