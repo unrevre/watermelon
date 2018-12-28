@@ -34,5 +34,7 @@ int main(int argc, char const* argv[]) {
    cpu_time = clock() - cpu_time;
    printf("cpu_time: %fs\n", (float)cpu_time / CLOCKS_PER_SEC);
 
+   printf("fen: %s\n", info_fen());
+
    return 0;
 }

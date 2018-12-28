@@ -9,4 +9,11 @@
 
 void init_fen(const char* fen_str);
 
+/*!
+ * info_fen
+ * @ get current game state as fen string
+ */
+
+char* info_fen(void);
+
 #endif /* FEN_H */

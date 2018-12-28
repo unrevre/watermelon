@@ -84,3 +84,30 @@ void init_fen(const char* fen_str) {
       free(lines[i]);
    free(fstr_cat);
 }
+
+char* info_fen(void) {
+   static char fen_rep[15] = {
+      'r', 'n', 'c', 'p', 'b', 'a', 'k', '#',
+      'R', 'N', 'C', 'P', 'B', 'A', 'K'
+   };
+
+   char* fen_str = (char*)calloc(100, sizeof(char));
+
+   uint32_t b = 0; uint32_t f = 0;
+   for (uint32_t i = 0; i < 10; ++i) {
+      uint32_t s = 0;
+      for (uint32_t j = 0; j < 9; ++b, ++j) {
+         if (board[b] == 0x7) {
+            ++s;
+         } else {
+            if (s) { fen_str[f++] = '0' + s; s = 0; }
+            fen_str[f++] = fen_rep[board[b]];
+         }
+      }
+
+      if (s) { fen_str[f++] = '0' + s; }
+      fen_str[f++] = '/';
+   }
+
+   return fen_str;
+}
