@@ -17,6 +17,9 @@ OBJS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.o,$(SRCS))
 
 all: $(BINDIR)/$(BIN) tests
 
+debug: CFLAGS += -DDEBUG
+debug: $(BINDIR)/$(BIN)
+
 $(BINDIR)/$(BIN): $(SRCDIR)/$(BIN).c $(OBJS)
 	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $@
@@ -48,7 +51,7 @@ $(ASMDIR)/%.S: $(SRCDIR)/%.c
 	@mkdir -p $(ASMDIR)
 	$(CC) $(CFLAGS) -S $< -o $@
 
-.PHONY: all tests asm clean
+.PHONY: all debug tests asm clean
 
 clean:
 	@$(RM) $(BINDIR)/$(BIN) $(OBJS) $(DEPS) $(ASML)
