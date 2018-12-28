@@ -1,6 +1,7 @@
 #include "fen.h"
 #include "masks.h"
 #include "perf.h"
+#include "search.h"
 #include "state.h"
 
 #define __STDC_FORMAT_MACROS
@@ -30,6 +31,10 @@ int main(int argc, char const* argv[]) {
 
    for (int32_t i = 1; i < depth; ++i)
       printf("perft: %"PRIu64", at depth: %i\n", perft(i, 0), i);
+
+   move_t move = iter_dfs(depth, 0);
+   printf("%2i: %2i - %2i [%2i]\n", move.internal.pfrom,
+      move.internal.from, move.internal.to, move.internal.pto);
 
    cpu_time = clock() - cpu_time;
    printf("cpu_time: %fs\n", (float)cpu_time / CLOCKS_PER_SEC);
