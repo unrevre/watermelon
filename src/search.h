@@ -3,6 +3,10 @@
 
 #include "structs.h"
 
+#ifdef DEBUG
+extern uint32_t nodes;
+#endif
+
 /*!
  * iter_dfs
  * @ iterative deepening
