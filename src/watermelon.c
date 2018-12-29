@@ -40,7 +40,9 @@ int main(int argc, char const* argv[]) {
    printf("cpu_time: %fs\n", (float)cpu_time / CLOCKS_PER_SEC);
 
 #ifdef DEBUG
-   printf("fen: %s\n", dump_fen());
+   char* fen_str = dump_fen();
+   printf("fen: %s\n", fen_str);
+   free(fen_str);
    printf("nodes: %u\n", nodes);
 #endif
 
