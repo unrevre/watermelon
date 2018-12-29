@@ -13,6 +13,13 @@
 move_array_t generate(uint32_t side);
 
 /*!
+ * generate_captures
+ * @ generate capture moves
+ */
+
+move_array_t generate_captures(uint32_t side);
+
+/*!
  * in_check
  * @ test if side is in check
  */
