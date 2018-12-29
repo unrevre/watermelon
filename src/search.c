@@ -98,3 +98,26 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
    return high;
 }
+
+int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
+   int32_t stand = eval(side);
+   if (stand >= beta) { return stand; }
+
+   alpha = max(alpha, stand);
+
+   move_array_t moves = generate_captures(side);
+   for (uint32_t i = 0; i != moves.count; ++i) {
+      move(moves.data[i]);
+
+      int32_t score = -quiescence(-beta, -alpha, side ^ 0x8);
+
+      retract(moves.data[i]);
+
+      alpha = max(alpha, score);
+      if (alpha >= beta) { break; }
+   }
+
+   free(moves.data);
+
+   return alpha;
+}
