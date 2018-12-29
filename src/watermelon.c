@@ -29,13 +29,6 @@ int main(int argc, char const* argv[]) {
 
    clock_t cpu_time = clock();
 
-   for (int32_t i = 1; i < depth; ++i)
-      printf("perft: %"PRIu64", at depth: %i\n", perft(i, 0), i);
-
-   for (int32_t i = 1; i < depth; ++i)
-      printf("captures perft: %"PRIu64", at depth: %i\n",
-         perft_capture(i, 0), i);
-
    move_t move = iter_dfs(depth, 0);
    printf("%2i: %2i - %2i [%2i]\n", move.internal.pfrom,
       move.internal.from, move.internal.to, move.internal.pto);
