@@ -4,6 +4,8 @@
 #include "generate.h"
 #include "inlines.h"
 
+#include <stdlib.h>
+
 #ifdef DEBUG
 #include "fen.h"
 
@@ -32,7 +34,9 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
          int32_t score = -negamax(d - 1, 1, -beta, -alpha, side ^ 0x8);
 
 #ifdef DEBUG
-         printf("fen: %s\n", info_fen());
+         char* fen_str = info_fen();
+         printf("fen: %s\n", fen_str);
+         free(fen_str);
          printf("  score: %i [%i, %i]\n", score, alpha, beta);
 #endif
 
@@ -47,6 +51,8 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 
       if (high >= 4096) { break; }
    }
+
+   free(moves.data);
 
    return principal;
 }
@@ -68,7 +74,9 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
 #ifdef DEBUG
       for (uint32_t t = 0; t < ply; ++t) { printf(" "); }
-      printf("fen: %s\n", info_fen());
+      char* fen_str = info_fen();
+      printf("fen: %s\n", fen_str);
+      free(fen_str);
       for (uint32_t t = 0; t < ply; ++t) { printf(" "); }
       printf("  score: %i [%i, %i]\n", score, alpha, beta);
 #endif
@@ -80,6 +88,8 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
       if (alpha >= beta) { break; }
    }
+
+   free(moves.data);
 
    return high;
 }
