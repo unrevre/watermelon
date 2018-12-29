@@ -36,7 +36,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
          int32_t score = -negamax(d - 1, 1, -beta, -alpha, side ^ 0x8);
 
 #ifdef DEBUG
-         printf("fen: %s\n", fen_str);
+         if (d > 1) { printf("fen: %s\n", fen_str); }
          free(fen_str);
          printf("  score: %i [%i, %i]\n", score, alpha, beta);
 #endif
