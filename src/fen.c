@@ -109,5 +109,7 @@ char* info_fen(void) {
       fen_str[f++] = '/';
    }
 
+   fen_str[--f] = '\0';
+
    return fen_str;
 }
