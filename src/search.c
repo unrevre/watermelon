@@ -14,11 +14,13 @@
 uint32_t ply;
 
 uint32_t nodes;
+uint32_t qnodes;
 #endif
 
 move_t iter_dfs(uint32_t depth, uint32_t side) {
 #ifdef DEBUG
    nodes = 0;
+   qnodes = 0;
 #endif
 
    move_array_t moves = generate(side);
@@ -62,7 +64,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 }
 
 int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
-   if (!depth) { return eval(side); }
+   if (!depth) { return quiescence(alpha, beta, side); }
 
    move_array_t moves = generate(side);
 
@@ -112,8 +114,24 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
    move_array_t moves = generate_captures(side);
    for (uint32_t i = 0; i != moves.count; ++i) {
       move(moves.data[i]);
+#ifdef DEBUG
+      ++ply;
+      ++qnodes;
+      for (uint32_t t = 0; t < ply; ++t) { printf(" "); }
+      char* fen_str = info_fen();
+      printf("[q] fen: %s\n", fen_str);
+#endif
 
       int32_t score = -quiescence(-beta, -alpha, side ^ 0x8);
+
+#ifdef DEBUG
+      for (uint32_t t = 0; t < ply; ++t) { printf(" "); }
+      printf("[q] fen: %s\n", fen_str);
+      free(fen_str);
+      for (uint32_t t = 0; t < ply; ++t) { printf(" "); }
+      printf("  [q] score: %i [%i, %i]\n", score, alpha, beta);
+      --ply;
+#endif
 
       retract(moves.data[i]);
 
