@@ -1,5 +1,10 @@
 #include "state.h"
 
+#include "inlines.h"
+#include "structs.h"
+
+#include <stdlib.h>
+
 state_t GAME = {{0x0}, 0x0, {0x0}};
 
 uint32_t board[90] = {
@@ -14,3 +19,31 @@ uint32_t board[90] = {
    0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
    0x8, 0x9, 0xc, 0xd, 0xe, 0xd, 0xc, 0x9, 0x8
 };
+
+uint32_t hashes[15][90];
+uint32_t hash_move;
+uint32_t hash_state;
+
+void init_hashes(void) {
+   srand(0x91);
+
+   for (uint32_t i = 0; i < 15; ++i)
+      for (uint32_t j = 0; j < 90; ++j)
+         hashes[i][j] = rand();
+
+   for (uint32_t i = 0; i < 90; ++i)
+      hashes[7][i] = 0x0;
+
+   for (uint32_t i = 0; i < 15; ++i) {
+      __uint128_t piece = GAME.pieces[i];
+      for (; piece; piece &= piece - 1)
+         hash_state ^= hashes[i][bsf(piece)];
+   }
+
+   uint32_t hash_red = rand();
+   uint32_t hash_black = rand();
+
+   hash_move = hash_red ^ hash_black;
+
+   hash_state ^= hash_red;
+}
