@@ -362,6 +362,11 @@ uint32_t in_check(uint32_t side) {
 }
 
 void move(move_t move) {
+   hash_state ^= hashes[move.internal.pfrom][move.internal.from];
+   hash_state ^= hashes[move.internal.pfrom][move.internal.to];
+   hash_state ^= hashes[move.internal.pto][move.internal.to];
+   hash_state ^= hash_move;
+
    uint32_t side = move.internal.pfrom & 0x8;
    GAME.pieces[move.internal.pfrom] ^=
       PMASK[move.internal.from] | PMASK[move.internal.to];
@@ -379,6 +384,11 @@ void move(move_t move) {
 }
 
 void retract(move_t move) {
+   hash_state ^= hashes[move.internal.pfrom][move.internal.from];
+   hash_state ^= hashes[move.internal.pfrom][move.internal.to];
+   hash_state ^= hashes[move.internal.pto][move.internal.to];
+   hash_state ^= hash_move;
+
    uint32_t side = move.internal.pfrom & 0x8;
    GAME.pieces[move.internal.pfrom] ^=
       PMASK[move.internal.from] | PMASK[move.internal.to];

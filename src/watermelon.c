@@ -22,6 +22,7 @@ int main(int argc, char const* argv[]) {
    }
 
    init_masks();
+   init_hashes();
    init_fen("rnbakabnr/9/1c5c1/p1p1p1p1p/9/"
             "9/P1P1P1P1P/1C5C1/9/RNBAKABNR");
 
