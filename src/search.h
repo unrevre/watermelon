@@ -8,6 +8,8 @@ extern uint32_t ply;
 
 extern uint32_t nodes;
 extern uint32_t qnodes;
+
+extern uint32_t tthits;
 #endif
 
 /*!
