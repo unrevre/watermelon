@@ -42,4 +42,21 @@ typedef struct {
    uint32_t count;
 } move_array_t;
 
+/*!
+ * ttentry_t
+ * transposition table entry struct
+ */
+
+typedef union {
+    uint64_t bits;
+    struct {
+        uint8_t hash  : 8;
+        uint8_t depth : 6;
+        uint8_t flags : 2;
+        int16_t score : 14;
+        uint8_t age   : 2;
+        move_t move;
+    } __attribute__((packed)) internal;
+} ttentry_t;
+
 #endif /* STRUCTS_H */

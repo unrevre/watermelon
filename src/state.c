@@ -4,6 +4,7 @@
 #include "structs.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 state_t GAME = {{0x0}, 0x0, {0x0}};
 
@@ -23,6 +24,8 @@ uint32_t board[90] = {
 uint32_t hashes[15][90];
 uint32_t hash_move;
 uint32_t hash_state;
+
+ttentry_t TTABLE[0x1000000] __attribute__((aligned(64)));
 
 void init_hashes(void) {
    srand(0x91);
@@ -46,4 +49,8 @@ void init_hashes(void) {
    hash_move = hash_red ^ hash_black;
 
    hash_state ^= hash_red;
+}
+
+void init_tables(void) {
+   memset(TTABLE, 0, 0x1000000 * sizeof(ttentry_t));
 }
