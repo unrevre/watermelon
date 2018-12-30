@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS += -O3 -std=gnu99 -march=native -Wall -Wextra -Werror \
+CFLAGS += -O3 -std=gnu99 -march=native -Wall -Wextra \
 	  -fno-exceptions -fno-strict-aliasing -fno-stack-protector \
 	  -fomit-frame-pointer
 
