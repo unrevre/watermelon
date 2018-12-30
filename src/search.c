@@ -67,11 +67,50 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 }
 
 int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
+   move_t move_hash = {0};
+
+   for (uint32_t t = 0; t < 4; ++t) {
+      ttentry_t entry = TTABLE[(hash_state & 0xffffff) ^ t];
+      if (entry.internal.hash == hash_state >> 24 &&
+            entry.internal.depth >= depth && entry.internal.move.bits) {
+         switch (entry.internal.flags) {
+            case 0x1:
+               return entry.internal.score;
+            case 0x2:
+               alpha = max(alpha, entry.internal.score);
+               break;
+            case 0x3:
+               beta = min(beta, entry.internal.score);
+               break;
+         }
+
+         if (alpha >= beta) { return entry.internal.score; }
+
+         move_hash = entry.internal.move;
+         break;
+      }
+   }
+
    if (!depth) { return quiescence(alpha, beta, side); }
 
+   int32_t high = -4096;
+
+   if (move_hash.bits) {
+      move(move_hash);
+
+      int32_t score = -negamax(depth - 1, -beta, -alpha, side ^ 0x8);
+
+      retract(move_hash);
+
+      high = max(high, score);
+      alpha = max(alpha, score);
+
+      if (alpha >= beta) { store_hash(depth, alpha, beta, score, move_hash); }
+   }
+
+   uint32_t move_index = 0;
    move_array_t moves = generate(side);
 
-   int32_t high = -4096;
    for (uint32_t i = 0; i != moves.count; ++i) {
       move(moves.data[i]);
 #ifdef DEBUG
@@ -96,11 +135,15 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
 
       retract(moves.data[i]);
 
+      if (score > high) { move_index = i; }
+
       high = max(high, score);
       alpha = max(alpha, score);
 
       if (alpha >= beta) { break; }
    }
+
+   store_hash(depth, alpha, beta, high, moves.data[move_index]);
 
    free(moves.data);
 
@@ -145,4 +188,35 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
    free(moves.data);
 
    return alpha;
+}
+
+void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
+                move_t move_hash) {
+   uint32_t index = hash_state & 0xffffff;
+
+   uint32_t replace = index;;
+   for (uint32_t t = 0; t != 4; ++t) {
+      uint32_t entry = index ^ t;
+      if (!TTABLE[entry].bits) {
+         replace = entry;
+         break;
+      } else if (TTABLE[entry].internal.hash == hash_state >> 24) {
+         if (TTABLE[entry].internal.flags == 0x1
+               && TTABLE[entry].internal.depth > depth)
+            return;
+         replace = entry;
+         break;
+      } else if (TTABLE[entry].internal.age != age) {
+         replace = entry;
+      }
+   }
+
+   uint8_t flags;
+   if (score <= alpha) { flags = 0x3; }
+   else if (score >= beta) { flags = 0x2; }
+   else { flags = 0x1; }
+
+   TTABLE[replace] = (ttentry_t) {
+      .internal = { hash_state >> 24, depth, flags, score, age, move_hash }
+   };
 }
