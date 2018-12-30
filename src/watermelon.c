@@ -45,6 +45,7 @@ int main(int argc, char const* argv[]) {
    free(fen_str);
    printf("nodes: %u\n", nodes);
    printf("qnodes: %u\n", qnodes);
+   printf("tthits: %u\n", tthits);
 #endif
 
    return 0;
