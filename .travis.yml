@@ -4,29 +4,28 @@ matrix:
   include:
     - os: osx
       osx_image: xcode10.1
+      env: COMPILER=clang
 
     - os: osx
       osx_image: xcode9.2
+      env: COMPILER=clang
 
     - os: linux
-      env: MATRIX_EVAL="export CC=gcc-8"
+      env: COMPILER=gcc-8
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-8']
 
     - os: linux
-      env: MATRIX_EVAL="export CC=clang-7"
+      env: COMPILER=clang-7
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
           packages: ['clang-7', 'g++-7']
 
-before-install:
-  eval "${MATRIX_EVAL}"
-
 script:
-  - make && ./bin/watermelon 7
-  - make tests && cd tests
-  - ./scripts/perft.sh 6 data/fen.dat | tee ci-perft.dat
+  - make CC=$COMPILER && ./bin/watermelon 7
+  - make CC=$COMPILER tests && cd tests &&
+    ./scripts/perft.sh 6 data/fen.dat | tee ci-perft.dat
   - diff data/ref.dat ci-perft.dat
