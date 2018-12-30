@@ -3,6 +3,7 @@
 #include "eval.h"
 #include "generate.h"
 #include "inlines.h"
+#include "state.h"
 
 #include <stdlib.h>
 
@@ -22,6 +23,8 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    nodes = 0;
    qnodes = 0;
 #endif
+
+   ++age;
 
    move_array_t moves = generate(side);
    move_t principal = {0};

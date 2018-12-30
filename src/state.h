@@ -13,8 +13,12 @@ extern uint32_t hash_state;
 
 extern ttentry_t TTABLE[0x1000000] __attribute__((aligned(64)));
 
+extern uint32_t age;
+
 void init_hashes(void);
 
 void init_tables(void);
+
+void init_variables(void);
 
 #endif /* STATE_H */

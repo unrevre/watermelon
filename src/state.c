@@ -27,6 +27,8 @@ uint32_t hash_state;
 
 ttentry_t TTABLE[0x1000000] __attribute__((aligned(64)));
 
+uint32_t age;
+
 void init_hashes(void) {
    srand(0x91);
 
@@ -53,4 +55,8 @@ void init_hashes(void) {
 
 void init_tables(void) {
    memset(TTABLE, 0, 0x1000000 * sizeof(ttentry_t));
+}
+
+void init_variables(void) {
+   age = 0;
 }
