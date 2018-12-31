@@ -26,6 +26,8 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    qnodes = 0;
 
    tthits = 0;
+
+   ply = 0;
 #endif
 
    ++age;
@@ -36,24 +38,32 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    int32_t alpha = -4096; int32_t beta = 4096;
    for (uint32_t d = 1; d != depth; ++d) {
       int32_t high = -4096;
+
+#ifdef DEBUG
+      printf("╻\n");
+#endif
       for (uint32_t i = 0; i != moves.count; ++i) {
          move(moves.data[i]);
 #ifdef DEBUG
-         ply = 0;
+         ++ply;
          ++nodes;
-         char* fen_str = info_fen();
-         printf("fen: %s\n", fen_str);
 #endif
 
          int32_t score = -negamax(d - 1, -beta, -alpha, side ^ 0x8);
 
 #ifdef DEBUG
-         printf("fen: %s\n", fen_str);
+         for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
+         char* fen_str = info_fen();
+         printf("├╸fen: %s\n", fen_str);
          free(fen_str);
-         printf("  score: %i [%i, %i]\n", score, alpha, beta);
+         for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
+         printf("└╸(%u) [%i, %i] %i, %i\n", side, alpha, beta, score, high);
 #endif
 
          retract(moves.data[i]);
+#ifdef DEBUG
+         --ply;
+#endif
 
          if (score > high) { principal = moves.data[i]; }
          high = max(high, score);
@@ -61,6 +71,9 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 
          if (alpha >= beta) { break; }
       }
+#ifdef DEBUG
+      printf("╹\n");
+#endif
 
       if (high >= 4096) { break; }
    }
@@ -71,6 +84,17 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 }
 
 int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
+#ifdef DEBUG
+   if (depth) {
+      for (uint32_t t = 0; t < ply - 1; ++t) { printf("│"); }
+      char* fen_str = info_fen();
+      printf("├┬╸fen: %s\n", fen_str);
+      free(fen_str);
+      for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
+      printf("├╸(%u) [%i, %i]\n", side, alpha, beta);
+   }
+#endif
+
    move_t move_hash = {0};
 
    for (uint32_t t = 0; t < 4; ++t) {
@@ -121,26 +145,24 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
    for (uint32_t i = 0; i != moves.count; ++i) {
       move(moves.data[i]);
 #ifdef DEBUG
-      ++nodes;
-
       ++ply;
-      for (uint32_t t = 0; t < ply; ++t) { printf(" "); }
-      char* fen_str = info_fen();
-      printf("fen: %s\n", fen_str);
+      ++nodes;
 #endif
 
       int32_t score = -negamax(depth - 1, -beta, -alpha, side ^ 0x8);
-
 #ifdef DEBUG
-      for (uint32_t t = 0; t < ply; ++t) { printf(" "); }
-      printf("fen: %s\n", fen_str);
+      for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
+      char* fen_str = info_fen();
+      printf("├╸fen: %s\n", fen_str);
       free(fen_str);
-      for (uint32_t t = 0; t < ply; ++t) { printf(" "); }
-      printf("  score: %i [%i, %i]\n", score, alpha, beta);
-      --ply;
+      for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
+      printf("└╸(%u) [%i, %i] %i, %i\n", side, alpha, beta, score, high);
 #endif
 
       retract(moves.data[i]);
+#ifdef DEBUG
+      --ply;
+#endif
 
       if (score > high) { move_index = i; }
 
@@ -159,6 +181,14 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
 
 int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
    int32_t stand = eval(side);
+#ifdef DEBUG
+   for (uint32_t t = 0; t < ply - 1; ++t) { printf("│"); }
+   char* fen_str = info_fen();
+   printf("├┬╸[q] fen: %s\n", fen_str);
+   free(fen_str);
+   for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
+   printf("├╸[q] (%u) [%i, %i] %i\n", side, alpha, beta, stand);
+#endif
    if (stand >= beta) { return stand; }
 
    alpha = max(alpha, stand);
@@ -167,26 +197,24 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
    for (uint32_t i = 0; i != moves.count; ++i) {
       move(moves.data[i]);
 #ifdef DEBUG
-      ++qnodes;
-
       ++ply;
-      for (uint32_t t = 0; t < ply; ++t) { printf(" "); }
-      char* fen_str = info_fen();
-      printf("[q] fen: %s\n", fen_str);
+      ++qnodes;
 #endif
 
       int32_t score = -quiescence(-beta, -alpha, side ^ 0x8);
-
 #ifdef DEBUG
-      for (uint32_t t = 0; t < ply; ++t) { printf(" "); }
-      printf("[q] fen: %s\n", fen_str);
+      for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
+      char* fen_str = info_fen();
+      printf("├╸[q] fen: %s\n", fen_str);
       free(fen_str);
-      for (uint32_t t = 0; t < ply; ++t) { printf(" "); }
-      printf("  [q] score: %i [%i, %i]\n", score, alpha, beta);
-      --ply;
+      for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
+      printf("└╸[q] (%u) [%i, %i] %i\n", side, alpha, beta, score);
 #endif
 
       retract(moves.data[i]);
+#ifdef DEBUG
+      --ply;
+#endif
 
       alpha = max(alpha, score);
       if (alpha >= beta) { break; }
