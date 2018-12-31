@@ -35,9 +35,9 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    move_array_t moves = generate(side);
    move_t principal = {0};
 
-   int32_t alpha = -4096; int32_t beta = 4096;
+   int32_t alpha = -2048; int32_t beta = 2048;
    for (uint32_t d = 1; d != depth; ++d) {
-      int32_t high = -4096;
+      int32_t high = -2048;
 
 #ifdef DEBUG
       printf("╻\n");
@@ -75,7 +75,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
       printf("╹\n");
 #endif
 
-      if (high >= 4096) { break; }
+      if (high >= 2048) { break; }
    }
 
    free(moves.data);
@@ -124,7 +124,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
 
    if (!depth) { return quiescence(alpha, beta, side); }
 
-   int32_t high = -4096;
+   int32_t high = -2048;
 
    if (move_hash.bits) {
       move(move_hash);
