@@ -13,6 +13,14 @@
 move_array_t generate(uint32_t side);
 
 /*!
+ * generate_pseudolegal
+ * @ generate all pseudolegal moves
+ *   including feijiang as literal move
+ */
+
+move_array_t generate_pseudolegal(uint32_t side);
+
+/*!
  * generate_captures
  * @ generate capture moves
  */
