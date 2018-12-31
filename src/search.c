@@ -18,6 +18,8 @@ uint32_t nodes;
 uint32_t qnodes;
 
 uint32_t tthits;
+
+static char cside[2] = {'r', 'b'};
 #endif
 
 move_t iter_dfs(uint32_t depth, uint32_t side) {
@@ -57,7 +59,8 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
          printf("├╸fen: %s\n", fen_str);
          free(fen_str);
          for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
-         printf("└╸(%u) [%i, %i] %i, %i\n", side, alpha, beta, score, high);
+         printf("└╸(%c) [%i, %i] %i, %i\n", cside[side >> 3], alpha, beta,
+            score, high);
 #endif
 
          retract(moves.data[i]);
@@ -91,7 +94,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       printf("├┬╸fen: %s\n", fen_str);
       free(fen_str);
       for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
-      printf("├╸(%u) [%i, %i]\n", side, alpha, beta);
+      printf("├╸(%c) [%i, %i]\n", cside[side >> 3], alpha, beta);
    }
 #endif
 
@@ -156,7 +159,8 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       printf("├╸fen: %s\n", fen_str);
       free(fen_str);
       for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
-      printf("└╸(%u) [%i, %i] %i, %i\n", side, alpha, beta, score, high);
+      printf("└╸(%c) [%i, %i] %i, %i\n", cside[side >> 3], alpha, beta,
+         score, high);
 #endif
 
       retract(moves.data[i]);
@@ -187,7 +191,7 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
    printf("├┬╸[q] fen: %s\n", fen_str);
    free(fen_str);
    for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
-   printf("├╸[q] (%u) [%i, %i] %i\n", side, alpha, beta, stand);
+   printf("├╸[q] (%c) [%i, %i] %i\n", cside[side >> 3], alpha, beta, stand);
 #endif
    if (stand >= beta) { return stand; }
 
@@ -208,7 +212,8 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
       printf("├╸[q] fen: %s\n", fen_str);
       free(fen_str);
       for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
-      printf("└╸[q] (%u) [%i, %i] %i\n", side, alpha, beta, score);
+      printf("└╸[q] (%c) [%i, %i] %i\n", cside[side >> 3], alpha, beta,
+         score);
 #endif
 
       retract(moves.data[i]);
