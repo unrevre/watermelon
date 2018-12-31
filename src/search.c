@@ -34,7 +34,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 
    ++age;
 
-   move_array_t moves = generate(side);
+   move_array_t moves = generate_pseudolegal(side);
    move_t principal = {0};
 
    int32_t alpha = -2048; int32_t beta = 2048;
@@ -143,7 +143,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
    }
 
    uint32_t move_index = 0;
-   move_array_t moves = generate(side);
+   move_array_t moves = generate_pseudolegal(side);
 
    for (uint32_t i = 0; i != moves.count; ++i) {
       move(moves.data[i]);
