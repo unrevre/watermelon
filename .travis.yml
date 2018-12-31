@@ -25,7 +25,6 @@ matrix:
           packages: ['clang-7', 'g++-7']
 
 script:
-  - make CC=$COMPILER && ./bin/watermelon 7
-  - make CC=$COMPILER tests && cd tests &&
-    ./scripts/perft.sh 6 data/fen.dat | tee ci-perft.dat
+  - make CC=$COMPILER && ./bin/watermelon 5
+  - cd tests && ./scripts/perft.sh 6 data/fen.dat | tee ci-perft.dat
   - diff data/ref.dat ci-perft.dat
