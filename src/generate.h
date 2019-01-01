@@ -35,6 +35,13 @@ move_array_t generate_captures(uint32_t side);
 uint32_t in_check(uint32_t side);
 
 /*!
+ * is_legal
+ * @ test if given move is pseudolegal
+ */
+
+uint32_t is_legal(move_t move, uint32_t side);
+
+/*!
  * add_piecewise
  * @ add moves (for fixed piece)
  */
