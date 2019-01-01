@@ -37,8 +37,8 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    move_array_t moves = generate_pseudolegal(side);
    move_t principal = {0};
 
-   int32_t alpha = -2048; int32_t beta = 2048;
    for (uint32_t d = 1; d != depth; ++d) {
+      int32_t alpha = -2048; int32_t beta = 2048;
       int32_t high = -2048;
 
 #ifdef DEBUG
