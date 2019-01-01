@@ -159,7 +159,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       printf("├╸fen: %s\n", fen_str);
       free(fen_str);
       for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
-      printf("└╸(%c) [%i, %i] %i, %i\n", cside[side >> 3], alpha, beta,
+      printf("└╸(%c) [%i, %i] %i, %i\n", cside[!side], alpha, beta,
          score, high);
 #endif
 
@@ -212,8 +212,7 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
       printf("├╸[q] fen: %s\n", fen_str);
       free(fen_str);
       for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
-      printf("└╸[q] (%c) [%i, %i] %i\n", cside[side >> 3], alpha, beta,
-         score);
+      printf("└╸[q] (%c) [%i, %i] %i\n", cside[!side], alpha, beta, score);
 #endif
 
       retract(moves.data[i]);
