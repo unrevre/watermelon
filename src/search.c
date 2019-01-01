@@ -104,9 +104,11 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       ttentry_t entry = TTABLE[(hash_state & 0xffffff) ^ t];
       if (entry.internal.hash == hash_state >> 24 &&
             entry.internal.depth >= depth && entry.internal.move.bits) {
+         if (!is_legal(entry.internal.move, side)) { continue; }
 #ifdef DEBUG
          ++tthits;
 #endif
+
          switch (entry.internal.flags) {
             case 0x1:
                return entry.internal.score;
