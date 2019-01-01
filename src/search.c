@@ -188,10 +188,10 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
 #ifdef DEBUG
    for (uint32_t t = 0; t < ply - 1; ++t) { printf("│"); }
    char* fen_str = info_fen();
-   printf("├┬╸[q] fen: %s\n", fen_str);
+   printf("├┬╸fen: %s [q]\n", fen_str);
    free(fen_str);
    for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
-   printf("├╸[q] (%c) [%i, %i] %i\n", cside[side >> 3], alpha, beta, stand);
+   printf("├╸(%c) [%i, %i] %i [q]\n", cside[side >> 3], alpha, beta, stand);
 #endif
    if (stand >= beta) { return stand; }
 
@@ -209,10 +209,10 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
 #ifdef DEBUG
       for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
       char* fen_str = info_fen();
-      printf("├╸[q] fen: %s\n", fen_str);
+      printf("├╸fen: %s [q]\n", fen_str);
       free(fen_str);
       for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
-      printf("└╸[q] (%c) [%i, %i] %i\n", cside[!side], alpha, beta, score);
+      printf("└╸(%c) [%i, %i] %i [q]\n", cside[!side], alpha, beta, score);
 #endif
 
       retract(moves.data[i]);
