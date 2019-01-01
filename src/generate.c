@@ -506,6 +506,53 @@ uint32_t in_check(uint32_t side) {
    return 0;
 }
 
+uint32_t is_legal(move_t move, uint32_t side) {
+   if (side != (move.internal.pfrom & 0x8)) { return 0; }
+
+   uint32_t from = move.internal.from;
+   if (board[from] != move.internal.pfrom) { return 0; }
+
+   uint32_t to = move.internal.to;
+   if (board[to] != move.internal.pto) { return 0; }
+
+   switch (move.internal.pfrom & 0x7) {
+      case 0: {
+         uint32_t high = max(from, to);
+         uint32_t low = min(from, to);
+
+         __uint128_t jspan = PMASK[high] - (PMASK[low] << 1);
+         if (high - low > 8) { jspan &= FMASK[high]; }
+         jspan &= ~GAME.empty;
+         return !jspan; }
+      case 1:
+         switch (from - to) {
+            case -19: case -11: { return board[to + 10] == 0x7; }
+            case -17: case -7: { return board[to + 8] == 0x7; }
+            case 7: case 17: { return board[to - 8] == 0x7; }
+            case 11: case 19: { return board[to - 10] == 0x7; }
+         }
+      case 2: {
+         uint32_t high = max(from, to);
+         uint32_t low = min(from, to);
+
+         __uint128_t pspan = PMASK[high] - PMASK[low] * 2;
+         if (high - low > 8) { pspan &= FMASK[high]; }
+         pspan &= ~GAME.empty;
+
+         if (move.internal.pto == 0x7) { return !pspan; }
+         else { return popcnt(pspan) == 1; } }
+      case 3: return 1;
+      case 4: return board[(from + to) / 2] == 0x7;
+      case 5: return 1;
+      case 6: {
+         if ((move.internal.pto & 0x7) != 0x6) { return 1; }
+         __uint128_t jspan = GAME.pieces[0x8 + 6] - (GAME.pieces[0x8] << 0x1);
+         jspan &= FMASK[from] & ~GAME.empty;
+         return !jspan; }
+      default: return 0;
+   }
+}
+
 void move(move_t move) {
    hash_state ^= hashes[move.internal.pfrom][move.internal.from];
    hash_state ^= hashes[move.internal.pfrom][move.internal.to];
