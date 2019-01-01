@@ -168,6 +168,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       --ply;
 #endif
 
+      if (score < -2047) { high = score; break; }
       if (score > high) { move_index = i; }
 
       high = max(high, score);
@@ -194,6 +195,7 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
    printf("├╸(%c) [%i, %i] %i [q]\n", cside[side >> 3], alpha, beta, stand);
 #endif
    if (stand >= beta) { return stand; }
+   if (stand < -2047) { return stand; }
 
    alpha = max(alpha, stand);
 
