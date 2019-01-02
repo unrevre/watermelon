@@ -56,15 +56,15 @@ void add_piecewise(__uint128_t set, uint32_t from, move_array_t* moves);
 void add_shiftwise(__uint128_t set, int32_t shift, move_array_t* moves);
 
 /*!
- * move
- * @ simple make move
+ * advance
+ * @ advance move
  */
 
-void move(move_t move);
+void advance(move_t move);
 
 /*!
  * retract
- * @ simple unmake move
+ * @ retract move
  */
 
 void retract(move_t move);
