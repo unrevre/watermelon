@@ -90,7 +90,7 @@ move_array_t generate(uint32_t side) {
       fset &= ~(fset - fcbn);
 
       moveset |= ((rset & RMASK[index]) | (fset & FMASK[index]))
-         & GAME.occupancy[!s];
+         & GAME.occupancy[!side];
 
       add_piecewise(moveset, index, &moves);
    }
@@ -230,7 +230,7 @@ move_array_t generate_pseudolegal(uint32_t side) {
       fset &= ~(fset - fcbn);
 
       moveset |= ((rset & RMASK[index]) | (fset & FMASK[index]))
-         & GAME.occupancy[!s];
+         & GAME.occupancy[!side];
 
       add_piecewise(moveset, index, &moves);
    }
@@ -282,10 +282,10 @@ move_array_t generate_pseudolegal(uint32_t side) {
       moveset &= JMASK[s] & ~GAME.occupancy[s];
       add_piecewise(moveset, index, &moves);
 
-      __uint128_t fly = (GAME.pieces[0x8 + 6] << 0x1) - GAME.pieces[6] + 0x1;
+      __uint128_t fly = (GAME.pieces[0xe] << 1) - GAME.pieces[0x6] + 0x1;
       fly &= FMASK[index] & ~GAME.empty;
-      fly ^= GAME.pieces[6] | GAME.pieces[0x8 + 6];
-      if (!fly) { add_piecewise(GAME.pieces[(side ^ 0x8)+ 6], index, &moves); }
+      fly ^= GAME.pieces[0x6] | GAME.pieces[0xe];
+      if (!fly) { add_piecewise(GAME.pieces[side ^ 0xe], index, &moves); }
    }
 
    return moves;
@@ -294,8 +294,6 @@ move_array_t generate_pseudolegal(uint32_t side) {
 move_array_t generate_captures(uint32_t side) {
    move_array_t moves = {(move_t*)malloc(53 * sizeof(move_t)), 0};
    if (!GAME.pieces[side + 6]) { return moves; }
-
-   uint32_t s = side >> 3;
 
    __uint128_t C3U128 = 0x3;
 
@@ -319,7 +317,7 @@ move_array_t generate_captures(uint32_t side) {
       fset = fset ^ (fset - fcbn);
 
       moveset = (rset & RMASK[index]) | (fset & FMASK[index]);
-      moveset &= GAME.occupancy[!s];
+      moveset &= GAME.occupancy[!side];
 
       add_piecewise(moveset, index, &moves);
    }
@@ -337,7 +335,7 @@ move_array_t generate_captures(uint32_t side) {
          | (PMASK[index] >> 0x07 & GAME.empty >> 0x8 & FMASKN01)
          | (PMASK[index] << 0x0b & GAME.empty << 0xa & FMASKN01)
          | (PMASK[index] >> 0x0b & GAME.empty >> 0xa & FMASKN78);
-      moveset &= BMASK & GAME.occupancy[!s];
+      moveset &= BMASK & GAME.occupancy[!side];
 
       add_piecewise(moveset, index, &moves);
    }
@@ -373,22 +371,24 @@ move_array_t generate_captures(uint32_t side) {
       fset &= ~(fset - fcbn);
 
       moveset = ((rset & RMASK[index]) | (fset & FMASK[index]))
-         & GAME.occupancy[!s];
+         & GAME.occupancy[!side];
 
       add_piecewise(moveset, index, &moves);
    }
 
+   uint32_t s = side >> 3;
+
    __uint128_t zset;
    zset = (GAME.pieces[side + 3] << 9) >> (18 * s);
-   zset &= ZMASK[s] & GAME.occupancy[!s];
+   zset &= ZMASK[s] & GAME.occupancy[!side];
    add_shiftwise(zset, 9 - 18 * s, &moves);
 
    zset = GAME.pieces[side + 3] << 1 & FMASKN0;
-   zset &= ZMASK[s] & GAME.occupancy[!s];
+   zset &= ZMASK[s] & GAME.occupancy[!side];
    add_shiftwise(zset, 1, &moves);
 
    zset = GAME.pieces[side + 3] >> 1 & FMASKN8;
-   zset &= ZMASK[s] & GAME.occupancy[!s];
+   zset &= ZMASK[s] & GAME.occupancy[!side];
    add_shiftwise(zset, -1, &moves);
 
    __uint128_t xset = GAME.pieces[side + 4];
@@ -400,7 +400,7 @@ move_array_t generate_captures(uint32_t side) {
          | (PMASK[index] << 0x14 & GAME.empty << 0xa)
          | (PMASK[index] >> 0x10 & GAME.empty >> 0x8)
          | (PMASK[index] >> 0x14 & GAME.empty >> 0xa);
-      moveset &= XMASK[s] & GAME.occupancy[!s];
+      moveset &= XMASK[s] & GAME.occupancy[!side];
 
       add_piecewise(moveset, index, &moves);
    }
@@ -412,7 +412,7 @@ move_array_t generate_captures(uint32_t side) {
       __uint128_t moveset;
       moveset = PMASK[index] << 0x8 | PMASK[index] << 0xa
          | PMASK[index] >> 0x8 | PMASK[index] >> 0xa;
-      moveset &= SMASK[s] & GAME.occupancy[!s];
+      moveset &= SMASK[s] & GAME.occupancy[!side];
 
       add_piecewise(moveset, index, &moves);
    }
@@ -421,7 +421,7 @@ move_array_t generate_captures(uint32_t side) {
       __uint128_t moveset;
       moveset = GAME.pieces[side + 6] << 9 | GAME.pieces[side + 6] >> 9
          | GAME.pieces[side + 6] << 1 | GAME.pieces[side + 6] >> 1;
-      moveset &= JMASK[s] & GAME.occupancy[!s];
+      moveset &= JMASK[s] & GAME.occupancy[!side];
       add_piecewise(moveset, bsf_branchless(GAME.pieces[side + 6]), &moves);
    }
 
@@ -448,9 +448,7 @@ void add_shiftwise(__uint128_t set, int32_t shift, move_array_t* moves) {
 uint32_t in_check(uint32_t side) {
    uint32_t index = bsf_branchless(GAME.pieces[side + 6]);
 
-   uint32_t os = side ^ 0x8;
-
-   __uint128_t jset = GAME.pieces[os] | GAME.pieces[os + 6];
+   __uint128_t jset = GAME.pieces[side ^ 0x8] | GAME.pieces[side ^ 0xe];
    __uint128_t jrset = jset & RMASK[index];
    __uint128_t jfset = jset & FMASK[index];
 
@@ -469,7 +467,7 @@ uint32_t in_check(uint32_t side) {
       if (!range) { return 1; }
    }
 
-   __uint128_t pset = GAME.pieces[os + 2];
+   __uint128_t pset = GAME.pieces[side ^ 0xa];
    __uint128_t prset = pset & RMASK[index];
    __uint128_t pfset = pset & FMASK[index];
 
@@ -497,12 +495,12 @@ uint32_t in_check(uint32_t side) {
       | (PMASK[index] >> 0x07 & GAME.empty << 0x1)
       | (PMASK[index] << 0x0b & GAME.empty << 0x1)
       | (PMASK[index] >> 0x0b & GAME.empty >> 0x1);
-   mset = mset & GAME.pieces[os + 1];
+   mset = mset & GAME.pieces[side ^ 0x9];
    if (mset) { return 1; }
 
    __uint128_t zset = (PMASK[index] << 9) >> (18 * side >> 3)
       | PMASK[index] << 1 | PMASK[index] >> 1;
-   zset = zset & GAME.pieces[os + 3];
+   zset = zset & GAME.pieces[side ^ 0xb];
    if (zset) { return 1; }
 
    return 0;
@@ -538,7 +536,7 @@ uint32_t is_legal(move_t move, uint32_t side) {
          uint32_t high = max(from, to);
          uint32_t low = min(from, to);
 
-         __uint128_t pspan = PMASK[high] - PMASK[low] * 2;
+         __uint128_t pspan = PMASK[high] - (PMASK[low] << 1);
          if (high - low > 8) { pspan &= FMASK[high]; }
          pspan &= ~GAME.empty;
 
@@ -548,8 +546,8 @@ uint32_t is_legal(move_t move, uint32_t side) {
       case 4: return board[(from + to) / 2] == 0x7;
       case 5: return 1;
       case 6: {
-         if ((move.internal.pto & 0x7) != 0x6) { return 1; }
-         __uint128_t jspan = GAME.pieces[0x8 + 6] - (GAME.pieces[0x8] << 0x1);
+         if ((move.internal.pto & 0x7) != 6) { return 1; }
+         __uint128_t jspan = GAME.pieces[0xe] - (GAME.pieces[0x8] << 1);
          jspan &= FMASK[from] & ~GAME.empty;
          return !jspan; }
       default: return 0;
@@ -562,19 +560,17 @@ void move(move_t move) {
    hash_state ^= hashes[move.internal.pto][move.internal.to];
    hash_state ^= hash_move;
 
-   uint32_t side = move.internal.pfrom & 0x8;
+   uint32_t s = move.internal.pfrom >> 3;
    GAME.pieces[move.internal.pfrom] ^=
       PMASK[move.internal.from] | PMASK[move.internal.to];
    GAME.pieces[move.internal.pto] ^= PMASK[move.internal.to];
-   GAME.pieces[7] = 0x0;
+   GAME.pieces[0x7] = 0x0;
 
-   GAME.occupancy[side >> 3] ^=
-      PMASK[move.internal.from] | PMASK[move.internal.to];
-   GAME.occupancy[!side] ^=
-      GAME.occupancy[0] & GAME.occupancy[1];
+   GAME.occupancy[s] ^= PMASK[move.internal.from] | PMASK[move.internal.to];
+   GAME.occupancy[!s] ^= GAME.occupancy[0] & GAME.occupancy[1];
    GAME.empty = ~(GAME.occupancy[0] | GAME.occupancy[1]);
 
-   board[move.internal.from] = 7;
+   board[move.internal.from] = 0x7;
    board[move.internal.to] = move.internal.pfrom;
 }
 
@@ -584,15 +580,14 @@ void retract(move_t move) {
    hash_state ^= hashes[move.internal.pto][move.internal.to];
    hash_state ^= hash_move;
 
-   uint32_t side = move.internal.pfrom & 0x8;
+   uint32_t s = move.internal.pfrom >> 3;
    GAME.pieces[move.internal.pfrom] ^=
       PMASK[move.internal.from] | PMASK[move.internal.to];
    GAME.pieces[move.internal.pto] ^= PMASK[move.internal.to];
-   GAME.pieces[7] = 0x0;
+   GAME.pieces[0x7] = 0x0;
 
-   GAME.occupancy[side >> 3] ^=
-      PMASK[move.internal.from] | PMASK[move.internal.to];
-   GAME.occupancy[!side] |= GAME.pieces[move.internal.pto];
+   GAME.occupancy[s] ^= PMASK[move.internal.from] | PMASK[move.internal.to];
+   GAME.occupancy[!s] |= GAME.pieces[move.internal.pto];
    GAME.empty = ~(GAME.occupancy[0] | GAME.occupancy[1]);
 
    board[move.internal.from] = move.internal.pfrom;
