@@ -119,6 +119,19 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       if (alpha >= beta) { goto search_save; }
    }
 
+   if (ply > 1 && depth > 4 && !in_check(side)) {
+      hash_state ^= hash_move;
+      int32_t score = -negamax(depth - 3, ply + 1, -beta, -alpha, side ^ 0x8);
+      hash_state ^= hash_move;
+
+      if (score > best) { move_store = (move_t){0}; }
+
+      best = max(best, score);
+      alpha = max(alpha, score);
+
+      if (alpha >= beta) { goto search_save; }
+   }
+
    move_array_t moves = sort_moves(generate_pseudolegal(side));
 
    for (uint32_t i = 0; i != moves.quiet; ++i) {
