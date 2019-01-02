@@ -10,25 +10,30 @@
 #include <stdlib.h>
 #include <time.h>
 
-/*!
- * main
- * @ perft
- */
+int watermelon(int32_t depth, char const* fen);
 
 int main(int argc, char const* argv[]) {
-   if (argc < 2) {
-      printf("usage: ./watermelon [depth]\n");
-      return 1;
-   }
+   int32_t depth = atoi(argv[1]);
 
+   switch (argc) {
+      case 2:
+         return watermelon(depth,
+            "rnbakabnr/9/1c5c1/p1p1p1p1p/9/"
+            "9/P1P1P1P1P/1C5C1/9/RNBAKABNR");
+      case 3:
+         return watermelon(depth, argv[2]);
+      default:
+         printf("usage: ./watermelon [depth]\n");
+         return 1;
+   }
+}
+
+int watermelon(int32_t depth, char const* fen) {
    init_masks();
    init_hashes();
    init_tables();
    init_variables();
-   init_fen("rnbakabnr/9/1c5c1/p1p1p1p1p/9/"
-            "9/P1P1P1P1P/1C5C1/9/RNBAKABNR");
-
-   int depth = atoi(argv[1]);
+   init_fen(fen);
 
    clock_t cpu_time = clock();
 
