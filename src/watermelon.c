@@ -33,8 +33,8 @@ int main(int argc, char const* argv[]) {
    clock_t cpu_time = clock();
 
    move_t move = iter_dfs(depth, 0);
-   printf("%2i: %2i - %2i [%2i]\n", move.internal.pfrom,
-      move.internal.from, move.internal.to, move.internal.pto);
+   printf("%2i: %2i - %2i [%2i]\n", move._.pfrom, move._.from, move._.to,
+      move._.pto);
 
    cpu_time = clock() - cpu_time;
    printf("cpu_time: %fs\n", (float)cpu_time / CLOCKS_PER_SEC);

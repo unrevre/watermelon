@@ -102,27 +102,28 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
 
    for (uint32_t t = 0; t < 4; ++t) {
       ttentry_t entry = TTABLE[(hash_state & 0xffffff) ^ t];
-      if (entry.internal.hash == hash_state >> 24 &&
-            entry.internal.depth >= depth && entry.internal.move.bits) {
-         if (!is_legal(entry.internal.move, side)) { continue; }
+      if (entry._.hash == hash_state >> 24
+            && entry._.depth >= depth
+            && entry._.move.bits) {
+         if (!is_legal(entry._.move, side)) { continue; }
 #ifdef DEBUG
          ++tthits;
 #endif
 
-         switch (entry.internal.flags) {
+         switch (entry._.flags) {
             case 0x1:
-               return entry.internal.score;
+               return entry._.score;
             case 0x2:
-               alpha = max(alpha, entry.internal.score);
+               alpha = max(alpha, entry._.score);
                break;
             case 0x3:
-               beta = min(beta, entry.internal.score);
+               beta = min(beta, entry._.score);
                break;
          }
 
-         if (alpha >= beta) { return entry.internal.score; }
+         if (alpha >= beta) { return entry._.score; }
 
-         move_hashed = entry.internal.move;
+         move_hashed = entry._.move;
          break;
       }
    }
@@ -243,13 +244,12 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
       if (!TTABLE[entry].bits) {
          replace = entry;
          break;
-      } else if (TTABLE[entry].internal.hash == hash_state >> 24) {
-         if (TTABLE[entry].internal.flags == 0x1
-               && TTABLE[entry].internal.depth > depth)
+      } else if (TTABLE[entry]._.hash == hash_state >> 24) {
+         if (TTABLE[entry]._.flags == 0x1 && TTABLE[entry]._.depth > depth)
             return;
          replace = entry;
          break;
-      } else if (TTABLE[entry].internal.age != age) {
+      } else if (TTABLE[entry]._.age != age) {
          replace = entry;
       }
    }
@@ -260,6 +260,6 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
    else { flags = 0x1; }
 
    TTABLE[replace] = (ttentry_t) {
-      .internal = { hash_state >> 24, depth, flags, score, age, move_hashed }
+      ._ = { hash_state >> 24, depth, flags, score, age, move_hashed }
    };
 }

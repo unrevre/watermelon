@@ -29,7 +29,7 @@ typedef union {
       uint8_t to;
       uint8_t pfrom;
       uint8_t pto;
-   } __attribute__((packed)) internal;
+   } __attribute__((packed)) _;
 } move_t;
 
 /*!
@@ -56,7 +56,7 @@ typedef union {
         int16_t score : 14;
         uint8_t age   : 2;
         move_t move;
-    } __attribute__((packed)) internal;
+    } __attribute__((packed)) _;
 } ttentry_t;
 
 #endif /* STRUCTS_H */
