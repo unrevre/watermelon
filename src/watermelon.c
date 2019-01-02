@@ -1,6 +1,5 @@
 #include "fen.h"
 #include "masks.h"
-#include "perf.h"
 #include "search.h"
 #include "state.h"
 
@@ -13,17 +12,16 @@
 int watermelon(int32_t depth, char const* fen);
 
 int main(int argc, char const* argv[]) {
-   int32_t depth = atoi(argv[1]);
 
    switch (argc) {
       case 2:
-         return watermelon(depth,
+         return watermelon(atoi(argv[1]),
             "rnbakabnr/9/1c5c1/p1p1p1p1p/9/"
             "9/P1P1P1P1P/1C5C1/9/RNBAKABNR");
       case 3:
-         return watermelon(depth, argv[2]);
+         return watermelon(atoi(argv[1]), argv[2]);
       default:
-         printf("usage: ./watermelon [depth]\n");
+         printf("usage: %s [depth]\n", argv[0]);
          return 1;
    }
 }
