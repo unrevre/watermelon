@@ -526,10 +526,10 @@ uint32_t is_legal(move_t move, uint32_t side) {
          return !jspan; }
       case 1:
          switch (from - to) {
-            case -19: case -11: { return board[to + 10] == 0x7; }
-            case -17: case -7: { return board[to + 8] == 0x7; }
-            case 7: case 17: { return board[to - 8] == 0x7; }
-            case 11: case 19: { return board[to - 10] == 0x7; }
+            case -19: case -11: { return board[to - 10] == 0x7; }
+            case -17: case -7: { return board[to - 8] == 0x7; }
+            case 7: case 17: { return board[to + 8] == 0x7; }
+            case 11: case 19: { return board[to + 10] == 0x7; }
             default: { return 0; }
          }
       case 2: {
