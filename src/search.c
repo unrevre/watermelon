@@ -35,17 +35,17 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    ++age;
 
    move_array_t moves = generate_pseudolegal(side);
-   move_t principal = {0};
+   move_t move = {0};
 
    for (uint32_t d = 1; d != depth; ++d) {
       int32_t alpha = -2048; int32_t beta = 2048;
-      int32_t high = -2048;
+      int32_t best = -2048;
 
 #ifdef DEBUG
       printf("╻\n");
 #endif
       for (uint32_t i = 0; i != moves.count; ++i) {
-         move(moves.data[i]);
+         advance(moves.data[i]);
 #ifdef DEBUG
          ++ply;
          ++nodes;
@@ -60,7 +60,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
          free(fen_str);
          for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
          printf("└╸(%c) [%i, %i] %i {%i}\n", cside[!side], -beta, -alpha,
-            -score, -high);
+            -score, -best);
 #endif
 
          retract(moves.data[i]);
@@ -68,8 +68,8 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
          --ply;
 #endif
 
-         if (score > high) { principal = moves.data[i]; }
-         high = max(high, score);
+         if (score > best) { move = moves.data[i]; }
+         best = max(best, score);
          alpha = max(alpha, score);
 
          if (alpha >= beta) { break; }
@@ -78,12 +78,12 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
       printf("╹\n");
 #endif
 
-      if (high >= 2048) { break; }
+      if (best >= 2048) { break; }
    }
 
    free(moves.data);
 
-   return principal;
+   return move;
 }
 
 int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
@@ -98,7 +98,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
    }
 #endif
 
-   move_t move_hash = {0};
+   move_t move_hashed = {0};
 
    for (uint32_t t = 0; t < 4; ++t) {
       ttentry_t entry = TTABLE[(hash_state & 0xffffff) ^ t];
@@ -122,33 +122,33 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
 
          if (alpha >= beta) { return entry.internal.score; }
 
-         move_hash = entry.internal.move;
+         move_hashed = entry.internal.move;
          break;
       }
    }
 
    if (!depth) { return quiescence(alpha, beta, side); }
 
-   int32_t high = -2048;
+   int32_t best = -2048;
 
-   if (move_hash.bits) {
-      move(move_hash);
+   if (move_hashed.bits) {
+      advance(move_hashed);
 
       int32_t score = -negamax(depth - 1, -beta, -alpha, side ^ 0x8);
 
-      retract(move_hash);
+      retract(move_hashed);
 
-      high = max(high, score);
+      best = max(best, score);
       alpha = max(alpha, score);
 
-      if (alpha >= beta) { store_hash(depth, alpha, beta, score, move_hash); }
+      if (alpha >= beta) { store_hash(depth, alpha, beta, score, move_hashed); }
    }
 
    int32_t move_index = -1;
    move_array_t moves = generate_pseudolegal(side);
 
    for (uint32_t i = 0; i != moves.count; ++i) {
-      move(moves.data[i]);
+      advance(moves.data[i]);
 #ifdef DEBUG
       ++ply;
       ++nodes;
@@ -162,7 +162,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       free(fen_str);
       for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
       printf("└╸(%c) [%i, %i] %i '%i'\n", cside[!side], -beta, -alpha,
-         -score, -high);
+         -score, -best);
 #endif
 
       retract(moves.data[i]);
@@ -170,20 +170,20 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       --ply;
 #endif
 
-      if (score > high) { move_index = i; }
+      if (score > best) { move_index = i; }
 
-      high = max(high, score);
+      best = max(best, score);
       alpha = max(alpha, score);
 
       if (alpha >= beta) { break; }
    }
 
    move_t move_store = move_index < 0 ? (move_t){0} : moves.data[move_index];
-   store_hash(depth, alpha, beta, high, move_store);
+   store_hash(depth, alpha, beta, best, move_store);
 
    free(moves.data);
 
-   return high;
+   return best;
 }
 
 int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
@@ -202,7 +202,7 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
 
    move_array_t moves = generate_captures(side);
    for (uint32_t i = 0; i != moves.count; ++i) {
-      move(moves.data[i]);
+      advance(moves.data[i]);
 #ifdef DEBUG
       ++ply;
       ++qnodes;
@@ -234,7 +234,7 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
 }
 
 void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
-                move_t move_hash) {
+                move_t move_hashed) {
    uint32_t index = hash_state & 0xffffff;
 
    uint32_t replace = index;;
@@ -260,6 +260,6 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
    else { flags = 0x1; }
 
    TTABLE[replace] = (ttentry_t) {
-      .internal = { hash_state >> 24, depth, flags, score, age, move_hash }
+      .internal = { hash_state >> 24, depth, flags, score, age, move_hashed }
    };
 }

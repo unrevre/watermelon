@@ -554,7 +554,7 @@ uint32_t is_legal(move_t move, uint32_t side) {
    }
 }
 
-void move(move_t move) {
+void advance(move_t move) {
    hash_state ^= hashes[move.internal.pfrom][move.internal.from];
    hash_state ^= hashes[move.internal.pfrom][move.internal.to];
    hash_state ^= hashes[move.internal.pto][move.internal.to];
