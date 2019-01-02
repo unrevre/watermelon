@@ -144,7 +144,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       if (alpha >= beta) { store_hash(depth, alpha, beta, score, move_hash); }
    }
 
-   uint32_t move_index = 0;
+   int32_t move_index = -1;
    move_array_t moves = generate_pseudolegal(side);
 
    for (uint32_t i = 0; i != moves.count; ++i) {
@@ -170,7 +170,6 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       --ply;
 #endif
 
-      if (score < -2047) { high = score; break; }
       if (score > high) { move_index = i; }
 
       high = max(high, score);
@@ -179,7 +178,8 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       if (alpha >= beta) { break; }
    }
 
-   store_hash(depth, alpha, beta, high, moves.data[move_index]);
+   move_t move_store = move_index < 0 ? (move_t){0} : moves.data[move_index];
+   store_hash(depth, alpha, beta, high, move_store);
 
    free(moves.data);
 
@@ -197,7 +197,6 @@ int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
    printf("├╸(%c) [%i, %i] %i [q]\n", cside[side >> 3], alpha, beta, stand);
 #endif
    if (stand >= beta) { return stand; }
-   if (stand < -2047) { return stand; }
 
    alpha = max(alpha, stand);
 

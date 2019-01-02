@@ -147,6 +147,7 @@ move_array_t generate(uint32_t side) {
 
 move_array_t generate_pseudolegal(uint32_t side) {
    move_array_t moves = {(move_t*)malloc(111 * sizeof(move_t)), 0};
+   if (!GAME.pieces[side + 6]) { return moves; }
 
    uint32_t s = side >> 3;
 
@@ -292,6 +293,7 @@ move_array_t generate_pseudolegal(uint32_t side) {
 
 move_array_t generate_captures(uint32_t side) {
    move_array_t moves = {(move_t*)malloc(53 * sizeof(move_t)), 0};
+   if (!GAME.pieces[side + 6]) { return moves; }
 
    uint32_t s = side >> 3;
 
