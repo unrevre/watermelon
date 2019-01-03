@@ -148,8 +148,8 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
          store_hash(depth, alpha_parent, beta, score, move_hashed);
    }
 
-   int32_t move_index = -1;
-   move_array_t moves = generate_pseudolegal(side);
+   move_array_t moves = generate_captures(side);
+   move_t move_store = (move_t){0};
 
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
@@ -174,7 +174,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       --ply;
 #endif
 
-      if (score > best) { move_index = i; }
+      if (score > best) { move_store = moves.data[i]; }
 
       best = max(best, score);
       alpha = max(alpha, score);
@@ -182,7 +182,43 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       if (alpha >= beta) { break; }
    }
 
-   move_t move_store = move_index < 0 ? (move_t){0} : moves.data[move_index];
+   if (alpha < beta) {
+      free(moves.data);
+
+      moves = generate_quiet(side);
+
+      for (uint32_t i = 0; i != moves.count; ++i) {
+         advance(moves.data[i]);
+#ifdef DEBUG
+         ++ply;
+         ++nodes;
+#endif
+
+         int32_t score = -negamax(depth - 1, -beta, -alpha, side ^ 0x8);
+#ifdef DEBUG
+         for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
+         char* fen_str = info_fen();
+         printf("├╸fen: %s\n", fen_str);
+         free(fen_str);
+         for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
+         printf("└╸(%c) [%i, %i] %i '%i'\n", cside[!side], -beta, -alpha,
+            -score, -best);
+#endif
+
+         retract(moves.data[i]);
+#ifdef DEBUG
+         --ply;
+#endif
+
+         if (score > best) { move_store = moves.data[i]; }
+
+         best = max(best, score);
+         alpha = max(alpha, score);
+
+         if (alpha >= beta) { break; }
+      }
+   }
+
    store_hash(depth, alpha_parent, beta, best, move_store);
 
    free(moves.data);
