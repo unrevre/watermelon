@@ -1,5 +1,8 @@
 #include "perf.h"
 
+#include "generate.h"
+#include "structs.h"
+
 #include <stdlib.h>
 
 uint64_t perft(uint32_t depth, uint32_t side) {
