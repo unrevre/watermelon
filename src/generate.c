@@ -418,11 +418,17 @@ move_array_t generate_captures(uint32_t side) {
    }
 
    {
+      uint32_t index = bsf_branchless(GAME.pieces[side + 6]);
       __uint128_t moveset;
       moveset = GAME.pieces[side + 6] << 9 | GAME.pieces[side + 6] >> 9
          | GAME.pieces[side + 6] << 1 | GAME.pieces[side + 6] >> 1;
       moveset &= JMASK[s] & GAME.occupancy[!side];
-      add_piecewise(moveset, bsf_branchless(GAME.pieces[side + 6]), &moves);
+      add_piecewise(moveset, index, &moves);
+
+      __uint128_t fly = (GAME.pieces[0xe] << 1) - GAME.pieces[0x6] + 0x1;
+      fly &= FMASK[index] & ~GAME.empty;
+      fly ^= GAME.pieces[0x6] | GAME.pieces[0xe];
+      if (!fly) { add_piecewise(GAME.pieces[side ^ 0xe], index, &moves); }
    }
 
    return moves;
