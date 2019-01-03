@@ -98,6 +98,8 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
    }
 #endif
 
+   int32_t alpha_parent = alpha;
+
    move_t move_hashed = {0};
 
    for (uint32_t t = 0; t < 4; ++t) {
@@ -142,7 +144,8 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
       best = max(best, score);
       alpha = max(alpha, score);
 
-      if (alpha >= beta) { store_hash(depth, alpha, beta, score, move_hashed); }
+      if (alpha >= beta)
+         store_hash(depth, alpha_parent, beta, score, move_hashed);
    }
 
    int32_t move_index = -1;
@@ -180,7 +183,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
    }
 
    move_t move_store = move_index < 0 ? (move_t){0} : moves.data[move_index];
-   store_hash(depth, alpha, beta, best, move_store);
+   store_hash(depth, alpha_parent, beta, best, move_store);
 
    free(moves.data);
 
