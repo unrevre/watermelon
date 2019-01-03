@@ -1,5 +1,6 @@
 #include "fen.h"
 #include "masks.h"
+#include "perf.h"
 #include "search.h"
 #include "state.h"
 
@@ -41,6 +42,8 @@ int watermelon(int32_t depth, char const* fen) {
 
    cpu_time = clock() - cpu_time;
    printf("cpu_time: %fs\n", (float)cpu_time / CLOCKS_PER_SEC);
+
+   trace(move, 0);
 
 #ifdef DEBUG
    char* fen_str = info_fen();
