@@ -28,6 +28,13 @@ move_array_t generate_pseudolegal(uint32_t side);
 move_array_t generate_captures(uint32_t side);
 
 /*!
+ * generate_quiet
+ * @ generate quiet moves
+ */
+
+move_array_t generate_quiet(uint32_t side);
+
+/*!
  * in_check
  * @ test if side is in check
  */
