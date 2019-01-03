@@ -1,7 +1,6 @@
 #ifndef PERF_H
 #define PERF_H
 
-#include "generate.h"
 #include "structs.h"
 
 /*!
