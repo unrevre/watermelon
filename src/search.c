@@ -169,6 +169,32 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       if (alpha >= beta) { break; }
    }
 
+   move_t move_killer;
+   for (uint32_t k = 0; k < 2; ++k) {
+      move_killer = KTABLE[ply][k].move;
+      if (move_killer.bits && is_legal(move_killer, side)) {
+         advance(move_killer);
+         int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha,
+            side ^ 0x8);
+         retract(move_killer);
+
+         if (score > best) { move_store = move_killer; }
+
+         best = max(best, score);
+         alpha = max(alpha, score);
+
+         if (alpha >= beta) {
+            KTABLE[ply][k].count++;
+            if (KTABLE[ply][1].count > KTABLE[ply][0].count) {
+               KTABLE[ply][0] = KTABLE[ply][1];
+               KTABLE[ply][1] = (killer_t){{0}, 0};
+            }
+
+            store_hash(depth, alpha_parent, beta, best, move_store);
+         }
+      }
+   }
+
    if (alpha < beta) {
       free(moves.data);
 
@@ -199,7 +225,20 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
          best = max(best, score);
          alpha = max(alpha, score);
 
-         if (alpha >= beta) { break; }
+         if (alpha >= beta) {
+            if (!KTABLE[ply][0].move.bits) {
+               KTABLE[ply][0].move = move_store;
+            } else {
+               if (!KTABLE[ply][1].count) {
+                  KTABLE[ply][1].move = move_store;
+                  KTABLE[ply][1].count++;
+               } else {
+                  KTABLE[ply][1].count--;
+               }
+            }
+
+            break;
+         }
       }
    }
 
