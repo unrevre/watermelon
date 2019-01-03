@@ -59,4 +59,14 @@ typedef union {
     } __attribute__((packed)) _;
 } ttentry_t;
 
+/*!
+ * killer_t
+ * killer move struct
+ */
+
+typedef struct {
+    move_t move;
+    uint32_t count;
+} killer_t;
+
 #endif /* STRUCTS_H */
