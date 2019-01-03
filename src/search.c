@@ -30,48 +30,27 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 
    ++age;
 
-   move_array_t moves = generate_pseudolegal(side);
    move_t move = {0};
 
    for (uint32_t d = 1; d != depth; ++d) {
-      int32_t alpha = -2048; int32_t beta = 2048;
-      int32_t best = -2048;
-
 #ifdef DEBUG
       printf("╻\n");
 #endif
-      for (uint32_t i = 0; i != moves.count; ++i) {
-         advance(moves.data[i]);
-#ifdef DEBUG
-         ++nodes;
-#endif
+      int32_t score = negamax(d, 1, -2048, 2048, side);
 
-         int32_t score = -negamax(d - 1, 1, -beta, -alpha, side ^ 0x8);
-
-#ifdef DEBUG
-         char* fen_str = info_fen();
-         printf("│├╸fen: %s\n", fen_str);
-         free(fen_str);
-         printf("│└╸(%c) [%i, %i] %i {%i}\n", cside[!side], -beta, -alpha,
-            -score, -best);
-#endif
-
-         retract(moves.data[i]);
-
-         if (score > best) { move = moves.data[i]; }
-         best = max(best, score);
-         alpha = max(alpha, score);
-
-         if (alpha >= beta) { break; }
+      for (uint32_t t = 0; t != 4; ++t) {
+         ttentry_t entry = TTABLE[(hash_state & 0xffffff) ^ t];
+         if (entry._.hash == hash_state >> 24) {
+            move = entry._.move;
+            break;
+         }
       }
 #ifdef DEBUG
       printf("╹\n");
 #endif
 
-      if (best >= 2048) { break; }
+      if (score >= 2048) { break; }
    }
-
-   free(moves.data);
 
    return move;
 }
