@@ -41,31 +41,31 @@ void init_fen(const char* fen_str) {
          case '6': case '7': case '8': case '9':
             i += *fstr_p - '1';
             break;
-         case 'r': case 'R':
+         case 'k': case 'K':
             GAME.pieces[side] |= PMASK[i];
             board[i] = side;
             break;
-         case 'n': case 'N':
+         case 'r': case 'R':
             GAME.pieces[side + 1] |= PMASK[i];
             board[i] = side + 1;
             break;
-         case 'c': case 'C':
+         case 'n': case 'N':
             GAME.pieces[side + 2] |= PMASK[i];
             board[i] = side + 2;
             break;
-         case 'p': case 'P':
+         case 'c': case 'C':
             GAME.pieces[side + 3] |= PMASK[i];
             board[i] = side + 3;
             break;
-         case 'b': case 'B':
+         case 'a': case 'A':
             GAME.pieces[side + 4] |= PMASK[i];
             board[i] = side + 4;
             break;
-         case 'a': case 'A':
+         case 'b': case 'B':
             GAME.pieces[side + 5] |= PMASK[i];
             board[i] = side + 5;
             break;
-         case 'k': case 'K':
+         case 'p': case 'P':
             GAME.pieces[side + 6] |= PMASK[i];
             board[i] = side + 6;
             break;
@@ -87,8 +87,8 @@ void init_fen(const char* fen_str) {
 
 char* info_fen(void) {
    static char fen_rep[15] = {
-      'R', 'N', 'C', 'P', 'B', 'A', 'K', '#',
-      'r', 'n', 'c', 'p', 'b', 'a', 'k'
+      'K', 'R', 'N', 'C', 'A', 'B', 'P', '#',
+      'k', 'r', 'n', 'c', 'a', 'b', 'p'
    };
 
    char* fen_str = (char*)calloc(100, sizeof(char));
