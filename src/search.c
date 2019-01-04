@@ -118,7 +118,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
          store_hash(depth, alpha_parent, beta, score, move_hashed);
    }
 
-   move_array_t moves = generate_captures(side);
+   move_array_t moves = sort_moves(generate_captures(side));
    move_t move_store = (move_t){0};
 
    for (uint32_t i = 0; i != moves.count; ++i) {
@@ -242,7 +242,7 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
 
    alpha = max(alpha, stand);
 
-   move_array_t moves = generate_captures(side);
+   move_array_t moves = sort_moves(generate_captures(side));
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
 #ifdef DEBUG
