@@ -37,8 +37,8 @@ int watermelon(int32_t depth, char const* fen) {
    clock_t cpu_time = clock();
 
    move_t move = iter_dfs(depth, 0);
-   printf("%2i: %2i - %2i [%2i]\n", move._.pfrom, move._.from, move._.to,
-      move._.pto);
+   printf("%c: %2i - %2i [%c]\n", fen_rep[move._.pfrom],
+      move._.from, move._.to, fen_rep[move._.pto]);
 
    cpu_time = clock() - cpu_time;
    printf("cpu_time: %fs\n", (float)cpu_time / CLOCKS_PER_SEC);
