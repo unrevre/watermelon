@@ -282,7 +282,7 @@ move_array_t generate_pseudolegal(uint32_t side) {
       moveset &= JMASK[s] & ~GAME.occupancy[s];
       add_piecewise(moveset, index, &moves);
 
-      __uint128_t fly = (GAME.pieces[0xe] << 1) - GAME.pieces[0x6] + 0x1;
+      __uint128_t fly = (GAME.pieces[0xe] << 1) - GAME.pieces[0x6];
       fly &= FMASK[index] & ~GAME.empty;
       fly ^= GAME.pieces[0x6] | GAME.pieces[0xe];
       if (!fly) { add_piecewise(GAME.pieces[side ^ 0xe], index, &moves); }
@@ -425,7 +425,7 @@ move_array_t generate_captures(uint32_t side) {
       moveset &= JMASK[s] & GAME.occupancy[!side];
       add_piecewise(moveset, index, &moves);
 
-      __uint128_t fly = (GAME.pieces[0xe] << 1) - GAME.pieces[0x6] + 0x1;
+      __uint128_t fly = (GAME.pieces[0xe] << 1) - GAME.pieces[0x6];
       fly &= FMASK[index] & ~GAME.empty;
       fly ^= GAME.pieces[0x6] | GAME.pieces[0xe];
       if (!fly) { add_piecewise(GAME.pieces[side ^ 0xe], index, &moves); }
@@ -436,6 +436,7 @@ move_array_t generate_captures(uint32_t side) {
 
 move_array_t generate_quiet(uint32_t side) {
    move_array_t moves = {(move_t*)malloc(111 * sizeof(move_t)), 0};
+   if (!GAME.pieces[side + 6]) { return moves; }
 
    uint32_t s = side >> 3;
 
@@ -653,7 +654,7 @@ uint32_t is_legal(move_t move, uint32_t side) {
       case 5: return 1;
       case 6: {
          if ((move._.pto & 0x7) != 6) { return 1; }
-         __uint128_t jspan = GAME.pieces[0xe] - (GAME.pieces[0x8] << 1);
+         __uint128_t jspan = GAME.pieces[0xe] - (GAME.pieces[0x6] << 1);
          jspan &= FMASK[from] & ~GAME.empty;
          return !jspan; }
       default: return 0;
