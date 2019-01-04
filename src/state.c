@@ -1,6 +1,7 @@
 #include "state.h"
 
 #include "inlines.h"
+#include "masks.h"
 #include "structs.h"
 
 #include <stdlib.h>
@@ -62,4 +63,42 @@ void init_tables(void) {
 
 void init_variables(void) {
    age = 0;
+}
+
+void advance(move_t move) {
+   hash_state ^= hashes[move._.pfrom][move._.from];
+   hash_state ^= hashes[move._.pfrom][move._.to];
+   hash_state ^= hashes[move._.pto][move._.to];
+   hash_state ^= hash_move;
+
+   uint32_t s = move._.pfrom >> 3;
+   GAME.pieces[move._.pfrom] ^= PMASK[move._.from] | PMASK[move._.to];
+   GAME.pieces[move._.pto] ^= PMASK[move._.to];
+   GAME.pieces[0x7] = 0x0;
+
+   GAME.occupancy[s] ^= PMASK[move._.from] | PMASK[move._.to];
+   GAME.occupancy[!s] ^= GAME.occupancy[0] & GAME.occupancy[1];
+   GAME.empty = ~(GAME.occupancy[0] | GAME.occupancy[1]);
+
+   board[move._.from] = 0x7;
+   board[move._.to] = move._.pfrom;
+}
+
+void retract(move_t move) {
+   hash_state ^= hashes[move._.pfrom][move._.from];
+   hash_state ^= hashes[move._.pfrom][move._.to];
+   hash_state ^= hashes[move._.pto][move._.to];
+   hash_state ^= hash_move;
+
+   uint32_t s = move._.pfrom >> 3;
+   GAME.pieces[move._.pfrom] ^= PMASK[move._.from] | PMASK[move._.to];
+   GAME.pieces[move._.pto] ^= PMASK[move._.to];
+   GAME.pieces[0x7] = 0x0;
+
+   GAME.occupancy[s] ^= PMASK[move._.from] | PMASK[move._.to];
+   GAME.occupancy[!s] |= GAME.pieces[move._.pto];
+   GAME.empty = ~(GAME.occupancy[0] | GAME.occupancy[1]);
+
+   board[move._.from] = move._.pfrom;
+   board[move._.to] = move._.pto;
 }

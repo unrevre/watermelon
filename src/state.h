@@ -23,4 +23,18 @@ void init_tables(void);
 
 void init_variables(void);
 
+/*!
+ * advance
+ * @ advance move
+ */
+
+void advance(move_t move);
+
+/*!
+ * retract
+ * @ retract move
+ */
+
+void retract(move_t move);
+
 #endif /* STATE_H */
