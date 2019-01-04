@@ -3,7 +3,7 @@
 #include "inlines.h"
 #include "state.h"
 
-static uint32_t weights[7] = {32, 16, 16, 4, 4, 4, 4096};
+static uint32_t weights[7] = {4096, 32, 16, 16, 4, 4, 4};
 
 int32_t eval(uint32_t side) {
    int32_t popdiff = 0;
