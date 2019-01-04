@@ -660,3 +660,22 @@ uint32_t is_legal(move_t move, uint32_t side) {
       default: return 0;
    }
 }
+
+move_array_t sort_moves(move_array_t moves) {
+   move_array_t sorted = {
+      (move_t*)malloc(moves.count * sizeof(move_t)), moves.count
+   };
+
+   uint32_t counts[7] = {0};
+   for (uint32_t i = 0; i < moves.count; ++i)
+      ++counts[moves.data[i]._.pto & 0x7];
+   uint32_t indices[7] = {0};
+   for (uint32_t i = 1; i < 7; ++i)
+      indices[i] = indices[i - 1] + counts[i - 1];
+   for (uint32_t i = 0; i < moves.count; ++i)
+      sorted.data[indices[moves.data[i]._.pto & 0x7]++] = moves.data[i];
+
+   free(moves.data);
+
+   return sorted;
+}

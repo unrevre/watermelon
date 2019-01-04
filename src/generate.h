@@ -62,4 +62,16 @@ void add_piecewise(__uint128_t set, uint32_t from, move_array_t* moves);
 
 void add_shiftwise(__uint128_t set, int32_t shift, move_array_t* moves);
 
+/*!
+ * sort_moves
+ * @ sort generated captures based on mvv/lva
+ *
+ * # counting sort: group most valuable captures ordered by least valuable
+ * attackers. prioritises feijiang moves, but results in suboptimal ordering
+ * (compared with traditional mvv - lva) results for some other captures.
+ * captures are assumed to be ordered by attacker out of move generation
+ */
+
+move_array_t sort_moves(move_array_t moves);
+
 #endif /* GENERATE_H */
