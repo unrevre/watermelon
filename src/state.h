@@ -17,6 +17,8 @@ extern uint32_t age;
 
 extern killer_t KTABLE[32][2] __attribute__((aligned(64)));
 
+extern char fen_rep[15];
+
 void init_hashes(void);
 
 void init_tables(void);

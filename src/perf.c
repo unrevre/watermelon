@@ -56,8 +56,8 @@ void trace(move_t move, uint32_t side) {
    }
 
    if (next.bits && is_legal(next, side ^ 0x8)) {
-      printf("%2i: %2i - %2i, [%2i] %5i [0x%x]\n", next._.pfrom, next._.from,
-         next._.to, next._.pto, score, flags);
+      printf("%c: %2i - %2i [%c] %5i [0x%x]\n", fen_rep[next._.pfrom],
+         next._.from, next._.to, fen_rep[next._.pto], score, flags);
       trace(next, side ^ 0x8);
    }
 

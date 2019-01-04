@@ -7,6 +7,11 @@
 #include <stdio.h>
 #include <string.h>
 
+char fen_rep[15] = {
+   'K', 'R', 'N', 'C', 'A', 'B', 'P', ' ',
+   'k', 'r', 'n', 'c', 'a', 'b', 'p'
+};
+
 void init_fen(const char* fen_str) {
    char* lines[10];
    for (uint32_t i = 0; i < 10; ++i)
@@ -86,11 +91,6 @@ void init_fen(const char* fen_str) {
 }
 
 char* info_fen(void) {
-   static char fen_rep[15] = {
-      'K', 'R', 'N', 'C', 'A', 'B', 'P', '#',
-      'k', 'r', 'n', 'c', 'a', 'b', 'p'
-   };
-
    char* fen_str = (char*)calloc(100, sizeof(char));
 
    uint32_t f = 0;
