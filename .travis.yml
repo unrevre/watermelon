@@ -26,5 +26,7 @@ matrix:
 
 script:
   - make CC=$COMPILER && ./bin/watermelon 5
-  - cd tests && ./scripts/perft.sh 6 data/fen.dat | tee ci-perft.dat
-  - diff data/ref.dat ci-perft.dat
+  - cd tests
+  - diff <(./scripts/perft.sh 6 data/general.dat) logs/perft-general-6.log
+  - diff <(./scripts/perft.sh 7 data/movegen.dat) logs/perft-movegen-7.log
+  - diff <(./scripts/perft.sh 6 data/canju.dat) logs/perft-canju-6.log

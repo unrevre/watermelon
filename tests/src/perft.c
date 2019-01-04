@@ -20,10 +20,10 @@ int main(int argc, char* argv[]) {
    init_fen(argv[2]);
 
    printf("fen: %s\n", argv[2]);
-   printf("perft: ");
+   printf("perft:");
    for (int32_t i = 1; i < depth; ++i)
-      printf("%"PRIu64" ", perft(i, 0));
-   printf("at depth: %i\n", depth);
+      printf(" %"PRIu64, perft(i, 0));
+   printf("\n");
 
    return 0;
 }

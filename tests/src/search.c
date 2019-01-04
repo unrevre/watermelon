@@ -1,5 +1,6 @@
 #include "../../src/fen.h"
 #include "../../src/masks.h"
+#include "../../src/perf.h"
 #include "../../src/search.h"
 #include "../../src/state.h"
 
@@ -24,8 +25,10 @@ int main(int argc, char* argv[]) {
 
    printf("fen: %s\n", argv[2]);
    move_t move = iter_dfs(depth, 0);
-   printf("> %2i: %2i - %2i [%2i] at depth %i\n", move._.pfrom, move._.from,
-      move._.to, move._.pto, depth);
+   printf("%c: %2i - %2i [%c] at depth %i\n", fen_rep[move._.pfrom],
+      move._.from, move._.to, fen_rep[move._.pto], depth);
+
+   trace(move, 0);
 
    return 0;
 }
