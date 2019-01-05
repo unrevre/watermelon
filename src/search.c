@@ -15,11 +15,9 @@ uint32_t tthits;
 #endif
 
 #ifdef TREE
-#include "fen.h"
+#include "debug.h"
 
 #include <stdio.h>
-
-static char cside[2] = {'r', 'b'};
 #endif
 
 move_t iter_dfs(uint32_t depth, uint32_t side) {
@@ -64,14 +62,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 #endif
 
 #ifdef TREE
-   if (depth) {
-      for (uint32_t t = 0; t < ply - 1; ++t) { printf("│"); }
-      char* fen_str = info_fen();
-      printf("├┬╸fen: %s\n", fen_str);
-      free(fen_str);
-      for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
-      printf("├╸(%c) [%i, %i]\n", cside[side >> 3], alpha, beta);
-   }
+   if (depth) { tree_node_entry(ply, alpha, beta, side); }
 #endif
 
    int32_t alpha_parent = alpha;
@@ -132,13 +123,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
       int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, side ^ 0x8);
 #ifdef TREE
-      for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
-      char* fen_str = info_fen();
-      printf("├╸fen: %s\n", fen_str);
-      free(fen_str);
-      for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
-      printf("└╸(%c) [%i, %i] %i '%i'\n", cside[!side], -beta, -alpha,
-         -score, -best);
+      tree_node_exit(ply, alpha, beta, score, side);
 #endif
 
       retract(moves.data[i]);
@@ -188,13 +173,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
          int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha,
             side ^ 0x8);
 #ifdef TREE
-         for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
-         char* fen_str = info_fen();
-         printf("├╸fen: %s\n", fen_str);
-         free(fen_str);
-         for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
-         printf("└╸(%c) [%i, %i] %i '%i'\n", cside[!side], -beta, -alpha,
-            -score, -best);
+         tree_node_exit(ply, alpha, beta, score, side);
 #endif
 
          retract(moves.data[i]);
@@ -235,12 +214,7 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
 
    int32_t stand = eval(side);
 #ifdef TREE
-   for (uint32_t t = 0; t < ply - 1; ++t) { printf("│"); }
-   char* fen_str = info_fen();
-   printf("├┬╸fen: %s [q]\n", fen_str);
-   free(fen_str);
-   for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
-   printf("├╸(%c) [%i, %i] %i [q]\n", cside[side >> 3], alpha, beta, stand);
+   tree_node_entry(ply, alpha, beta, side);
 #endif
    if (stand >= beta) { return stand; }
 
@@ -252,13 +226,7 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
 
       int32_t score = -quiescence(ply + 1, -beta, -alpha, side ^ 0x8);
 #ifdef TREE
-      for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
-      char* fen_str = info_fen();
-      printf("├╸fen: %s [q]\n", fen_str);
-      free(fen_str);
-      for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
-      printf("└╸(%c) [%i, %i] %i [q]\n", cside[!side], -beta, -alpha,
-         -score);
+      tree_node_exit(ply, alpha, beta, score, side);
 #endif
 
       retract(moves.data[i]);
