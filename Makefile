@@ -20,6 +20,9 @@ all: $(BINDIR)/$(BIN) tests
 debug: CFLAGS += -DDEBUG
 debug: $(BINDIR)/$(BIN)
 
+tree: CFLAGS += -DDEBUG -DTREE
+tree: $(BINDIR)/$(BIN)
+
 $(BINDIR)/$(BIN): $(SRCDIR)/$(BIN).c $(OBJS)
 	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $@
@@ -51,7 +54,7 @@ $(ASMDIR)/%.S: $(SRCDIR)/%.c
 	@mkdir -p $(ASMDIR)
 	$(CC) $(CFLAGS) -S $< -o $@
 
-.PHONY: all debug tests asm clean
+.PHONY: all debug tree tests asm clean
 
 clean:
 	@$(RM) $(BINDIR)/$(BIN) $(OBJS) $(DEPS) $(ASML)
