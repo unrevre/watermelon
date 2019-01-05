@@ -8,14 +8,16 @@
 #include <stdlib.h>
 
 #ifdef DEBUG
-#include "fen.h"
-
-#include <stdio.h>
-
 uint32_t nodes;
 uint32_t qnodes;
 
 uint32_t tthits;
+#endif
+
+#ifdef TREE
+#include "fen.h"
+
+#include <stdio.h>
 
 static char cside[2] = {'r', 'b'};
 #endif
@@ -33,7 +35,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    move_t move = {0};
 
    for (uint32_t d = 1; d != depth; ++d) {
-#ifdef DEBUG
+#ifdef TREE
       printf("╻\n");
 #endif
       int32_t score = negamax(d, 1, -2048, 2048, side);
@@ -45,7 +47,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
             break;
          }
       }
-#ifdef DEBUG
+#ifdef TREE
       printf("╹\n");
 #endif
 
@@ -57,7 +59,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 
 int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
                 uint32_t side) {
-#ifdef DEBUG
+#ifdef TREE
    if (depth) {
       for (uint32_t t = 0; t < ply - 1; ++t) { printf("│"); }
       char* fen_str = info_fen();
@@ -128,7 +130,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 #endif
 
       int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, side ^ 0x8);
-#ifdef DEBUG
+#ifdef TREE
       for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
       char* fen_str = info_fen();
       printf("├╸fen: %s\n", fen_str);
@@ -187,7 +189,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
          int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha,
             side ^ 0x8);
-#ifdef DEBUG
+#ifdef TREE
          for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
          char* fen_str = info_fen();
          printf("├╸fen: %s\n", fen_str);
@@ -230,7 +232,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
 int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
    int32_t stand = eval(side);
-#ifdef DEBUG
+#ifdef TREE
    for (uint32_t t = 0; t < ply - 1; ++t) { printf("│"); }
    char* fen_str = info_fen();
    printf("├┬╸fen: %s [q]\n", fen_str);
@@ -250,7 +252,7 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
 #endif
 
       int32_t score = -quiescence(ply + 1, -beta, -alpha, side ^ 0x8);
-#ifdef DEBUG
+#ifdef TREE
       for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
       char* fen_str = info_fen();
       printf("├╸fen: %s [q]\n", fen_str);
