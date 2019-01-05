@@ -59,6 +59,10 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 
 int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
                 uint32_t side) {
+#ifdef DEBUG
+   ++nodes;
+#endif
+
 #ifdef TREE
    if (depth) {
       for (uint32_t t = 0; t < ply - 1; ++t) { printf("│"); }
@@ -125,9 +129,6 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
-#ifdef DEBUG
-      ++nodes;
-#endif
 
       int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, side ^ 0x8);
 #ifdef TREE
@@ -183,9 +184,6 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
       for (uint32_t i = 0; i != moves.count; ++i) {
          advance(moves.data[i]);
-#ifdef DEBUG
-         ++nodes;
-#endif
 
          int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha,
             side ^ 0x8);
@@ -231,6 +229,10 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 }
 
 int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
+#ifdef DEBUG
+   ++qnodes;
+#endif
+
    int32_t stand = eval(side);
 #ifdef TREE
    for (uint32_t t = 0; t < ply - 1; ++t) { printf("│"); }
@@ -247,9 +249,6 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
    move_array_t moves = sort_moves(generate_captures(side));
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
-#ifdef DEBUG
-      ++qnodes;
-#endif
 
       int32_t score = -quiescence(ply + 1, -beta, -alpha, side ^ 0x8);
 #ifdef TREE
