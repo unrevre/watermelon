@@ -3,6 +3,8 @@
 
 #include "structs.h"
 
+#include <stdint.h>
+
 #ifdef DEBUG
 extern uint32_t nodes;
 extern uint32_t qnodes;

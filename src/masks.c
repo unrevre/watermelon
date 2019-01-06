@@ -1,7 +1,5 @@
 #include "masks.h"
 
-#include <stdint.h>
-
 __uint128_t NMASK;
 __uint128_t BMASK;
 
