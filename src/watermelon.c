@@ -1,3 +1,4 @@
+#include "debug.h"
 #include "fen.h"
 #include "masks.h"
 #include "perf.h"
@@ -34,21 +35,24 @@ int watermelon(int32_t depth, char const* fen) {
    init_variables();
    init_fen(fen);
 
+   printf("fen: %s\n", fen);
+
    clock_t cpu_time = clock();
 
    move_t move = iter_dfs(depth, 0);
-   printf("%c: %2i - %2i [%c]\n", fen_rep[move._.pfrom],
-      move._.from, move._.to, fen_rep[move._.pto]);
 
    cpu_time = clock() - cpu_time;
-   printf("cpu_time: %fs\n", (float)cpu_time / CLOCKS_PER_SEC);
+   printf("cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
+
+   info_game_state();
+   printf("%c: %2i - %2i [%c]\n", fen_rep[move._.pfrom],
+      move._.from, move._.to, fen_rep[move._.pto]);
+   printf("\n");
 
    trace(move, 0);
+   printf("\n");
 
 #ifdef DEBUG
-   char* fen_str = info_fen();
-   printf("fen: %s\n", fen_str);
-   free(fen_str);
    printf("nodes: %u\n", nodes);
    printf("qnodes: %u\n", qnodes);
    printf("tthits: %u\n", tthits);
