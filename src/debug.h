@@ -3,10 +3,25 @@
 
 #include <stdint.h>
 
+/*!
+ * game_state
+ * @ print game board (prettily)
+ */
+
 void game_state();
+
+/*!
+ * tree_node_exit
+ * @ print node status (on exit) in tree format
+ */
 
 void tree_node_exit(uint32_t ply, int32_t alpha, int32_t beta, int32_t score,
                     uint32_t side);
+
+/*!
+ * tree_node_entry
+ * @ print node status (on entry) in tree format
+ */
 
 void tree_node_entry(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side);
 

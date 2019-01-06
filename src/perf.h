@@ -5,21 +5,21 @@
 
 /*!
  * perft
- * = number of legal moves
+ * @ number of legal moves
  */
 
 uint64_t perft(uint32_t depth, uint32_t side);
 
 /*!
  * perft_capture
- * = number of legal capture moves
+ * @ number of legal capture moves
  */
 
 uint64_t perft_capture(uint32_t depth, uint32_t side);
 
 /*!
  * trace
- * trace principal variation
+ * @ trace principal variation
  */
 
 void trace(move_t move, uint32_t side);

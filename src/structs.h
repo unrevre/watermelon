@@ -5,9 +5,7 @@
 
 /*!
  * state_t
- * game status
- * @ occupancy bitboards
- * @ piece bitboards
+ * @ game status
  */
 
 typedef struct {
@@ -19,7 +17,7 @@ typedef struct {
 
 /*!
  * move_t
- * move representation
+ * @ move representation
  */
 
 typedef union {
@@ -34,7 +32,7 @@ typedef union {
 
 /*!
  * move_array_t
- * generated moves struct
+ * @ generated moves struct
  */
 
 typedef struct {
@@ -45,7 +43,7 @@ typedef struct {
 
 /*!
  * ttentry_t
- * transposition table entry struct
+ * @ transposition table entry struct
  */
 
 typedef union {
@@ -62,7 +60,7 @@ typedef union {
 
 /*!
  * killer_t
- * killer move struct
+ * @ killer move struct
  */
 
 typedef struct {

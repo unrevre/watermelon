@@ -5,8 +5,7 @@
 
 /*!
  * bsfq
- * - __uint64_t
- * = assembly instrinsic for bsfq
+ * @ assembly instrinsic for bsfq
  */
 
 __inline__ uint32_t bsfq(uint64_t bits) {
@@ -24,8 +23,8 @@ __inline__ uint32_t bsfq(uint64_t bits) {
 
 /*!
  * bsf_branchless
- * - __uint128_t
- * = returns index of least significant bit set
+ * @ returns index of least significant bit set
+ * # for __uint128_t (branchless version)
  */
 
 __inline__ uint32_t bsf_branchless(__uint128_t bits) {
@@ -38,8 +37,8 @@ __inline__ uint32_t bsf_branchless(__uint128_t bits) {
 
 /*!
  * bsf
- * - __uint128_t
- * = returns index of least significant bit set
+ * @ returns index of least significant bit set
+ * # for __uint128_t
  */
 
 __inline__ uint32_t bsf(__uint128_t bits) {
@@ -64,8 +63,7 @@ __inline__ uint32_t bsf(__uint128_t bits) {
 
 /*!
  * bsrq
- * - __uint64_t
- * = assembly instrinsic for bsrq
+ * @ assembly instrinsic for bsrq
  */
 
 __inline__ uint32_t bsrq(uint64_t bits) {
@@ -83,8 +81,8 @@ __inline__ uint32_t bsrq(uint64_t bits) {
 
 /*!
  * bsr_branchless
- * - __uint128_t
- * = returns index of most significant bit set
+ * @ returns index of most significant bit set
+ * # __uint128_t (branchless version)
  */
 
 __inline__ uint32_t bsr_branchless(__uint128_t bits) {
@@ -97,8 +95,8 @@ __inline__ uint32_t bsr_branchless(__uint128_t bits) {
 
 /*!
  * bsr
- * - __uint128_t
- * = returns index of most significant bit set
+ * @ returns index of most significant bit set
+ * # __uint128_t
  */
 
 __inline__ uint32_t bsr(__uint128_t bits) {
@@ -123,9 +121,8 @@ __inline__ uint32_t bsr(__uint128_t bits) {
 
 /*!
  * popcnt
- * - __uint128_t
- * @ implemented with intrinsics
- * + consider assembly
+ * @ population count for __uint128_t
+ * # implemented with compiler intrinsics
  */
 
 __inline__ uint32_t popcnt(__uint128_t bits) {
