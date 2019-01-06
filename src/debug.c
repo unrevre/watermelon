@@ -1,28 +1,46 @@
 #include "debug.h"
 
 #include "fen.h"
+#include "inlines.h"
+#include "state.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 static char cside[2] = {'r', 'b'};
 
-void display(__uint128_t bits) {
-   uint32_t b[90] = {0};
+void info_game_state(void) {
+   char b[90] = {0};
 
-   __uint128_t bitmask = 0x1;
-   for (uint32_t i = 0; i < 90; ++i) {
-      if (bits & bitmask)
-         b[i] = 1;
-      bitmask = bitmask << 1;
+   for (uint32_t i = 0; i < 90; ++i)
+      b[i] = ' ';
+
+   for (uint32_t i = 0x0; i < 0xf; ++i)
+      for (__uint128_t bits = GAME.pieces[i]; bits; bits &= bits - 1)
+         b[bsf_branchless(bits)] = fen_rep[i];
+
+   printf("┎───────────────────┒\n");
+   for (uint32_t i = 10; i > 0; --i) {
+      switch (i) {
+         case 5: case 6:
+            printf("┠");
+            for (uint32_t j = 0; j < 9; ++j) {
+               if (b[9 * (i - 1) + j] == ' ')
+                  printf("──");
+               else
+                  printf("─%c", b[9 * (i - 1) + j]);
+            }
+            printf("─┨\n");
+            break;
+         default:
+            printf("┃");
+            for (uint32_t j = 0; j < 9; ++j)
+               printf(" %c", b[9 * (i - 1) + j]);
+            printf(" ┃\n");
+            break;
+      }
    }
-
-   for (uint32_t j = 10; j > 0; --j) {
-      for (uint32_t k = 0; k < 9; ++k)
-         printf("%i ", b[9 * (j - 1) + k]);
-      printf("\n");
-   }
-
+   printf("┖───────────────────┚\n");
    printf("\n");
 }
 
