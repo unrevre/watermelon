@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-void display(__uint128_t bits);
+void game_state();
 
 void tree_node_exit(uint32_t ply, int32_t alpha, int32_t beta, int32_t score,
                     uint32_t side);
