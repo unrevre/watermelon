@@ -1,6 +1,8 @@
 #ifndef MASKS_H
 #define MASKS_H
 
+#include <stdint.h>
+
 extern __uint128_t NMASK;
 extern __uint128_t BMASK;
 
