@@ -40,6 +40,7 @@ typedef union {
 typedef struct {
    move_t* data;
    uint32_t count;
+   uint32_t quiet;
 } move_array_t;
 
 /*!
