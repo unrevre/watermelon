@@ -19,9 +19,24 @@ extern killer_t KTABLE[32][2] __attribute__((aligned(64)));
 
 extern char fen_rep[15];
 
+/*!
+ * init_hashes
+ * @ initialise zobrist hashes
+ */
+
 void init_hashes(void);
 
+/*!
+ * init_tables
+ * @ initialise tranposition/killer move tables
+ */
+
 void init_tables(void);
+
+/*!
+ * init_variables
+ * @ initialise global state variables
+ */
 
 void init_variables(void);
 

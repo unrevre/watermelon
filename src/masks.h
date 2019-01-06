@@ -26,6 +26,11 @@ extern __uint128_t FMASKN8;
 extern __uint128_t FMASKN01;
 extern __uint128_t FMASKN78;
 
+/*!
+ * init_masks
+ * @ initialise masks
+ */
+
 void init_masks(void);
 
 #endif /* MASKS_H */
