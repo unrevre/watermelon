@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 
-extern state_t GAME __attribute__((aligned(64)));;
+extern state_t GAME __attribute__((aligned(64)));
 
 extern uint32_t board[90];
 

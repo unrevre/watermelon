@@ -241,7 +241,7 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
    else if (score >= beta) { flags = 0x2; }
    else { flags = 0x1; }
 
-   uint32_t replace = index;;
+   uint32_t replace = index;
    for (uint32_t t = 0; t != 4; ++t) {
       uint32_t entry = index ^ t;
       if (!TTABLE[entry].bits) {
