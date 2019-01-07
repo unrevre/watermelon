@@ -30,21 +30,11 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 
    ++age;
 
-   move_t move = {0};
-
    for (uint32_t d = 1; d != depth; ++d) {
 #ifdef TREE
       printf("╻\n");
 #endif
       int32_t score = negamax(d, 1, -2048, 2048, side);
-
-      for (uint32_t t = 0; t != 4; ++t) {
-         ttentry_t entry = TTABLE[(hash_state & 0xffffff) ^ t];
-         if (entry._.hash == hash_state >> 24) {
-            move = entry._.move;
-            break;
-         }
-      }
 #ifdef TREE
       printf("╹\n");
 #endif
@@ -52,7 +42,13 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
       if (score >= 2048) { break; }
    }
 
-   return move;
+   ttentry_t entry = {0};
+   for (uint32_t t = 0; t != 4; ++t) {
+      entry = TTABLE[(hash_state & 0xffffff) ^ t];
+      if (entry._.hash == hash_state >> 24) { break; }
+   }
+
+   return entry._.move;
 }
 
 int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
