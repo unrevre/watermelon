@@ -95,7 +95,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
    if (!depth) { return quiescence(ply, alpha, beta, side); }
 
-   int32_t best = -2048;
+   int32_t best = -2049;
 
    if (move_hashed.bits) {
       advance(move_hashed);
