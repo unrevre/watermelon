@@ -5,6 +5,8 @@
 
 #include <stdint.h>
 
+extern char cside[2];
+
 /*!
  * info_game_state
  * @ print current game state

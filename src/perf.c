@@ -49,9 +49,13 @@ void trace(uint32_t side) {
 
    move_t next = entry._.move;
    if (next.bits && is_legal(next, side)) {
-      info_transposition_table_entry(entry, '\n');
       advance(next);
-      trace(side ^ 0x8);
+      if (!in_check(side)) {
+         info_transposition_table_entry(entry, '\n');
+         trace(side ^ 0x8);
+      } else {
+         printf("  # (%c) lost!\n", cside[side >> 3]);
+      }
       retract(next);
    }
 }

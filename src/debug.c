@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static char cside[2] = {'r', 'b'};
+char cside[2] = {'r', 'b'};
 
 void info_game_state(void) {
    char b[90] = {0};
