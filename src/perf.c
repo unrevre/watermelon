@@ -44,7 +44,7 @@ void trace(uint32_t side) {
    ttentry_t entry;
    for (uint32_t t = 0; t != 4; ++t) {
       entry = TTABLE[(hash_state & 0xffffff) ^ t];
-      if (entry._.hash == hash_state >> 24) { break; }
+      if (entry._.hash == hash_state >> 24 && entry.bits) { break; }
    }
 
    move_t next = entry._.move;

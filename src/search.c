@@ -45,7 +45,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    ttentry_t entry = {0};
    for (uint32_t t = 0; t != 4; ++t) {
       entry = TTABLE[(hash_state & 0xffffff) ^ t];
-      if (entry._.hash == hash_state >> 24) { break; }
+      if (entry._.hash == hash_state >> 24 && entry.bits) { break; }
    }
 
    return entry._.move;
