@@ -1,3 +1,4 @@
+#include "../../src/debug.h"
 #include "../../src/fen.h"
 #include "../../src/masks.h"
 #include "../../src/perf.h"
@@ -25,8 +26,8 @@ int main(int argc, char* argv[]) {
 
    printf("fen: %s\n", argv[2]);
    move_t move = iter_dfs(depth, 0);
-   printf("%c: %2i - %2i [%c] at depth %i\n", fen_rep[move._.pfrom],
-      move._.from, move._.to, fen_rep[move._.pto], depth);
+   info_move(move, ' ');
+   printf("at depth %i\n", depth);
 
    trace(move, 0);
 

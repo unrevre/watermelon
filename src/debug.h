@@ -1,6 +1,8 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#include "structs.h"
+
 #include <stdint.h>
 
 /*!
@@ -24,5 +26,19 @@ void tree_node_exit(uint32_t ply, int32_t alpha, int32_t beta, int32_t score,
  */
 
 void tree_node_entry(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side);
+
+/*!
+ * info_move
+ * @ print move details
+ */
+
+void info_move(move_t move, char end);
+
+/*!
+ * info_transposition_table_entry
+ * @ print transposition table entry details
+ */
+
+void info_transposition_table_entry(ttentry_t entry, char end);
 
 #endif /* DEBUG_H */

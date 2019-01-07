@@ -1,5 +1,6 @@
 #include "perf.h"
 
+#include "debug.h"
 #include "generate.h"
 #include "state.h"
 #include "structs.h"
@@ -40,24 +41,17 @@ uint64_t perft_capture(uint32_t depth, uint32_t side) {
 }
 
 void trace(move_t move, uint32_t side) {
-   move_t next = {0};
-   int32_t score = 0;
-   uint32_t flags = 0x0;
+   ttentry_t entry = {0};
 
    advance(move);
    for (uint32_t t = 0; t != 4; ++t) {
-      ttentry_t entry = TTABLE[(hash_state & 0xffffff) ^ t];
-      if (entry._.hash == hash_state >> 24) {
-         next = entry._.move;
-         score = entry._.score;
-         flags = entry._.flags;
-         break;
-      }
+      entry = TTABLE[(hash_state & 0xffffff) ^ t];
+      if (entry._.hash == hash_state >> 24) { break; }
    }
 
+   move_t next = entry._.move;
    if (next.bits && is_legal(next, side ^ 0x8)) {
-      printf("%c: %2i - %2i [%c] %5i [0x%x]\n", fen_rep[next._.pfrom],
-         next._.from, next._.to, fen_rep[next._.pto], score, flags);
+      info_transposition_table_entry(entry, '\n');
       trace(next, side ^ 0x8);
    }
 
