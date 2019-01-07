@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
    move_info(move, ' ');
    printf("at depth %i\n", depth);
 
-   trace(move, 0);
+   trace(0);
 
    return 0;
 }
