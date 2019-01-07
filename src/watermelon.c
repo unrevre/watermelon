@@ -48,7 +48,7 @@ int watermelon(int32_t depth, char const* fen) {
    info_move(move, '\n');
    printf("\n");
 
-   trace(move, 0);
+   trace(0);
    printf("\n");
 
 #ifdef DEBUG

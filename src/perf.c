@@ -40,21 +40,18 @@ uint64_t perft_capture(uint32_t depth, uint32_t side) {
    return nmoves;
 }
 
-void trace(move_t move, uint32_t side) {
-   ttentry_t entry = {0};
-
-   advance(move);
+void trace(uint32_t side) {
+   ttentry_t entry;
    for (uint32_t t = 0; t != 4; ++t) {
       entry = TTABLE[(hash_state & 0xffffff) ^ t];
       if (entry._.hash == hash_state >> 24) { break; }
    }
 
    move_t next = entry._.move;
-   if (next.bits && is_legal(next, side ^ 0x8)) {
+   if (next.bits && is_legal(next, side)) {
       info_transposition_table_entry(entry, '\n');
-      trace(next, side ^ 0x8);
+      advance(next);
+      trace(side ^ 0x8);
+      retract(next);
    }
-
-   retract(move);
-   return;
 }
