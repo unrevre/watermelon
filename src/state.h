@@ -13,6 +13,10 @@ extern uint32_t hashes[15][90];
 extern uint32_t hash_move;
 extern uint32_t hash_state;
 
+extern uint32_t HTABLE[8];
+
+extern uint32_t step;
+
 extern ttentry_t TTABLE[0x1000000] __attribute__((aligned(64)));
 
 extern uint32_t age;
@@ -41,6 +45,13 @@ void init_tables(void);
  */
 
 void init_variables(void);
+
+/*!
+ * refresh
+ * @ refresh game state before move
+ */
+
+void refresh(void);
 
 /*!
  * advance

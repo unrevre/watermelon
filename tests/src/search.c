@@ -25,6 +25,8 @@ int main(int argc, char* argv[]) {
    init_fen(argv[2]);
    init_hashes();
 
+   refresh();
+
    printf("fen: %s\n", argv[2]);
    move_t move = iter_dfs(depth, 0);
    info_move(move, ' ');

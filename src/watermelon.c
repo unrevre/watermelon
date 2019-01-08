@@ -36,6 +36,8 @@ int watermelon(int32_t depth, char const* fen) {
    init_fen(fen);
    init_hashes();
 
+   refresh();
+
    printf("fen: %s\n", fen);
 
    clock_t cpu_time = clock();

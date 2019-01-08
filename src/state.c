@@ -26,6 +26,10 @@ uint32_t hashes[15][90];
 uint32_t hash_move;
 uint32_t hash_state;
 
+uint32_t HTABLE[8];
+
+uint32_t step;
+
 ttentry_t TTABLE[0x1000000] __attribute__((aligned(64)));
 
 uint32_t age;
@@ -57,12 +61,21 @@ void init_hashes(void) {
 }
 
 void init_tables(void) {
+   memset(HTABLE, 0, 8 * sizeof(uint32_t));
    memset(TTABLE, 0, 0x1000000 * sizeof(ttentry_t));
    memset(KTABLE, 0, 32 * 2 * sizeof(killer_t));
 }
 
 void init_variables(void) {
+   step = 0;
    age = 0;
+}
+
+void refresh(void) {
+   memset(HTABLE, 0, 8 * sizeof(uint32_t));
+
+   step = 0;
+   HTABLE[0] = hash_state;
 }
 
 void advance(move_t move) {
@@ -70,6 +83,8 @@ void advance(move_t move) {
    hash_state ^= hashes[move._.pfrom][move._.to];
    hash_state ^= hashes[move._.pto][move._.to];
    hash_state ^= hash_move;
+
+   HTABLE[++step & 0x7] = hash_state;
 
    uint32_t s = move._.pfrom >> 3;
    GAME.pieces[move._.pfrom] ^= PMASK[move._.from] | PMASK[move._.to];
@@ -89,6 +104,8 @@ void retract(move_t move) {
    hash_state ^= hashes[move._.pfrom][move._.to];
    hash_state ^= hashes[move._.pto][move._.to];
    hash_state ^= hash_move;
+
+   --step;
 
    uint32_t s = move._.pfrom >> 3;
    GAME.pieces[move._.pfrom] ^= PMASK[move._.from] | PMASK[move._.to];
