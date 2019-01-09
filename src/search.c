@@ -249,7 +249,7 @@ void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
    score = (score > 2049 - 32) ? score + ply :
       (score < -2049 + 32) ? score - ply : score;
 
-   uint32_t replace = index;
+   uint32_t replace = 0x1000000;
    for (uint32_t t = 0; t != 4; ++t) {
       uint32_t entry = index ^ t;
       if (!TTABLE[entry].bits) {
@@ -260,6 +260,19 @@ void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
          break;
       } else if (TTABLE[entry]._.age != age) {
          replace = entry;
+      }
+   }
+
+   if (replace == 0x1000000) {
+      uint32_t min_depth = 32;
+
+      replace = index;
+      for (uint32_t t = 0; t != 4; ++t) {
+         uint32_t entry = index ^ t;
+         if (TTABLE[entry]._.depth < min_depth) {
+            min_depth = TTABLE[entry]._.depth;
+            replace = entry;
+         }
       }
    }
 
