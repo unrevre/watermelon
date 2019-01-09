@@ -114,8 +114,10 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       best = max(best, score);
       alpha = max(alpha, score);
 
-      if (alpha >= beta)
+      if (alpha >= beta) {
          store_hash(depth, ply, alpha_parent, beta, score, move_hashed);
+         return score;
+      }
    }
 
    move_array_t moves = sort_moves(generate_pseudolegal(side));
