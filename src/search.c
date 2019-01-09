@@ -66,7 +66,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
    int32_t alpha_parent = alpha;
 
-   move_t move_hashed = {0};
+   move_t move_store = (move_t){0};
 
    for (uint32_t t = 0; t < 4; ++t) {
       ttentry_t entry = TTABLE[(hash_state & 0xffffff) ^ t];
@@ -76,7 +76,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
             (score < -2049 + 32) ? score + ply : score;
 
          if (is_legal(entry._.move, side)) {
-            move_hashed = entry._.move;
+            move_store = entry._.move;
 
             if (entry._.depth >= depth) {
 #ifdef DEBUG
@@ -106,24 +106,20 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
    int32_t best = -2049 + ply;
 
-   if (move_hashed.bits) {
-      advance(move_hashed);
+   if (move_store.bits) {
+      advance(move_store);
 
       int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, side ^ 0x8);
 
-      retract(move_hashed);
+      retract(move_store);
 
       best = max(best, score);
       alpha = max(alpha, score);
 
-      if (alpha >= beta) {
-         store_hash(depth, ply, alpha_parent, beta, score, move_hashed);
-         return score;
-      }
+      if (alpha >= beta) { goto search_save; }
    }
 
    move_array_t moves = sort_moves(generate_pseudolegal(side));
-   move_t move_store = (move_t){0};
 
    for (uint32_t i = 0; i != moves.quiet; ++i) {
       advance(moves.data[i]);
@@ -140,7 +136,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       best = max(best, score);
       alpha = max(alpha, score);
 
-      if (alpha >= beta) { break; }
+      if (alpha >= beta) { goto search_free; }
    }
 
    move_t move_killer;
@@ -164,48 +160,48 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
                KTABLE[ply][1] = (killer_t){{0}, 0};
             }
 
-            store_hash(depth, ply, alpha_parent, beta, best, move_store);
+            goto search_free;
          }
       }
    }
 
-   if (alpha < beta) {
-      for (uint32_t i = moves.quiet; i != moves.count; ++i) {
-         advance(moves.data[i]);
+   for (uint32_t i = moves.quiet; i != moves.count; ++i) {
+      advance(moves.data[i]);
 
-         int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha,
-            side ^ 0x8);
+      int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha,
+         side ^ 0x8);
 #ifdef TREE
-         tree_node_exit(ply, alpha, beta, score, side);
+      tree_node_exit(ply, alpha, beta, score, side);
 #endif
 
-         retract(moves.data[i]);
+      retract(moves.data[i]);
 
-         if (score > best) { move_store = moves.data[i]; }
+      if (score > best) { move_store = moves.data[i]; }
 
-         best = max(best, score);
-         alpha = max(alpha, score);
+      best = max(best, score);
+      alpha = max(alpha, score);
 
-         if (alpha >= beta) {
-            if (!KTABLE[ply][0].move.bits) {
-               KTABLE[ply][0].move = move_store;
+      if (alpha >= beta) {
+         if (!KTABLE[ply][0].move.bits) {
+            KTABLE[ply][0].move = move_store;
+         } else {
+            if (!KTABLE[ply][1].count) {
+               KTABLE[ply][1].move = move_store;
+               KTABLE[ply][1].count++;
             } else {
-               if (!KTABLE[ply][1].count) {
-                  KTABLE[ply][1].move = move_store;
-                  KTABLE[ply][1].count++;
-               } else {
-                  KTABLE[ply][1].count--;
-               }
+               KTABLE[ply][1].count--;
             }
-
-            break;
          }
+
+         break;
       }
    }
 
-   store_hash(depth, ply, alpha_parent, beta, best, move_store);
-
+search_free:
    free(moves.data);
+
+search_save:
+   store_hash(depth, ply, alpha_parent, beta, best, move_store);
 
    return best;
 }
