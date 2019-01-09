@@ -34,12 +34,12 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 #ifdef TREE
       printf("╻\n");
 #endif
-      int32_t score = negamax(d, 1, -2048, 2048, side);
+      int32_t score = negamax(d, 1, -2049 + 32, 2049 - 32, side);
 #ifdef TREE
       printf("╹\n");
 #endif
 
-      if (score >= 2048) { break; }
+      if (score >= 2049 - 32) { break; }
    }
 
    ttentry_t entry = {0};
@@ -75,18 +75,22 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
          ++tthits;
 #endif
 
+         int32_t score = entry._.score;
+         score = (score > 2049 - 32) ? score - ply :
+            (score < -2049 + 32) ? score + ply : score;
+
          switch (entry._.flags) {
             case 0x1:
-               return entry._.score;
+               return score;
             case 0x2:
-               alpha = max(alpha, entry._.score);
+               alpha = max(alpha, score);
                break;
             case 0x3:
-               beta = min(beta, entry._.score);
+               beta = min(beta, score);
                break;
          }
 
-         if (alpha >= beta) { return entry._.score; }
+         if (alpha >= beta) { return score; }
 
          move_hashed = entry._.move;
          break;
@@ -95,7 +99,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
    if (!depth) { return quiescence(ply, alpha, beta, side); }
 
-   int32_t best = -2049;
+   int32_t best = -2049 + ply;
 
    if (move_hashed.bits) {
       advance(move_hashed);
@@ -108,7 +112,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       alpha = max(alpha, score);
 
       if (alpha >= beta)
-         store_hash(depth, alpha_parent, beta, score, move_hashed);
+         store_hash(depth, ply, alpha_parent, beta, score, move_hashed);
    }
 
    move_array_t moves = sort_moves(generate_pseudolegal(side));
@@ -153,7 +157,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
                KTABLE[ply][1] = (killer_t){{0}, 0};
             }
 
-            store_hash(depth, alpha_parent, beta, best, move_store);
+            store_hash(depth, ply, alpha_parent, beta, best, move_store);
          }
       }
    }
@@ -192,7 +196,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       }
    }
 
-   store_hash(depth, alpha_parent, beta, best, move_store);
+   store_hash(depth, ply, alpha_parent, beta, best, move_store);
 
    free(moves.data);
 
@@ -209,6 +213,7 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
    tree_node_entry(ply, alpha, beta, side);
 #endif
    if (stand >= beta) { return stand; }
+   if (stand < -2048) { return -2049 + ply; }
 
    alpha = max(alpha, stand);
 
@@ -232,14 +237,15 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
    return alpha;
 }
 
-void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
-                move_t move_hashed) {
+void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
+                int32_t score, move_t move_hashed) {
    uint32_t index = hash_state & 0xffffff;
 
-   uint8_t flags;
-   if (score <= alpha) { flags = 0x3; }
-   else if (score >= beta) { flags = 0x2; }
-   else { flags = 0x1; }
+   uint8_t flags = (abs(score) > 2049 - 32) ? 0x1 :
+      (score <= alpha) ? 0x3 : (score >= beta) ? 0x2 : 0x1;
+
+   score = (score > 2049 - 32) ? score + ply :
+      (score < -2049 + 32) ? score - ply : score;
 
    uint32_t replace = index;
    for (uint32_t t = 0; t != 4; ++t) {

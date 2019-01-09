@@ -39,7 +39,7 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side);
  * @ transposition table replacement scheme
  */
 
-void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
-                move_t move_hash);
+void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
+                int32_t score, move_t move_hash);
 
 #endif /* SEARCH_H */
