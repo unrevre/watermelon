@@ -70,33 +70,35 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
    for (uint32_t t = 0; t < 4; ++t) {
       ttentry_t entry = TTABLE[(hash_state & 0xffffff) ^ t];
-      if (entry._.hash == hash_state >> 24
-            && entry._.depth >= depth
-            && entry._.move.bits) {
-         if (!is_legal(entry._.move, side)) { continue; }
-#ifdef DEBUG
-         ++tthits;
-#endif
-
+      if (entry._.hash == hash_state >> 24 && entry._.move.bits) {
          int32_t score = entry._.score;
          score = (score > 2049 - 32) ? score - ply :
             (score < -2049 + 32) ? score + ply : score;
 
-         switch (entry._.flags) {
-            case 0x1:
-               return score;
-            case 0x2:
-               alpha = max(alpha, score);
+         if (is_legal(entry._.move, side)) {
+            move_hashed = entry._.move;
+
+            if (entry._.depth >= depth) {
+#ifdef DEBUG
+               ++tthits;
+#endif
+
+               switch (entry._.flags) {
+                  case 0x1:
+                     return score;
+                  case 0x2:
+                     alpha = max(alpha, score);
+                     break;
+                  case 0x3:
+                     beta = min(beta, score);
+                     break;
+               }
+
+               if (alpha >= beta) { return score; }
+
                break;
-            case 0x3:
-               beta = min(beta, score);
-               break;
+            }
          }
-
-         if (alpha >= beta) { return score; }
-
-         move_hashed = entry._.move;
-         break;
       }
    }
 
