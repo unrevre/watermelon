@@ -66,13 +66,8 @@ void init_tables() {
    memset(KTABLE, 0, 32 * 2 * sizeof(killer_t));
 }
 
-void init_variables() {
-   step = 0;
+void init_state() {
    age = 0;
-}
-
-void refresh() {
-   memset(HTABLE, 0, 8 * sizeof(uint32_t));
 
    step = 0;
    HTABLE[0] = hash_state;
