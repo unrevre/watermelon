@@ -30,13 +30,12 @@ int main(int argc, char const* argv[]) {
 
 int watermelon(int32_t depth, char const* fen) {
    init_tables();
-   init_variables();
 
    init_masks();
    init_fen(fen);
    init_hashes();
 
-   refresh();
+   init_state();
 
    printf("fen: %s\n", fen);
 

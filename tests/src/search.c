@@ -19,13 +19,12 @@ int main(int argc, char* argv[]) {
    int depth = atoi(argv[1]);
 
    init_tables();
-   init_variables();
 
    init_masks();
    init_fen(argv[2]);
    init_hashes();
 
-   refresh();
+   init_state();
 
    printf("fen: %s\n", argv[2]);
    move_t move = iter_dfs(depth, 0);

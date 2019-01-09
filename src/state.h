@@ -40,18 +40,11 @@ void init_hashes(void);
 void init_tables(void);
 
 /*!
- * init_variables
+ * init_state
  * @ initialise global state variables
  */
 
-void init_variables(void);
-
-/*!
- * refresh
- * @ refresh game state before move
- */
-
-void refresh(void);
+void init_state(void);
 
 /*!
  * advance
