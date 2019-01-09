@@ -34,12 +34,12 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 #ifdef TREE
       printf("╻\n");
 #endif
-      int32_t score = negamax(d, 1, -2049 + 32, 2049 - 32, side);
+      int32_t score = negamax(d, 1, -2048, 2048, side);
 #ifdef TREE
       printf("╹\n");
 #endif
 
-      if (score >= 2049 - 32) { break; }
+      if (int32t_abs(score) >= 2046 - d) { break; }
    }
 
    ttentry_t entry = {0};
@@ -56,6 +56,9 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 #ifdef DEBUG
    ++nodes;
 #endif
+
+   alpha = max(alpha, -2049 + ply);
+   beta = min(beta, 2048 - ply);
 
 #ifdef TREE
    if (depth) { tree_node_entry(ply, alpha, beta, side); }
@@ -213,7 +216,6 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
    tree_node_entry(ply, alpha, beta, side);
 #endif
    if (stand >= beta) { return stand; }
-   if (stand < -2048) { return -2049 + ply; }
 
    alpha = max(alpha, stand);
 
