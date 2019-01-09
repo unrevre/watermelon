@@ -156,8 +156,8 @@ __inline__ int32_t min(int32_t a, int32_t b) {
  * @ implementation for int32_t
  */
 
-__inline__ int32_t int32t_abs(int32_t a) {
-   int32_t s = a >> 31;
+__inline__ uint32_t int32t_abs(int32_t a) {
+   uint32_t s = a >> 31;
    return (a ^ s) - s;
 }
 
