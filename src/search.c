@@ -243,7 +243,7 @@ void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
                 int32_t score, move_t move_hashed) {
    uint32_t index = hash_state & 0xffffff;
 
-   uint8_t flags = (abs(score) > 2049 - 32) ? 0x1 :
+   uint8_t flags = (int32t_abs(score) > 2049 - 32) ? 0x1 :
       (score <= alpha) ? 0x3 : (score >= beta) ? 0x2 : 0x1;
 
    score = (score > 2049 - 32) ? score + ply :
