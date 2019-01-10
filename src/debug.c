@@ -9,7 +9,7 @@
 
 char cside[2] = {'r', 'b'};
 
-void game_state() {
+void game_state_info() {
    char b[90] = {0};
 
    for (uint32_t i = 0; i < 90; ++i)
@@ -44,14 +44,23 @@ void game_state() {
    printf("\n");
 }
 
-void tree_node_exit(uint32_t ply, int32_t alpha, int32_t beta, int32_t score,
-                    uint32_t side) {
-   for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
-   char* fen = dump_fen();
-   printf("├╸(%c) %s\n", cside[!side], fen);
-   for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
-   printf("└╸%5i [%5i, %5i]\n", -score, -beta, -alpha);
-   free(fen);
+void move_info(move_t move, char end) {
+   printf("%c: %2i - %2i [%c]%c", fen_rep[move._.pfrom],
+      move._.from, move._.to, fen_rep[move._.pto], end);
+}
+
+void transposition_table_entry_info(ttentry_t entry, char end) {
+   move_info(entry._.move, ' ');
+   printf(" %5i (%2u) [0x%x, 0x%x]%c", entry._.score, entry._.depth,
+      entry._.flags, entry._.age, end);
+}
+
+void tree_root_entry() {
+   printf("╻\n");
+}
+
+void tree_root_exit() {
+   printf("╹\n");
 }
 
 void tree_node_entry(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
@@ -63,13 +72,12 @@ void tree_node_entry(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
    free(fen);
 }
 
-void move_info(move_t move, char end) {
-   printf("%c: %2i - %2i [%c]%c", fen_rep[move._.pfrom],
-      move._.from, move._.to, fen_rep[move._.pto], end);
-}
-
-void transposition_table_entry_info(ttentry_t entry, char end) {
-   move_info(entry._.move, ' ');
-   printf(" %5i (%2u) [0x%x, 0x%x]%c", entry._.score, entry._.depth,
-      entry._.flags, entry._.age, end);
+void tree_node_exit(uint32_t ply, int32_t alpha, int32_t beta, int32_t score,
+                    uint32_t side) {
+   for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
+   char* fen = dump_fen();
+   printf("├╸(%c) %s\n", cside[!side], fen);
+   for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
+   printf("└╸%5i [%5i, %5i]\n", -score, -beta, -alpha);
+   free(fen);
 }
