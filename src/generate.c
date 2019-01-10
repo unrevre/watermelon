@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 move_array_t generate(uint32_t side) {
-   move_array_t moves = {(move_t*)malloc(111 * sizeof(move_t)), 0, 0};
+   move_array_t moves = {malloc(111 * sizeof(move_t)), 0, 0};
 
    uint32_t s = side >> 3;
 
@@ -146,7 +146,7 @@ move_array_t generate(uint32_t side) {
 }
 
 move_array_t generate_pseudolegal(uint32_t side) {
-   move_array_t moves = {(move_t*)malloc(111 * sizeof(move_t)), 0, 0};
+   move_array_t moves = {malloc(111 * sizeof(move_t)), 0, 0};
    if (!game.pieces[side]) { return moves; }
 
    uint32_t s = side >> 3;
@@ -292,7 +292,7 @@ move_array_t generate_pseudolegal(uint32_t side) {
 }
 
 move_array_t generate_captures(uint32_t side) {
-   move_array_t moves = {(move_t*)malloc(53 * sizeof(move_t)), 0, 0};
+   move_array_t moves = {malloc(53 * sizeof(move_t)), 0, 0};
    if (!game.pieces[side]) { return moves; }
 
    __uint128_t C3U128 = 0x3;
@@ -435,7 +435,7 @@ move_array_t generate_captures(uint32_t side) {
 }
 
 move_array_t generate_quiet(uint32_t side) {
-   move_array_t moves = {(move_t*)malloc(111 * sizeof(move_t)), 0, 0};
+   move_array_t moves = {malloc(111 * sizeof(move_t)), 0, 0};
    if (!game.pieces[side]) { return moves; }
 
    uint32_t s = side >> 3;
@@ -663,7 +663,7 @@ uint32_t is_legal(move_t move, uint32_t side) {
 
 move_array_t sort_moves(move_array_t moves) {
    move_array_t sorted = {
-      (move_t*)malloc(moves.count * sizeof(move_t)), moves.count, 0
+      malloc(moves.count * sizeof(move_t)), moves.count, 0
    };
 
    uint32_t counts[8] = {0};
