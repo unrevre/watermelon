@@ -16,8 +16,6 @@ uint32_t tthits;
 
 #ifdef TREE
 #include "debug.h"
-
-#include <stdio.h>
 #endif
 
 move_t iter_dfs(uint32_t depth, uint32_t side) {
@@ -32,11 +30,11 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 
    for (uint32_t d = 1; d != depth; ++d) {
 #ifdef TREE
-      printf("╻\n");
+      tree_root_entry();
 #endif
       int32_t score = negamax(d, 1, -2048, 2048, side);
 #ifdef TREE
-      printf("╹\n");
+      tree_root_exit();
 #endif
 
       if (int32t_abs(score) >= 2046 - d) { break; }
