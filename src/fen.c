@@ -30,7 +30,6 @@ void init_fen(const char* fen_str) {
 
    game.occupancy[0] = 0x0;
    game.occupancy[1] = 0x0;
-   game.empty = 0x0;
 
    for (uint32_t i = 0; i < 15; ++i)
       game.pieces[i] = 0x0;
@@ -83,7 +82,7 @@ void init_fen(const char* fen_str) {
       game.occupancy[0] |= game.pieces[i];
       game.occupancy[1] |= game.pieces[i + 8];
    }
-   game.empty = BMASK ^ (game.occupancy[0] | game.occupancy[1]);
+   game.pieces[0x7] = ~(game.occupancy[0] | game.occupancy[1]);
 
    for (uint32_t i = 0; i < 10; ++i)
       free(lines[i]);
