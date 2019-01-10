@@ -44,9 +44,9 @@ void trace(uint32_t side) {
    ttentry_t entry = {0};
    for (uint32_t t = 0; t != 4; ++t) {
       uint32_t index = (hash_state & 0xffffff) ^ t;
-      if (TTABLE[index]._.hash == hash_state >> 24
-            && TTABLE[index]._.flags == 0x1) {
-         entry = TTABLE[index];
+      if (ttable[index]._.hash == hash_state >> 24
+            && ttable[index]._.flags == 0x1) {
+         entry = ttable[index];
          break;
       }
    }
@@ -56,7 +56,7 @@ void trace(uint32_t side) {
       advance(next);
       if (!in_check(side)) {
          info_transposition_table_entry(entry, '\n');
-         if (step > 3 && HTABLE[step & 0x7] == HTABLE[(step & 0x7) ^ 0x4])
+         if (step > 3 && htable[step & 0x7] == htable[(step & 0x7) ^ 0x4])
             printf("  # (%c) infinite repetition!\n", cside[!side]);
          else
             trace(side ^ 0x8);

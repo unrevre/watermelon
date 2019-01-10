@@ -16,7 +16,7 @@ void info_game_state(void) {
       b[i] = ' ';
 
    for (uint32_t i = 0x0; i < 0xf; ++i)
-      for (__uint128_t bits = GAME.pieces[i]; bits; bits &= bits - 1)
+      for (__uint128_t bits = game.pieces[i]; bits; bits &= bits - 1)
          b[bsf_branchless(bits)] = fen_rep[i];
 
    printf("┎───────────────────┒\n");

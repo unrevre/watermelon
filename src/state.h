@@ -5,23 +5,24 @@
 
 #include <stdint.h>
 
-extern state_t GAME __attribute__((aligned(64)));
+extern state_t game __attribute__((aligned(64)));
 
 extern uint32_t board[90];
 
-extern uint32_t hashes[15][90];
-extern uint32_t hash_move;
-extern uint32_t hash_state;
+extern uint32_t PSHASH[15][90];
+extern uint32_t MVHASH;
 
-extern uint32_t HTABLE[8];
+extern uint32_t htable[8];
 
 extern uint32_t step;
 
-extern ttentry_t TTABLE[0x1000000] __attribute__((aligned(64)));
+extern uint32_t hash_state;
+
+extern ttentry_t ttable[0x1000000] __attribute__((aligned(64)));
 
 extern uint32_t age;
 
-extern killer_t KTABLE[32][2] __attribute__((aligned(64)));
+extern killer_t ktable[32][2] __attribute__((aligned(64)));
 
 extern char fen_rep[15];
 
