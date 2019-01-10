@@ -15,7 +15,7 @@ char fen_rep[15] = {
 void init_fen(const char* fen_str) {
    char* lines[10];
    for (uint32_t i = 0; i < 10; ++i)
-      lines[i] = (char*)malloc(9 * sizeof(char));
+      lines[i] = malloc(10 * sizeof(char));
 
    sscanf(fen_str,
       "%[A-Za-z0-9]/%[A-Za-z0-9]/%[A-Za-z0-9]/"
@@ -24,7 +24,7 @@ void init_fen(const char* fen_str) {
       lines[9], lines[8], lines[7], lines[6], lines[5],
       lines[4], lines[3], lines[2], lines[1], lines[0]);
 
-   char* fstr_cat = (char*)malloc(90 * sizeof(char));
+   char* fstr_cat = calloc(91, sizeof(char));
    for (uint32_t i = 0; i < 10; ++i)
       strcat(fstr_cat, lines[i]);
 
@@ -90,7 +90,7 @@ void init_fen(const char* fen_str) {
 }
 
 char* info_fen(void) {
-   char* fen_str = (char*)calloc(100, sizeof(char));
+   char* fen_str = malloc(100 * sizeof(char));
 
    uint32_t f = 0;
    for (uint32_t i = 0; i < 10; ++i) {
