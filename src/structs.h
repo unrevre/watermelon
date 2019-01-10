@@ -9,10 +9,8 @@
  */
 
 typedef struct {
-   __uint128_t occupancy[2];
-   __uint128_t empty;
-
    __uint128_t pieces[15];
+   __uint128_t occupancy[2];
 } state_t;
 
 /*!
