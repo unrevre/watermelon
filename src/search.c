@@ -43,9 +43,9 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    move_t move = {0};
    for (uint32_t t = 0; t != 4; ++t) {
       uint32_t index = (hash_state & 0xffffff) ^ t;
-      if (TTABLE[index]._.hash == hash_state >> 24
-            && TTABLE[index]._.flags == 0x1) {
-         move = TTABLE[index]._.move;
+      if (ttable[index]._.hash == hash_state >> 24
+            && ttable[index]._.flags == 0x1) {
+         move = ttable[index]._.move;
          break;
       }
    }
@@ -71,7 +71,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
    move_t move_store = (move_t){0};
 
    for (uint32_t t = 0; t < 4; ++t) {
-      ttentry_t entry = TTABLE[(hash_state & 0xffffff) ^ t];
+      ttentry_t entry = ttable[(hash_state & 0xffffff) ^ t];
       if (entry._.hash == hash_state >> 24 && entry._.move.bits) {
          if (!is_legal(entry._.move, side)) { continue; }
 
@@ -122,9 +122,9 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
    }
 
    if (ply > 1 && depth > 4 && !in_check(side)) {
-      hash_state ^= hash_move;
+      hash_state ^= MVHASH;
       int32_t score = -negamax(depth - 3, ply + 1, -beta, -alpha, side ^ 0x8);
-      hash_state ^= hash_move;
+      hash_state ^= MVHASH;
 
       if (score > best) { move_store = (move_t){0}; }
 
@@ -156,7 +156,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
    move_t move_killer;
    for (uint32_t k = 0; k < 2; ++k) {
-      move_killer = KTABLE[ply][k].move;
+      move_killer = ktable[ply][k].move;
       if (move_killer.bits && is_legal(move_killer, side)) {
          advance(move_killer);
          int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha,
@@ -169,10 +169,10 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
          alpha = max(alpha, score);
 
          if (alpha >= beta) {
-            KTABLE[ply][k].count++;
-            if (KTABLE[ply][1].count > KTABLE[ply][0].count) {
-               KTABLE[ply][0] = KTABLE[ply][1];
-               KTABLE[ply][1] = (killer_t){{0}, 0};
+            ktable[ply][k].count++;
+            if (ktable[ply][1].count > ktable[ply][0].count) {
+               ktable[ply][0] = ktable[ply][1];
+               ktable[ply][1] = (killer_t){{0}, 0};
             }
 
             goto search_free;
@@ -197,14 +197,14 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       alpha = max(alpha, score);
 
       if (alpha >= beta) {
-         if (!KTABLE[ply][0].move.bits) {
-            KTABLE[ply][0].move = move_store;
+         if (!ktable[ply][0].move.bits) {
+            ktable[ply][0].move = move_store;
          } else {
-            if (!KTABLE[ply][1].count) {
-               KTABLE[ply][1].move = move_store;
-               KTABLE[ply][1].count++;
+            if (!ktable[ply][1].count) {
+               ktable[ply][1].move = move_store;
+               ktable[ply][1].count++;
             } else {
-               KTABLE[ply][1].count--;
+               ktable[ply][1].count--;
             }
          }
 
@@ -267,13 +267,13 @@ void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
    uint32_t replace = 0x1000000;
    for (uint32_t t = 0; t != 4; ++t) {
       uint32_t entry = index ^ t;
-      if (!TTABLE[entry].bits) {
+      if (!ttable[entry].bits) {
          replace = entry;
          break;
-      } else if (TTABLE[entry]._.hash == hash_state >> 24) {
+      } else if (ttable[entry]._.hash == hash_state >> 24) {
          replace = entry;
          break;
-      } else if (TTABLE[entry]._.age != age) {
+      } else if (ttable[entry]._.age != age) {
          replace = entry;
       }
    }
@@ -284,14 +284,14 @@ void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       replace = index;
       for (uint32_t t = 0; t != 4; ++t) {
          uint32_t entry = index ^ t;
-         if (TTABLE[entry]._.depth < min_depth) {
-            min_depth = TTABLE[entry]._.depth;
+         if (ttable[entry]._.depth < min_depth) {
+            min_depth = ttable[entry]._.depth;
             replace = entry;
          }
       }
    }
 
-   TTABLE[replace] = (ttentry_t) {
+   ttable[replace] = (ttentry_t) {
       ._ = { hash_state >> 24, depth, flags, score, age, move_hashed }
    };
 }
