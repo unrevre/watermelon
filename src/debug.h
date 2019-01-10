@@ -12,21 +12,21 @@ extern char cside[2];
  * @ print game board (prettily)
  */
 
-void game_state_info();
+void info_game_state();
 
 /*!
- * move_info
+ * info_move
  * @ print move details
  */
 
-void move_info(move_t move, char end);
+void info_move(move_t move, char end);
 
 /*!
- * transposition_table_entry_info
+ * info_transposition_table_entry
  * @ print transposition table entry details
  */
 
-void transposition_table_entry_info(ttentry_t entry, char end);
+void info_transposition_table_entry(ttentry_t entry, char end);
 
 /*!
  * tree_root_entry

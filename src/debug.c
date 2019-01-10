@@ -9,7 +9,7 @@
 
 char cside[2] = {'r', 'b'};
 
-void game_state_info() {
+void info_game_state() {
    char b[90] = {0};
 
    for (uint32_t i = 0; i < 90; ++i)
@@ -44,13 +44,13 @@ void game_state_info() {
    printf("\n");
 }
 
-void move_info(move_t move, char end) {
+void info_move(move_t move, char end) {
    printf("%c: %2i - %2i [%c]%c", fen_rep[move._.pfrom],
       move._.from, move._.to, fen_rep[move._.pto], end);
 }
 
-void transposition_table_entry_info(ttentry_t entry, char end) {
-   move_info(entry._.move, ' ');
+void info_transposition_table_entry(ttentry_t entry, char end) {
+   info_move(entry._.move, ' ');
    printf(" %5i (%2u) [0x%x, 0x%x]%c", entry._.score, entry._.depth,
       entry._.flags, entry._.age, end);
 }

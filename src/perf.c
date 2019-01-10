@@ -55,7 +55,7 @@ void trace(uint32_t side) {
    if (next.bits && is_legal(next, side)) {
       advance(next);
       if (!in_check(side)) {
-         transposition_table_entry_info(entry, '\n');
+         info_transposition_table_entry(entry, '\n');
          if (step > 3 && htable[step & 0x7] == htable[(step & 0x7) ^ 0x4])
             printf("  # (%c) infinite repetition!\n", cside[!side]);
          else

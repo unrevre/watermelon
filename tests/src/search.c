@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 
    printf("fen: %s\n", argv[2]);
    move_t move = iter_dfs(depth, 0);
-   move_info(move, ' ');
+   info_move(move, ' ');
    printf("at depth %i\n", depth);
 
    trace(0);

@@ -46,8 +46,8 @@ int watermelon(int32_t depth, char const* fen) {
    cpu_time = clock() - cpu_time;
    printf("cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
 
-   game_state_info();
-   move_info(move, '\n');
+   info_game_state();
+   info_move(move, '\n');
    printf("\n");
 
    trace(0);
