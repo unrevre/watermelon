@@ -17,12 +17,13 @@ int main(int argc, char* argv[]) {
    int depth = atoi(argv[1]);
 
    init_masks();
-   init_fen(argv[2]);
+   uint32_t side = init_fen(argv[2]);
+   init_hashes();
 
    printf("fen: %s\n", argv[2]);
    printf("perft:");
    for (int32_t i = 1; i < depth; ++i)
-      printf(" %"PRIu64, perft(i, 0));
+      printf(" %"PRIu64, perft(i, side));
    printf("\n");
 
    return 0;

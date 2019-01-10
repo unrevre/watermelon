@@ -19,7 +19,7 @@ int main(int argc, char const* argv[]) {
       case 2:
          return watermelon(atoi(argv[1]),
             "rnbakabnr/9/1c5c1/p1p1p1p1p/9/"
-            "9/P1P1P1P1P/1C5C1/9/RNBAKABNR");
+            "9/P1P1P1P1P/1C5C1/9/RNBAKABNR r");
       case 3:
          return watermelon(atoi(argv[1]), argv[2]);
       default:
@@ -32,7 +32,7 @@ int watermelon(int32_t depth, char const* fen) {
    init_tables();
 
    init_masks();
-   init_fen(fen);
+   uint32_t side = init_fen(fen);
    init_hashes();
 
    init_state();
@@ -41,7 +41,7 @@ int watermelon(int32_t depth, char const* fen) {
 
    clock_t cpu_time = clock();
 
-   move_t move = iter_dfs(depth, 0);
+   move_t move = iter_dfs(depth, side);
 
    cpu_time = clock() - cpu_time;
    printf("cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
@@ -50,7 +50,7 @@ int watermelon(int32_t depth, char const* fen) {
    info_move(move, '\n');
    printf("\n");
 
-   trace(0);
+   trace(side);
    printf("\n");
 
 #ifdef DEBUG

@@ -21,13 +21,13 @@ int main(int argc, char* argv[]) {
    init_tables();
 
    init_masks();
-   init_fen(argv[2]);
+   uint32_t side = init_fen(argv[2]);
    init_hashes();
 
    init_state();
 
    printf("fen: %s\n", argv[2]);
-   move_t move = iter_dfs(depth, 0);
+   move_t move = iter_dfs(depth, side);
    info_move(move, ' ');
    printf("at depth %i\n", depth);
 

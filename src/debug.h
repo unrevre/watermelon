@@ -5,8 +5,6 @@
 
 #include <stdint.h>
 
-extern char cside[2];
-
 /*!
  * game_state_info
  * @ print game board (prettily)
