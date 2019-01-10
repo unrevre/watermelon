@@ -41,10 +41,14 @@ uint64_t perft_capture(uint32_t depth, uint32_t side) {
 }
 
 void trace(uint32_t side) {
-   ttentry_t entry;
+   ttentry_t entry = {0};
    for (uint32_t t = 0; t != 4; ++t) {
-      entry = TTABLE[(hash_state & 0xffffff) ^ t];
-      if (entry._.hash == hash_state >> 24 && entry.bits) { break; }
+      uint32_t index = (hash_state & 0xffffff) ^ t;
+      if (TTABLE[index]._.hash == hash_state >> 24
+            && TTABLE[index]._.flags == 0x1) {
+         entry = TTABLE[index];
+         break;
+      }
    }
 
    move_t next = entry._.move;
