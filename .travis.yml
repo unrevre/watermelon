@@ -17,13 +17,6 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-8']
 
-    - os: linux
-      env: COMPILER=clang-7
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
-          packages: ['clang-7', 'g++-7']
-
 script:
   - make CC=$COMPILER && ./bin/watermelon 5
   - cd tests
