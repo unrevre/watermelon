@@ -54,9 +54,7 @@ int watermelon(int32_t depth, char const* fen) {
    printf("\n");
 
 #ifdef DEBUG
-   printf("nodes: %u\n", nodes);
-   printf("qnodes: %u\n", qnodes);
-   printf("tthits: %u\n", tthits);
+   debug_node_counts(nodes, qnodes, tthits);
    printf("\n");
 #endif
 

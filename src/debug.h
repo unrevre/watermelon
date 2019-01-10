@@ -29,6 +29,13 @@ void info_move(move_t move, char end);
 void info_transposition_table_entry(ttentry_t entry, char end);
 
 /*!
+ * debug_node_counts
+ * @ print visited node counts in search
+ */
+
+void debug_node_counts(uint32_t nodes, uint32_t qnodes, uint32_t tthits);
+
+/*!
  * tree_root_entry
  * @ print tree root character (entry)
  */

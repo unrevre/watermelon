@@ -55,6 +55,10 @@ void info_transposition_table_entry(ttentry_t entry, char end) {
       entry._.flags, entry._.age, end);
 }
 
+void debug_node_counts(uint32_t nodes, uint32_t qnodes, uint32_t tthits) {
+   printf("nodes: %10u, qnodes: %10u, tthits: %10u\n", nodes, qnodes, tthits);
+}
+
 void tree_root_entry(void) {
    printf("╻\n");
 }
