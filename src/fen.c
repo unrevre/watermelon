@@ -7,22 +7,27 @@
 #include <stdio.h>
 #include <string.h>
 
+char fen_side[2] = {'r', 'b'};
+
 char fen_rep[15] = {
    'K', 'R', 'N', 'C', 'A', 'B', 'P', ' ',
    'k', 'r', 'n', 'c', 'a', 'b', 'p'
 };
 
-void init_fen(const char* fen_str) {
+uint32_t init_fen(const char* fen_str) {
    char* lines[10];
    for (uint32_t i = 0; i < 10; ++i)
       lines[i] = malloc(10 * sizeof(char));
 
+   char schar;
+
    sscanf(fen_str,
       "%[A-Za-z0-9]/%[A-Za-z0-9]/%[A-Za-z0-9]/"
       "%[A-Za-z0-9]/%[A-Za-z0-9]/%[A-Za-z0-9]/"
-      "%[A-Za-z0-9]/%[A-Za-z0-9]/%[A-Za-z0-9]/%[A-Za-z0-9]",
+      "%[A-Za-z0-9]/%[A-Za-z0-9]/%[A-Za-z0-9]/%[A-Za-z0-9] %c",
       lines[9], lines[8], lines[7], lines[6], lines[5],
-      lines[4], lines[3], lines[2], lines[1], lines[0]);
+      lines[4], lines[3], lines[2], lines[1], lines[0],
+      &schar);
 
    char* fstr_cat = calloc(91, sizeof(char));
    for (uint32_t i = 0; i < 10; ++i)
@@ -87,10 +92,19 @@ void init_fen(const char* fen_str) {
    for (uint32_t i = 0; i < 10; ++i)
       free(lines[i]);
    free(fstr_cat);
+
+   switch (schar) {
+      case 'r':
+         return 0x0;
+      case 'b':
+         return 0x8;
+   }
+
+   return 0x0;
 }
 
-char* info_fen(void) {
-   char* fen_str = malloc(100 * sizeof(char));
+char* info_fen(uint32_t side) {
+   char* fen_str = malloc(102 * sizeof(char));
 
    uint32_t f = 0;
    for (uint32_t i = 0; i < 10; ++i) {
@@ -108,7 +122,9 @@ char* info_fen(void) {
       fen_str[f++] = '/';
    }
 
-   fen_str[--f] = '\0';
+   fen_str[--f] = ' ';
+   fen_str[++f] = fen_side[side >> 3];
+   fen_str[++f] = '\0';
 
    return fen_str;
 }

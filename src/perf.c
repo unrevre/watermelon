@@ -1,6 +1,7 @@
 #include "perf.h"
 
 #include "debug.h"
+#include "fen.h"
 #include "generate.h"
 #include "state.h"
 #include "structs.h"
@@ -57,11 +58,11 @@ void trace(uint32_t side) {
       if (!in_check(side)) {
          info_transposition_table_entry(entry, '\n');
          if (step > 3 && htable[step & 0x7] == htable[(step & 0x7) ^ 0x4])
-            printf("  # (%c) infinite repetition!\n", cside[!side]);
+            printf("  # (%c) infinite repetition!\n", fen_side[!side]);
          else
             trace(side ^ 0x8);
       } else {
-         printf("  # (%c) lost!\n", cside[side >> 3]);
+         printf("  # (%c) lost!\n", fen_side[side >> 3]);
       }
       retract(next);
    }

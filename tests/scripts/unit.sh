@@ -10,5 +10,5 @@ depth=$2
 input=$3
 
 while read fen; do
-   [ $fen ] && $unit $depth $fen || echo
+   [ -n "$fen" ] && $unit $depth "$fen" || echo
 done <<< "$(cat $input)"
