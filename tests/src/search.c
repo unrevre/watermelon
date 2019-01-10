@@ -11,7 +11,7 @@
 #include <stdlib.h>
 
 int main(int argc, char* argv[]) {
-   if (argc < 3) {
+   if (argc != 3) {
       printf("usage: %s [depth] [fen]\n", argv[0]);
       return 1;
    }
