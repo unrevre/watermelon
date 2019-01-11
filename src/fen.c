@@ -55,28 +55,28 @@ uint32_t init_fen(const char* fen_str) {
             board[i] = side;
             break;
          case 'r': case 'R':
-            game.pieces[side + 1] |= PMASK[i];
-            board[i] = side + 1;
+            game.pieces[side ^ 0x1] |= PMASK[i];
+            board[i] = side ^ 0x1;
             break;
          case 'n': case 'N':
-            game.pieces[side + 2] |= PMASK[i];
-            board[i] = side + 2;
+            game.pieces[side ^ 0x2] |= PMASK[i];
+            board[i] = side ^ 0x2;
             break;
          case 'c': case 'C':
-            game.pieces[side + 3] |= PMASK[i];
-            board[i] = side + 3;
+            game.pieces[side ^ 0x3] |= PMASK[i];
+            board[i] = side ^ 0x3;
             break;
          case 'a': case 'A':
-            game.pieces[side + 4] |= PMASK[i];
-            board[i] = side + 4;
+            game.pieces[side ^ 0x4] |= PMASK[i];
+            board[i] = side ^ 0x4;
             break;
          case 'b': case 'B':
-            game.pieces[side + 5] |= PMASK[i];
-            board[i] = side + 5;
+            game.pieces[side ^ 0x5] |= PMASK[i];
+            board[i] = side ^ 0x5;
             break;
          case 'p': case 'P':
-            game.pieces[side + 6] |= PMASK[i];
-            board[i] = side + 6;
+            game.pieces[side ^ 0x6] |= PMASK[i];
+            board[i] = side ^ 0x6;
             break;
          default:
             printf("invalid char in FEN str\n");
