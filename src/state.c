@@ -20,11 +20,11 @@ uint32_t step;
 
 uint32_t hash_state;
 
-ttentry_t ttable[0x1000000] __attribute__((aligned(64)));
+ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
 
 uint32_t age;
 
-killer_t ktable[32][2] __attribute__((aligned(64)));
+killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
 
 void init_hashes(void) {
    srand(0x91);
@@ -52,8 +52,8 @@ void init_hashes(void) {
 
 void init_tables(void) {
    memset(htable, 0, 8 * sizeof(uint32_t));
-   memset(ttable, 0, 0x1000000 * sizeof(ttentry_t));
-   memset(ktable, 0, 32 * 2 * sizeof(killer_t));
+   memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
+   memset(ktable, 0, PLYLIMIT * 2 * sizeof(killer_t));
 }
 
 void init_state(void) {

@@ -1,6 +1,7 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include "magics.h"
 #include "structs.h"
 
 #include <stdint.h>
@@ -18,11 +19,11 @@ extern uint32_t step;
 
 extern uint32_t hash_state;
 
-extern ttentry_t ttable[0x1000000] __attribute__((aligned(64)));
+extern ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
 
 extern uint32_t age;
 
-extern killer_t ktable[32][2] __attribute__((aligned(64)));
+extern killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
 
 extern char fen_rep[15];
 
