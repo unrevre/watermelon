@@ -70,6 +70,17 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
    move_t move_store = (move_t){0};
 
+   if (step > 3) {
+      uint32_t curr = step & 0x7;
+      if (htable[curr] == htable[curr ^ 0x4]) {
+         uint32_t prev = (step - 1) & 0x7;
+         if (step > 4 && htable[prev] == htable[prev ^ 0x4])
+            return 2048 - ply;
+         else
+            goto search_quiescence;
+      }
+   }
+
    for (uint32_t t = 0; t < 4; ++t) {
       ttentry_t entry = ttable[(hash_state & 0xffffff) ^ t];
       if (entry._.hash == hash_state >> 24 && entry._.move.bits) {
@@ -104,6 +115,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       }
    }
 
+search_quiescence:
    if (!depth) { return quiescence(ply, alpha, beta, side); }
 
    int32_t best = -2049 + ply;
