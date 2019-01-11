@@ -34,7 +34,7 @@ void init_hashes(void) {
          PSHASH[i][j] = rand();
 
    for (uint32_t i = 0; i < 90; ++i)
-      PSHASH[7][i] = 0x0;
+      PSHASH[empty][i] = 0x0;
 
    for (uint32_t i = 0; i < 15; ++i) {
       __uint128_t piece = game.pieces[i];
@@ -73,13 +73,13 @@ void advance(move_t move) {
 
    game.pieces[move._.pfrom] ^= PMASK[move._.from] | PMASK[move._.to];
    game.pieces[move._.pto] ^= PMASK[move._.to];
-   game.pieces[0x7] ^= PMASK[move._.from];
+   game.pieces[empty] ^= PMASK[move._.from];
 
-   uint32_t s = move._.pfrom >> 3;
+   uint32_t s = b(move._.pfrom);
    game.occupancy[s] ^= PMASK[move._.from] | PMASK[move._.to];
    game.occupancy[!s] ^= game.occupancy[0] & game.occupancy[1];
 
-   board[move._.from] = 0x7;
+   board[move._.from] = empty;
    board[move._.to] = move._.pfrom;
 }
 
@@ -93,11 +93,11 @@ void retract(move_t move) {
 
    game.pieces[move._.pfrom] ^= PMASK[move._.from] | PMASK[move._.to];
    game.pieces[move._.pto] ^= PMASK[move._.to];
-   game.pieces[0x7] ^= PMASK[move._.from];
+   game.pieces[empty] ^= PMASK[move._.from];
 
-   uint32_t s = move._.pfrom >> 3;
+   uint32_t s = b(move._.pfrom);
    game.occupancy[s] ^= PMASK[move._.from] | PMASK[move._.to];
-   game.occupancy[!s] ^= (game.pieces[0x7] & PMASK[move._.to])
+   game.occupancy[!s] ^= (game.pieces[empty] & PMASK[move._.to])
       ^ PMASK[move._.to];
 
    board[move._.from] = move._.pfrom;

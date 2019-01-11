@@ -26,4 +26,25 @@
 
 #define BASKETS 4
 
+/* state */
+
+#define RSIDE 0x0
+#define BSIDE 0x8
+#define EMPTY 0x7
+
+#define PSBIT BSIDE
+#define PSHIFT 0
+
+#define b(i) (i >> 3)
+
+#define o(s) (s ^ PSBIT)
+
+#define p(p) (p & 0x7)
+#define s(p) (p & PSBIT)
+
+#define ps(s, p) ((p << PSHIFT) ^ s)
+#define po(s, p) ((p << PSHIFT) ^ o(s))
+
+#define empty EMPTY
+
 #endif /* MAGIC_H */
