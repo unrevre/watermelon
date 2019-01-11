@@ -57,7 +57,7 @@ $(ASMDIR)/%.S: $(SRCDIR)/%.c
 .PHONY: all debug tree tests asm clean
 
 clean:
-	@$(RM) $(BINDIR)/$(BIN) $(OBJS) $(DEPS) $(ASML)
+	@$(RM) $(BINDIR)/$(BIN) $(OBJS) $(DEPS)
 	@$(RM) $(TESTS) $(TDEPS)
 
 -include $(DEPS) $(TDEPS)
