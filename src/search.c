@@ -34,6 +34,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 #endif
       int32_t score = negamax(d, 1, -2048, 2048, side);
 #ifdef TREE
+      tree_node_exit(0, -2048, 2048, score, side);
       tree_root_exit();
 #endif
 
@@ -63,7 +64,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
    beta = min(beta, 2048 - ply);
 
 #ifdef TREE
-   if (depth) { tree_node_entry(ply, alpha, beta, side); }
+   tree_node_entry(ply, alpha, beta, side);
 #endif
 
    int32_t alpha_parent = alpha;
@@ -116,7 +117,13 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
    }
 
 search_quiescence:
-   if (!depth) { return quiescence(ply, alpha, beta, side); }
+   if (!depth) {
+      int32_t score = quiescence(ply, alpha, beta, side);
+#ifdef TREE
+      tree_node_exit(ply, alpha, beta, score, side);
+#endif
+      return score;
+   }
 
    int32_t best = -2049 + ply;
 
@@ -124,6 +131,9 @@ search_quiescence:
       advance(move_store);
 
       int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, side ^ 0x8);
+#ifdef TREE
+      tree_node_exit(ply, alpha, beta, score, side);
+#endif
 
       retract(move_store);
 
@@ -136,6 +146,9 @@ search_quiescence:
    if (ply > 1 && depth > 4 && !in_check(side)) {
       hash_state ^= MVHASH;
       int32_t score = -negamax(depth - 3, ply + 1, -beta, -alpha, side ^ 0x8);
+#ifdef TREE
+      tree_node_exit(ply, alpha, beta, score, side);
+#endif
       hash_state ^= MVHASH;
 
       if (score > best) { move_store = (move_t){0}; }
@@ -173,6 +186,9 @@ search_quiescence:
          advance(move_killer);
          int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha,
             side ^ 0x8);
+#ifdef TREE
+         tree_node_exit(ply, alpha, beta, score, side);
+#endif
          retract(move_killer);
 
          if (score > best) { move_store = move_killer; }
@@ -240,7 +256,7 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
 
    int32_t stand = eval(side);
 #ifdef TREE
-   tree_node_entry(ply, alpha, beta, side);
+   tree_node_entry(ply + 1, alpha, beta, side);
 #endif
    if (stand >= beta) { return stand; }
 
@@ -252,7 +268,7 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
 
       int32_t score = -quiescence(ply + 1, -beta, -alpha, side ^ 0x8);
 #ifdef TREE
-      tree_node_exit(ply, alpha, beta, score, side);
+      tree_node_exit(ply + 1, alpha, beta, score, side);
 #endif
 
       retract(moves.data[i]);
