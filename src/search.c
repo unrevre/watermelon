@@ -43,10 +43,10 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    }
 
    move_t move = {0};
-   for (uint32_t t = 0; t != 4; ++t) {
-      uint32_t index = (hash_state & 0xffffff) ^ t;
-      if (ttable[index]._.hash == hash_state >> 24
-            && ttable[index]._.flags == 0x1) {
+   for (uint32_t t = 0; t != BASKETS; ++t) {
+      uint32_t index = (hash_state & HASHMASK) ^ t;
+      if (ttable[index]._.hash == hash_state >> HASHBITS
+            && ttable[index]._.flags == FEXACT) {
          move = ttable[index]._.move;
          break;
       }
@@ -83,9 +83,9 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       }
    }
 
-   for (uint32_t t = 0; t < 4; ++t) {
-      ttentry_t entry = ttable[(hash_state & 0xffffff) ^ t];
-      if (entry._.hash == hash_state >> 24 && entry._.move.bits) {
+   for (uint32_t t = 0; t < BASKETS; ++t) {
+      ttentry_t entry = ttable[(hash_state & HASHMASK) ^ t];
+      if (entry._.hash == hash_state >> HASHBITS && entry._.move.bits) {
          if (!is_legal(entry._.move, side)) { continue; }
 
          move_store = entry._.move;
@@ -101,12 +101,12 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
             (score < -LSCORE + PLYLIMIT) ? score + ply : score;
 
          switch (entry._.flags) {
-            case 0x1:
+            case FEXACT:
                return score;
-            case 0x2:
+            case FLOWER:
                alpha = max(alpha, score);
                break;
-            case 0x3:
+            case FUPPER:
                beta = min(beta, score);
                break;
          }
@@ -285,21 +285,21 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
 
 void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
                 int32_t score, move_t move_hashed) {
-   uint32_t index = hash_state & 0xffffff;
+   uint32_t index = hash_state & HASHMASK;
 
-   uint8_t flags = (int32t_abs(score) > WSCORE - PLYLIMIT) ? 0x1 :
-      (score <= alpha) ? 0x3 : (score >= beta) ? 0x2 : 0x1;
+   uint8_t flags = (int32t_abs(score) > WSCORE - PLYLIMIT) ? FEXACT :
+      (score <= alpha) ? FUPPER : (score >= beta) ? FLOWER : FEXACT;
 
    score = (score > WSCORE - PLYLIMIT) ? score + ply :
       (score < -LSCORE + PLYLIMIT) ? score - ply : score;
 
-   uint32_t replace = 0x1000000;
-   for (uint32_t t = 0; t != 4; ++t) {
+   uint32_t replace = HASHSIZE;
+   for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t entry = index ^ t;
       if (!ttable[entry].bits) {
          replace = entry;
          break;
-      } else if (ttable[entry]._.hash == hash_state >> 24) {
+      } else if (ttable[entry]._.hash == hash_state >> HASHBITS) {
          replace = entry;
          break;
       } else if (ttable[entry]._.age != age) {
@@ -307,11 +307,11 @@ void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       }
    }
 
-   if (replace == 0x1000000) {
+   if (replace == HASHSIZE) {
       uint32_t min_depth = PLYLIMIT;
 
       replace = index;
-      for (uint32_t t = 0; t != 4; ++t) {
+      for (uint32_t t = 0; t != BASKETS; ++t) {
          uint32_t entry = index ^ t;
          if (ttable[entry]._.depth < min_depth) {
             min_depth = ttable[entry]._.depth;
@@ -321,6 +321,6 @@ void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
    }
 
    ttable[replace] = (ttentry_t) {
-      ._ = { hash_state >> 24, depth, flags, score, age, move_hashed }
+      ._ = { hash_state >> HASHBITS, depth, flags, score, age, move_hashed }
    };
 }
