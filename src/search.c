@@ -131,7 +131,7 @@ search_quiescence:
    if (move_store.bits) {
       advance(move_store);
 
-      int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, side ^ 0x8);
+      int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
 #ifdef TREE
       tree_node_exit(ply, alpha, beta, score, side);
 #endif
@@ -146,7 +146,7 @@ search_quiescence:
 
    if (ply > 1 && depth > 4 && !in_check(side)) {
       hash_state ^= MVHASH;
-      int32_t score = -negamax(depth - 3, ply + 1, -beta, -alpha, side ^ 0x8);
+      int32_t score = -negamax(depth - 3, ply + 1, -beta, -alpha, o(side));
 #ifdef TREE
       tree_node_exit(ply, alpha, beta, score, side);
 #endif
@@ -165,7 +165,7 @@ search_quiescence:
    for (uint32_t i = 0; i != moves.quiet; ++i) {
       advance(moves.data[i]);
 
-      int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, side ^ 0x8);
+      int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
 #ifdef TREE
       tree_node_exit(ply, alpha, beta, score, side);
 #endif
@@ -185,8 +185,7 @@ search_quiescence:
       move_killer = ktable[ply][k].move;
       if (move_killer.bits && is_legal(move_killer, side)) {
          advance(move_killer);
-         int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha,
-            side ^ 0x8);
+         int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
 #ifdef TREE
          tree_node_exit(ply, alpha, beta, score, side);
 #endif
@@ -212,8 +211,7 @@ search_quiescence:
    for (uint32_t i = moves.quiet; i != moves.count; ++i) {
       advance(moves.data[i]);
 
-      int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha,
-         side ^ 0x8);
+      int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
 #ifdef TREE
       tree_node_exit(ply, alpha, beta, score, side);
 #endif
@@ -267,7 +265,7 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
 
-      int32_t score = -quiescence(ply + 1, -beta, -alpha, side ^ 0x8);
+      int32_t score = -quiescence(ply + 1, -beta, -alpha, o(side));
 #ifdef TREE
       tree_node_exit(ply + 1, alpha, beta, score, side);
 #endif
