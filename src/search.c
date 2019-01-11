@@ -3,6 +3,7 @@
 #include "eval.h"
 #include "generate.h"
 #include "inlines.h"
+#include "magics.h"
 #include "state.h"
 
 #include <stdlib.h>
@@ -32,13 +33,13 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 #ifdef TREE
       tree_root_entry();
 #endif
-      int32_t score = negamax(d, 1, -2048, 2048, side);
+      int32_t score = negamax(d, 1, -INFINITY, INFINITY, side);
 #ifdef TREE
-      tree_node_exit(0, -2048, 2048, score, side);
+      tree_node_exit(0, -INFINITY, INFINITY, score, side);
       tree_root_exit();
 #endif
 
-      if (int32t_abs(score) >= 2046 - d) { break; }
+      if (int32t_abs(score) >= INFDELAY - d) { break; }
    }
 
    move_t move = {0};
@@ -60,8 +61,8 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
    ++nodes;
 #endif
 
-   alpha = max(alpha, -2049 + ply);
-   beta = min(beta, 2048 - ply);
+   alpha = max(alpha, -LSCORE + ply);
+   beta = min(beta, WSCORE - ply);
 
 #ifdef TREE
    tree_node_entry(ply, alpha, beta, side);
@@ -76,7 +77,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       if (htable[curr] == htable[curr ^ 0x4]) {
          uint32_t prev = (step - 1) & 0x7;
          if (step > 4 && htable[prev] == htable[prev ^ 0x4])
-            return 2048 - ply;
+            return WSCORE - ply;
          else
             goto search_quiescence;
       }
@@ -96,8 +97,8 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 #endif
 
          int32_t score = entry._.score;
-         score = (score > 2049 - 32) ? score - ply :
-            (score < -2049 + 32) ? score + ply : score;
+         score = (score > WSCORE - PLYLIMIT) ? score - ply :
+            (score < -LSCORE + PLYLIMIT) ? score + ply : score;
 
          switch (entry._.flags) {
             case 0x1:
@@ -125,7 +126,7 @@ search_quiescence:
       return score;
    }
 
-   int32_t best = -2049 + ply;
+   int32_t best = -INFSCORE + ply;
 
    if (move_store.bits) {
       advance(move_store);
@@ -286,11 +287,11 @@ void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
                 int32_t score, move_t move_hashed) {
    uint32_t index = hash_state & 0xffffff;
 
-   uint8_t flags = (int32t_abs(score) > 2049 - 32) ? 0x1 :
+   uint8_t flags = (int32t_abs(score) > WSCORE - PLYLIMIT) ? 0x1 :
       (score <= alpha) ? 0x3 : (score >= beta) ? 0x2 : 0x1;
 
-   score = (score > 2049 - 32) ? score + ply :
-      (score < -2049 + 32) ? score - ply : score;
+   score = (score > WSCORE - PLYLIMIT) ? score + ply :
+      (score < -LSCORE + PLYLIMIT) ? score - ply : score;
 
    uint32_t replace = 0x1000000;
    for (uint32_t t = 0; t != 4; ++t) {
@@ -307,7 +308,7 @@ void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
    }
 
    if (replace == 0x1000000) {
-      uint32_t min_depth = 32;
+      uint32_t min_depth = PLYLIMIT;
 
       replace = index;
       for (uint32_t t = 0; t != 4; ++t) {
