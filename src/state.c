@@ -18,13 +18,10 @@ uint32_t MVHASH;
 uint32_t hash_state;
 
 move_t history[TURNLIMIT];
-
 uint32_t htable[8];
-
 uint32_t step;
 
 ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
-
 uint32_t age;
 
 killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
