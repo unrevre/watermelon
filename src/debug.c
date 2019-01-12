@@ -2,6 +2,7 @@
 
 #include "fen.h"
 #include "inlines.h"
+#include "magics.h"
 #include "state.h"
 
 #include <stdio.h>

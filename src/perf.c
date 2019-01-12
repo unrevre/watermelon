@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "fen.h"
 #include "generate.h"
+#include "magics.h"
 #include "state.h"
 #include "structs.h"
 
