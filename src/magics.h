@@ -40,7 +40,7 @@
 #define p(p) (p >> 1)
 #define s(p) (p & PSBIT)
 
-#define ps(s, p) ((p << PSHIFT) ^ s)
+#define ps(s, p) ((p << PSHIFT) + s)
 #define po(s, p) ((p << PSHIFT) ^ o(s))
 
 #define empty EMPTY
