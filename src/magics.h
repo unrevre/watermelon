@@ -29,17 +29,17 @@
 /* state */
 
 #define RSIDE 0x0
-#define BSIDE 0x8
-#define EMPTY 0x7
+#define BSIDE 0x1
+#define EMPTY 0xe
 
 #define PSBIT BSIDE
-#define PSHIFT 0
+#define PSHIFT 1
 
-#define b(i) (i >> 3)
+#define b(i) (i & PSBIT)
 
 #define o(s) (s ^ PSBIT)
 
-#define p(p) (p & 0x7)
+#define p(p) (p >> 1)
 #define s(p) (p & PSBIT)
 
 #define ps(s, p) ((p << PSHIFT) ^ s)
