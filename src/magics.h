@@ -35,8 +35,6 @@
 #define PSBIT BSIDE
 #define PSHIFT 1
 
-#define b(i) (i & PSBIT)
-
 #define o(s) (s ^ PSBIT)
 
 #define p(p) (p >> 1)
