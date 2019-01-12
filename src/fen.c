@@ -10,8 +10,8 @@
 char fen_side[2] = {'r', 'b'};
 
 char fen_rep[15] = {
-   'K', 'R', 'N', 'C', 'A', 'B', 'P', ' ',
-   'k', 'r', 'n', 'c', 'a', 'b', 'p'
+   'K', 'k', 'R', 'r', 'N', 'n', 'C', 'c',
+   'A', 'a', 'B', 'b', 'P', 'p', ' '
 };
 
 uint32_t init_fen(const char* fen_str) {
@@ -44,7 +44,7 @@ uint32_t init_fen(const char* fen_str) {
 
    char* fstr_p = fstr_cat;
    for (uint32_t i = 0; *fstr_p; ++fstr_p, ++i) {
-      uint32_t side = (*fstr_p > 'Z') << 3;
+      uint32_t side = (*fstr_p > 'Z');
       switch (*fstr_p) {
          case '1': case '2': case '3': case '4': case '5':
          case '6': case '7': case '8': case '9':
