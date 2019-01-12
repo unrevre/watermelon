@@ -75,7 +75,7 @@ void advance(move_t move) {
    game.pieces[move._.pto] ^= PMASK[move._.to];
    game.pieces[empty] ^= PMASK[move._.from];
 
-   uint32_t s = b(move._.pfrom);
+   uint32_t s = s(move._.pfrom);
    game.occupancy[s] ^= PMASK[move._.from] | PMASK[move._.to];
    game.occupancy[!s] ^= game.occupancy[0] & game.occupancy[1];
 
@@ -95,7 +95,7 @@ void retract(move_t move) {
    game.pieces[move._.pto] ^= PMASK[move._.to];
    game.pieces[empty] ^= PMASK[move._.from];
 
-   uint32_t s = b(move._.pfrom);
+   uint32_t s = s(move._.pfrom);
    game.occupancy[s] ^= PMASK[move._.from] | PMASK[move._.to];
    game.occupancy[!s] ^= (game.pieces[empty] & PMASK[move._.to])
       ^ PMASK[move._.to];

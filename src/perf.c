@@ -62,7 +62,7 @@ void trace(uint32_t side) {
          else
             trace(o(side));
       } else {
-         printf("  # (%c) lost!\n", fen_side[b(side)]);
+         printf("  # (%c) lost!\n", fen_side[side]);
       }
       retract(next);
    }

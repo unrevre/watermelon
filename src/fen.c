@@ -123,7 +123,7 @@ char* info_fen(uint32_t side) {
    }
 
    fen_str[--f] = ' ';
-   fen_str[++f] = fen_side[b(side)];
+   fen_str[++f] = fen_side[side];
    fen_str[++f] = '\0';
 
    return fen_str;
