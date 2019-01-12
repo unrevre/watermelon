@@ -15,7 +15,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-8']
+          packages: ['gcc-8']
 
 script:
   - make CC=$COMPILER && ./bin/watermelon 5
