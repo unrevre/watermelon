@@ -10,10 +10,7 @@
 
 char fen_side[2] = {'r', 'b'};
 
-char fen_rep[15] = {
-   'K', 'k', 'R', 'r', 'N', 'n', 'C', 'c',
-   'A', 'a', 'B', 'b', 'P', 'p', ' '
-};
+char fen_rep[16] = "KkRrNnCcAaBbPp ";
 
 uint32_t init_fen(const char* fen_str) {
    char* lines[10];

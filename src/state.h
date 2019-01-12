@@ -16,18 +16,13 @@ extern uint32_t MVHASH;
 extern uint32_t hash_state;
 
 extern move_t history[TURNLIMIT];
-
 extern uint32_t htable[8];
-
 extern uint32_t step;
 
 extern ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
-
 extern uint32_t age;
 
 extern killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
-
-extern char fen_rep[15];
 
 /*!
  * init_hashes
