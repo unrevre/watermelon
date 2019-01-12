@@ -1,6 +1,7 @@
 #include "state.h"
 
 #include "inlines.h"
+#include "magics.h"
 #include "masks.h"
 #include "structs.h"
 

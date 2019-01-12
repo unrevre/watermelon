@@ -1,5 +1,6 @@
 #include "fen.h"
 
+#include "magics.h"
 #include "masks.h"
 #include "state.h"
 
