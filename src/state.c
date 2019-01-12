@@ -29,25 +29,22 @@ killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
 void init_hashes(void) {
    srand(0x91);
 
-   for (uint32_t i = 0; i < 15; ++i)
+   for (uint32_t i = 0x0; i != 0xe; ++i)
       for (uint32_t j = 0; j < 90; ++j)
          PSHASH[i][j] = rand();
 
    for (uint32_t i = 0; i < 90; ++i)
       PSHASH[empty][i] = 0x0;
 
-   for (uint32_t i = 0; i < 15; ++i) {
+   for (uint32_t i = 0x0; i != 0xe; ++i) {
       __uint128_t piece = game.pieces[i];
       for (; piece; piece &= piece - 1)
          hash_state ^= PSHASH[i][bsf(piece)];
    }
 
-   uint32_t hash_red = rand();
-   uint32_t hash_black = rand();
+   hash_state ^= rand();
 
-   MVHASH = hash_red ^ hash_black;
-
-   hash_state ^= hash_red;
+   MVHASH = rand();
 }
 
 void init_tables(void) {
