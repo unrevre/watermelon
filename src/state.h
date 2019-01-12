@@ -13,11 +13,13 @@ extern uint32_t board[90];
 extern uint32_t PSHASH[15][90];
 extern uint32_t MVHASH;
 
+extern uint32_t hash_state;
+
+extern move_t history[TURNLIMIT];
+
 extern uint32_t htable[8];
 
 extern uint32_t step;
-
-extern uint32_t hash_state;
 
 extern ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
 

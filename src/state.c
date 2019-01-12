@@ -15,11 +15,13 @@ uint32_t board[90];
 uint32_t PSHASH[15][90];
 uint32_t MVHASH;
 
+uint32_t hash_state;
+
+move_t history[TURNLIMIT];
+
 uint32_t htable[8];
 
 uint32_t step;
-
-uint32_t hash_state;
 
 ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
 

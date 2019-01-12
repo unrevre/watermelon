@@ -26,6 +26,10 @@
 
 #define BASKETS 4
 
+/* history */
+
+#define TURNLIMIT 256
+
 /* state */
 
 #define RSIDE 0x0
