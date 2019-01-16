@@ -295,7 +295,7 @@ move_array_t generate_pseudolegal(uint32_t side) {
 }
 
 move_array_t generate_captures(uint32_t side) {
-   move_array_t moves = {malloc(53 * sizeof(move_t)), 0, 0};
+   move_array_t moves = {malloc(40 * sizeof(move_t)), 0, 0};
    if (!game.pieces[ps(side, 0x0)]) { return moves; }
 
    __uint128_t C3U128 = 0x3;
