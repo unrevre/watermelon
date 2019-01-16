@@ -355,23 +355,21 @@ move_array_t generate_captures(uint32_t side) {
       __uint128_t outer = occupancy | OMASK[index];
 
       rlow = outer & LMASK[index];
-
-      flow = rlow & FMASK[index];
-
       rcbn = C3U128 << bsr_branchless(rlow);
-      rset = outer ^ (outer - rcbn);
-      rset = ~rset & occupancy;
-      rlow = rset & LMASK[index];
-      rcbn = C3U128 << bsr_branchless(rlow);
-      rset &= ~(rset - rcbn);
+      rset = ~(outer ^ (outer - rcbn)) & occupancy;
 
-      fcbn = C3U128 << bsr_branchless(flow);
       fset = outer & FMASK[index];
-      fset = fset ^ (fset - fcbn);
-      fset = (~fset & occupancy) & FMASK[index];
+      flow = rlow & FMASK[index];
+      fcbn = C3U128 << bsr_branchless(flow);
+      fset = ~(fset ^ (fset - fcbn)) & occupancy;
+      fset = fset & FMASK[index];
       flow = fset & LMASK[index];
       fcbn = C3U128 << bsr_branchless(flow);
       fset &= ~(fset - fcbn);
+
+      rlow = rset & LMASK[index];
+      rcbn = C3U128 << bsr_branchless(rlow);
+      rset &= ~(rset - rcbn);
 
       moveset = ((rset & RMASK[index]) | (fset & FMASK[index]))
          & game.occupancy[!side];
