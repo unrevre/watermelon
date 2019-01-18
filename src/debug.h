@@ -26,12 +26,45 @@ void info_move(move_t move, char end);
 
 void info_transposition_table_entry(ttentry_t entry, char end);
 
+#ifdef DEBUG
+extern uint32_t nodes;
+extern uint32_t qnodes;
+
+extern uint32_t tthits;
+
 /*!
- * debug_node_counts
- * @ print visited node counts in search
+ * debug_variable_reset
+ * @ reset debug variable(s)
  */
 
-void debug_node_counts(uint32_t nodes, uint32_t qnodes, uint32_t tthits);
+void debug_variable_reset(uint32_t count, ...);
+
+/*!
+ * debug_variable_increment
+ * @ increment debug variable(s)
+ */
+
+void debug_variable_increment(uint32_t count, ...);
+
+/*!
+ * debug_variable_headers
+ * @ print labels for debug variable(s)
+ */
+
+void debug_variable_headers(uint32_t count, ...);
+
+/*!
+ * debug_variable_values
+ * @ print value of debug variable(s)
+ */
+
+void debug_variable_values(uint32_t count, ...);
+#else
+#define debug_variable_reset(count, ...)
+#define debug_variable_increment(count, ...)
+#define debug_variable_headers(count, ...)
+#define debug_variable_values(count, ...)
+#endif /* DEBUG */
 
 #ifdef TREE
 /*!

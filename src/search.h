@@ -5,13 +5,6 @@
 
 #include <stdint.h>
 
-#ifdef DEBUG
-extern uint32_t nodes;
-extern uint32_t qnodes;
-
-extern uint32_t tthits;
-#endif
-
 /*!
  * iter_dfs
  * @ iterative deepening

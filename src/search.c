@@ -9,20 +9,8 @@
 
 #include <stdlib.h>
 
-#ifdef DEBUG
-uint32_t nodes;
-uint32_t qnodes;
-
-uint32_t tthits;
-#endif
-
 move_t iter_dfs(uint32_t depth, uint32_t side) {
-#ifdef DEBUG
-   nodes = 0;
-   qnodes = 0;
-
-   tthits = 0;
-#endif
+   debug_variable_reset(3, &nodes, &qnodes, &tthits);
 
    ++age;
 
@@ -50,9 +38,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 
 int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
                 uint32_t side) {
-#ifdef DEBUG
-   ++nodes;
-#endif
+   debug_variable_increment(1, &nodes);
 
    alpha = max(alpha, -LSCORE + ply);
    beta = min(beta, WSCORE - ply);
@@ -82,10 +68,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
          move_store = entry._.move;
 
          if (entry._.depth < depth) { continue; }
-
-#ifdef DEBUG
-         ++tthits;
-#endif
+         debug_variable_increment(1, &tthits);
 
          int32_t score = entry._.score;
          score = (score > WSCORE - PLYLIMIT) ? score - ply :
@@ -226,9 +209,7 @@ search_save:
 }
 
 int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
-#ifdef DEBUG
-   ++qnodes;
-#endif
+   debug_variable_increment(1, &qnodes);
 
    int32_t stand = eval(side);
    tree_node_entry(ply + 1, alpha, beta, side);

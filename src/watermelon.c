@@ -53,10 +53,10 @@ int watermelon(int32_t depth, char const* fen) {
    trace(side);
    printf("\n");
 
-#ifdef DEBUG
-   debug_node_counts(nodes, qnodes, tthits);
+   debug_variable_headers(3, "alpha-beta nodes", "quiescence nodes",
+                          "hash table hits");
+   debug_variable_values(3, nodes, qnodes, tthits);
    printf("\n");
-#endif
 
    return 0;
 }

@@ -5,6 +5,7 @@
 #include "magics.h"
 #include "state.h"
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -54,9 +55,46 @@ void info_transposition_table_entry(ttentry_t entry, char end) {
       entry._.flags, entry._.age, end);
 }
 
-void debug_node_counts(uint32_t nodes, uint32_t qnodes, uint32_t tthits) {
-   printf("nodes: %10u, qnodes: %10u, tthits: %10u\n", nodes, qnodes, tthits);
+#ifdef DEBUG
+uint32_t nodes;
+uint32_t qnodes;
+
+uint32_t tthits;
+
+void debug_variable_reset(uint32_t count, ...) {
+   va_list args;
+   va_start(args, count);
+   for (uint32_t i = 0; i < count; ++i)
+      *(va_arg(args, uint32_t*)) = 0;
+   va_end(args);
 }
+
+void debug_variable_increment(uint32_t count, ...) {
+   va_list args;
+   va_start(args, count);
+   for (uint32_t i = 0; i < count; ++i)
+      ++(*(va_arg(args, uint32_t*)));
+   va_end(args);
+}
+
+void debug_variable_headers(uint32_t count, ...) {
+   va_list args;
+   va_start(args, count);
+   for (uint32_t i = 0; i < count; ++i)
+      printf("%16s | ", va_arg(args, const char*));
+   printf("\n");
+   va_end(args);
+}
+
+void debug_variable_values(uint32_t count, ...) {
+   va_list args;
+   va_start(args, count);
+   for (uint32_t i = 0; i < count; ++i)
+      printf("%16u | ", va_arg(args, uint32_t));
+   printf("\n");
+   va_end(args);
+}
+#endif /* DEBUG */
 
 #ifdef TREE
 void tree_root_entry(void) {
