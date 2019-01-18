@@ -33,6 +33,7 @@ void info_transposition_table_entry(ttentry_t entry, char end);
 
 void debug_node_counts(uint32_t nodes, uint32_t qnodes, uint32_t tthits);
 
+#ifdef TREE
 /*!
  * tree_root_entry
  * @ print tree root character (entry)
@@ -61,5 +62,11 @@ void tree_node_entry(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side);
 
 void tree_node_exit(uint32_t ply, int32_t alpha, int32_t beta, int32_t score,
                     uint32_t side);
+#else
+#define tree_root_entry(...)
+#define tree_root_exit(...)
+#define tree_node_entry(...)
+#define tree_node_exit(...)
+#endif /* TREE */
 
 #endif /* DEBUG_H */
