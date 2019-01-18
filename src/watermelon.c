@@ -30,20 +30,17 @@ int main(int argc, char const* argv[]) {
 
 int watermelon(int32_t depth, char const* fen) {
    init_tables();
-
    init_masks();
    uint32_t side = init_fen(fen);
    init_hashes();
-
    init_state();
 
    printf("fen: %s\n", fen);
 
    clock_t cpu_time = clock();
-
    move_t move = iter_dfs(depth, side);
-
    cpu_time = clock() - cpu_time;
+
    printf("cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
 
    info_game_state();

@@ -46,7 +46,6 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
    tree_node_entry(ply, alpha, beta, side);
 
    int32_t alpha_parent = alpha;
-
    move_t move_store = (move_t){0};
 
    if (step > 3) {
@@ -64,7 +63,6 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
       ttentry_t entry = ttable[(hash_state & HASHMASK) ^ t];
       if (entry._.hash == hash_state >> HASHBITS && entry._.move.bits) {
          if (!is_legal(entry._.move, side)) { continue; }
-
          move_store = entry._.move;
 
          if (entry._.depth < depth) { continue; }
@@ -86,7 +84,6 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
          }
 
          if (alpha >= beta) { return score; }
-
          break;
       }
    }

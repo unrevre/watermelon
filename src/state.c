@@ -32,7 +32,6 @@ void init_hashes(void) {
    for (uint32_t i = 0x0; i != 0xe; ++i)
       for (uint32_t j = 0; j < 90; ++j)
          PSHASH[i][j] = rand();
-
    for (uint32_t i = 0; i < 90; ++i)
       PSHASH[empty][i] = 0x0;
 
