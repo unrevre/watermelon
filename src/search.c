@@ -130,6 +130,7 @@ search_quiescence:
 
    if (move_store.bits) {
       advance(move_store);
+      __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
 
       int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
 #ifdef TREE
@@ -164,6 +165,7 @@ search_quiescence:
 
    for (uint32_t i = 0; i != moves.quiet; ++i) {
       advance(moves.data[i]);
+      __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
 
       int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
 #ifdef TREE
@@ -185,6 +187,7 @@ search_quiescence:
       move_killer = ktable[ply][k].move;
       if (move_killer.bits && is_legal(move_killer, side)) {
          advance(move_killer);
+         __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
          int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
 #ifdef TREE
          tree_node_exit(ply, alpha, beta, score, side);
@@ -210,6 +213,7 @@ search_quiescence:
 
    for (uint32_t i = moves.quiet; i != moves.count; ++i) {
       advance(moves.data[i]);
+      __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
 
       int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
 #ifdef TREE
