@@ -58,6 +58,7 @@ void debug_node_counts(uint32_t nodes, uint32_t qnodes, uint32_t tthits) {
    printf("nodes: %10u, qnodes: %10u, tthits: %10u\n", nodes, qnodes, tthits);
 }
 
+#ifdef TREE
 void tree_root_entry(void) {
    printf("╻\n");
 }
@@ -82,3 +83,4 @@ void tree_node_exit(uint32_t ply, int32_t alpha, int32_t beta, int32_t score,
    printf("└╸%5i [%5i, %5i]\n", -score, -beta, -alpha);
    free(fen);
 }
+#endif /* TREE */

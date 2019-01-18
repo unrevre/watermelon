@@ -1,5 +1,6 @@
 #include "search.h"
 
+#include "debug.h"
 #include "eval.h"
 #include "generate.h"
 #include "inlines.h"
@@ -15,10 +16,6 @@ uint32_t qnodes;
 uint32_t tthits;
 #endif
 
-#ifdef TREE
-#include "debug.h"
-#endif
-
 move_t iter_dfs(uint32_t depth, uint32_t side) {
 #ifdef DEBUG
    nodes = 0;
@@ -30,14 +27,10 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    ++age;
 
    for (uint32_t d = 1; d != depth; ++d) {
-#ifdef TREE
       tree_root_entry();
-#endif
       int32_t score = negamax(d, 1, -INFINITY, INFINITY, side);
-#ifdef TREE
       tree_node_exit(0, -INFINITY, INFINITY, score, side);
       tree_root_exit();
-#endif
 
       if (int32t_abs(score) >= INFDELAY - d) { break; }
    }
@@ -64,9 +57,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
    alpha = max(alpha, -LSCORE + ply);
    beta = min(beta, WSCORE - ply);
 
-#ifdef TREE
    tree_node_entry(ply, alpha, beta, side);
-#endif
 
    int32_t alpha_parent = alpha;
 
@@ -120,9 +111,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 search_quiescence:
    if (!depth) {
       int32_t score = quiescence(ply, alpha, beta, side);
-#ifdef TREE
       tree_node_exit(ply, alpha, beta, score, side);
-#endif
       return score;
    }
 
@@ -131,12 +120,8 @@ search_quiescence:
    if (move_store.bits) {
       advance(move_store);
       __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
-
       int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
-#ifdef TREE
       tree_node_exit(ply, alpha, beta, score, side);
-#endif
-
       retract(move_store);
 
       best = max(best, score);
@@ -148,9 +133,7 @@ search_quiescence:
    if (ply > 1 && depth > 4 && !in_check(side)) {
       hash_state ^= MVHASH;
       int32_t score = -negamax(depth - 3, ply + 1, -beta, -alpha, o(side));
-#ifdef TREE
       tree_node_exit(ply, alpha, beta, score, side);
-#endif
       hash_state ^= MVHASH;
 
       if (score > best) { move_store = (move_t){0}; }
@@ -166,12 +149,8 @@ search_quiescence:
    for (uint32_t i = 0; i != moves.quiet; ++i) {
       advance(moves.data[i]);
       __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
-
       int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
-#ifdef TREE
       tree_node_exit(ply, alpha, beta, score, side);
-#endif
-
       retract(moves.data[i]);
 
       if (score > best) { move_store = moves.data[i]; }
@@ -189,9 +168,7 @@ search_quiescence:
          advance(move_killer);
          __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
          int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
-#ifdef TREE
          tree_node_exit(ply, alpha, beta, score, side);
-#endif
          retract(move_killer);
 
          if (score > best) { move_store = move_killer; }
@@ -214,12 +191,8 @@ search_quiescence:
    for (uint32_t i = moves.quiet; i != moves.count; ++i) {
       advance(moves.data[i]);
       __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
-
       int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
-#ifdef TREE
       tree_node_exit(ply, alpha, beta, score, side);
-#endif
-
       retract(moves.data[i]);
 
       if (score > best) { move_store = moves.data[i]; }
@@ -258,9 +231,7 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
 #endif
 
    int32_t stand = eval(side);
-#ifdef TREE
    tree_node_entry(ply + 1, alpha, beta, side);
-#endif
    if (stand >= beta) { return stand; }
 
    alpha = max(alpha, stand);
@@ -268,12 +239,8 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
    move_array_t moves = sort_moves(generate_captures(side));
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
-
       int32_t score = -quiescence(ply + 1, -beta, -alpha, o(side));
-#ifdef TREE
       tree_node_exit(ply + 1, alpha, beta, score, side);
-#endif
-
       retract(moves.data[i]);
 
       alpha = max(alpha, score);
