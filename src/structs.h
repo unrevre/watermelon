@@ -45,15 +45,15 @@ typedef struct {
  */
 
 typedef union {
-    uint64_t bits;
-    struct {
-        uint8_t hash  : 8;
-        uint8_t depth : 6;
-        uint8_t flags : 2;
-        int16_t score : 14;
-        uint8_t age   : 2;
-        move_t move;
-    } __attribute__((packed)) _;
+   uint64_t bits;
+   struct {
+      uint8_t hash  : 8;
+      uint8_t depth : 6;
+      uint8_t flags : 2;
+      int16_t score : 14;
+      uint8_t age   : 2;
+      move_t move;
+   } __attribute__((packed)) _;
 } ttentry_t;
 
 /*!
@@ -62,8 +62,8 @@ typedef union {
  */
 
 typedef struct {
-    move_t move;
-    uint32_t count;
+   move_t move;
+   uint32_t count;
 } killer_t;
 
 #endif /* STRUCTS_H */
