@@ -10,9 +10,9 @@
 
 state_t game = {{0x0}, {0x0}};
 
-uint32_t board[90];
+uint32_t board[128] __attribute__((aligned(64)));
 
-uint32_t PSHASH[15][90];
+uint32_t PSHASH[15][128] __attribute__((aligned(64)));
 uint32_t MVHASH;
 
 uint32_t hash_state;
@@ -32,7 +32,7 @@ void init_hashes(void) {
    for (uint32_t i = 0x0; i != 0xe; ++i)
       for (uint32_t j = 0; j < 90; ++j)
          PSHASH[i][j] = rand();
-   for (uint32_t i = 0; i < 90; ++i)
+   for (uint32_t i = 0; i < 128; ++i)
       PSHASH[empty][i] = 0x0;
 
    for (uint32_t i = 0x0; i != 0xe; ++i) {
