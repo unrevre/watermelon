@@ -1,6 +1,4 @@
 #include "../../src/debug.h"
-#include "../../src/fen.h"
-#include "../../src/masks.h"
 #include "../../src/perf.h"
 #include "../../src/search.h"
 #include "../../src/state.h"
@@ -16,15 +14,8 @@ int main(int argc, char* argv[]) {
       return 1;
    }
 
-   int depth = atoi(argv[1]);
-
-   init_tables();
-
-   init_masks();
-   uint32_t side = init_fen(argv[2]);
-   init_hashes();
-
-   init_state();
+   uint32_t depth = atoi(argv[1]);
+   uint32_t side = init_state(argv[2]);
 
    printf("fen: %s\n", argv[2]);
    move_t move = iter_dfs(depth, side);
@@ -32,6 +23,7 @@ int main(int argc, char* argv[]) {
    printf("at depth %i\n", depth);
 
    trace(0);
+   printf("\n");
 
    return 0;
 }

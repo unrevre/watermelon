@@ -1,5 +1,6 @@
 #include "state.h"
 
+#include "fen.h"
 #include "inlines.h"
 #include "magics.h"
 #include "masks.h"
@@ -44,19 +45,27 @@ void init_hashes(void) {
    hash_state ^= rand();
 
    MVHASH = rand();
+
+   htable[0] = hash_state;
+   step = 0;
 }
 
 void init_tables(void) {
    memset(htable, 0, 8 * sizeof(uint32_t));
    memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
    memset(ktable, 0, PLYLIMIT * 2 * sizeof(killer_t));
+
+   age = 0;
 }
 
-void init_state(void) {
-   age = 0;
+uint32_t init_state(const char* fen) {
+   init_tables();
+   init_masks();
 
-   step = 0;
-   htable[0] = hash_state;
+   uint32_t side = init_fen(fen);
+   init_hashes();
+
+   return side;
 }
 
 void advance(move_t move) {

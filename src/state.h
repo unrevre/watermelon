@@ -43,7 +43,7 @@ void init_tables(void);
  * @ initialise global state variables
  */
 
-void init_state(void);
+uint32_t init_state(const char* fen);
 
 /*!
  * advance
