@@ -67,12 +67,12 @@ void advance(move_t move) {
 
    htable[++step & 0x7] = hash_state;
 
-   game.pieces[move._.pfrom] ^= PMASK[move._.from] | PMASK[move._.to];
+   game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
    game.pieces[move._.pto] ^= PMASK[move._.to];
    game.pieces[empty] ^= PMASK[move._.from];
 
    uint32_t s = s(move._.pfrom);
-   game.occupancy[s] ^= PMASK[move._.from] | PMASK[move._.to];
+   game.occupancy[s] ^= PMASK[move._.from] ^ PMASK[move._.to];
    game.occupancy[!s] ^= game.occupancy[0] & game.occupancy[1];
 
    board[move._.from] = empty;
@@ -87,12 +87,12 @@ void retract(move_t move) {
 
    --step;
 
-   game.pieces[move._.pfrom] ^= PMASK[move._.from] | PMASK[move._.to];
+   game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
    game.pieces[move._.pto] ^= PMASK[move._.to];
    game.pieces[empty] ^= PMASK[move._.from];
 
    uint32_t s = s(move._.pfrom);
-   game.occupancy[s] ^= PMASK[move._.from] | PMASK[move._.to];
+   game.occupancy[s] ^= PMASK[move._.from] ^ PMASK[move._.to];
    game.occupancy[!s] ^= (game.pieces[empty] & PMASK[move._.to])
       ^ PMASK[move._.to];
 
