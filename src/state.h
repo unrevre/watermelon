@@ -8,9 +8,9 @@
 
 extern state_t game __attribute__((aligned(64)));
 
-extern uint32_t board[90];
+extern uint32_t board[128] __attribute__((aligned(64)));
 
-extern uint32_t PSHASH[15][90];
+extern uint32_t PSHASH[15][128] __attribute__((aligned(64)));
 extern uint32_t MVHASH;
 
 extern uint32_t hash_state;
