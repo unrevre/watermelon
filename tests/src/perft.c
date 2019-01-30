@@ -1,5 +1,3 @@
-#include "../../src/fen.h"
-#include "../../src/masks.h"
 #include "../../src/perf.h"
 #include "../../src/state.h"
 
@@ -14,11 +12,8 @@ int main(int argc, char* argv[]) {
       return 1;
    }
 
-   int depth = atoi(argv[1]);
-
-   init_masks();
-   uint32_t side = init_fen(argv[2]);
-   init_hashes();
+   uint32_t depth = atoi(argv[1]);
+   uint32_t side = init_state(argv[2]);
 
    printf("fen: %s\n", argv[2]);
    printf("perft:");

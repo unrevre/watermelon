@@ -1,6 +1,4 @@
 #include "debug.h"
-#include "fen.h"
-#include "masks.h"
 #include "perf.h"
 #include "search.h"
 #include "state.h"
@@ -29,11 +27,7 @@ int main(int argc, char const* argv[]) {
 }
 
 int watermelon(int32_t depth, char const* fen) {
-   init_tables();
-   init_masks();
-   uint32_t side = init_fen(fen);
-   init_hashes();
-   init_state();
+   uint32_t side = init_state(fen);
 
    printf("fen: %s\n", fen);
 
