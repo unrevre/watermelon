@@ -45,8 +45,8 @@ uint64_t perft_capture(uint32_t depth, uint32_t side) {
 void trace(uint32_t side) {
    ttentry_t entry = {0};
    for (uint32_t t = 0; t != BASKETS; ++t) {
-      uint32_t index = (hash_state & HASHMASK) ^ t;
-      if (ttable[index]._.hash == hash_state >> HASHBITS
+      uint32_t index = (state.hash & HASHMASK) ^ t;
+      if (ttable[index]._.hash == state.hash >> HASHBITS
             && ttable[index]._.flags == FEXACT) {
          entry = ttable[index];
          break;
@@ -58,7 +58,8 @@ void trace(uint32_t side) {
       advance(next);
       if (!in_check(side)) {
          info_transposition_table_entry(entry, '\n');
-         if (step > 3 && htable[step & 0x7] == htable[(step & 0x7) ^ 0x4])
+         if (state.step > 3
+               && htable[state.step & 0x7] == htable[(state.step & 0x7) ^ 0x4])
             printf("  # (%c) infinite repetition!\n", fen_side[!side]);
          else
             trace(o(side));

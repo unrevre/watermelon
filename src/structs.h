@@ -66,4 +66,16 @@ typedef struct {
    uint32_t count;
 } killer_t;
 
+/*!
+ * transient_t
+ * @ transient variable struct
+ */
+
+typedef struct {
+   uint32_t ply;
+   uint32_t side;
+   uint32_t hash;
+   uint32_t step;
+} transient_t;
+
 #endif /* STRUCTS_H */

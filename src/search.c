@@ -17,7 +17,7 @@ move_t iter_dfs(uint32_t depth) {
    for (uint32_t d = 1; d != depth; ++d) {
       tree_root_entry();
       int32_t score = negamax(d, -INFINITY, INFINITY);
-      tree_node_exit(0, -INFINITY, INFINITY, score, side);
+      tree_node_exit(0, -INFINITY, INFINITY, score, state.side);
       tree_root_exit();
 
       if (int32t_abs(score) >= INFDELAY - d) { break; }
@@ -25,8 +25,8 @@ move_t iter_dfs(uint32_t depth) {
 
    move_t move = {0};
    for (uint32_t t = 0; t != BASKETS; ++t) {
-      uint32_t index = (hash_state & HASHMASK) ^ t;
-      if (ttable[index]._.hash == hash_state >> HASHBITS
+      uint32_t index = (state.hash & HASHMASK) ^ t;
+      if (ttable[index]._.hash == state.hash >> HASHBITS
             && ttable[index]._.flags == FEXACT) {
          move = ttable[index]._.move;
          break;
@@ -39,37 +39,37 @@ move_t iter_dfs(uint32_t depth) {
 int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta) {
    debug_variable_increment(1, &nodes);
 
-   alpha = max(alpha, -LSCORE + ply);
-   beta = min(beta, WSCORE - ply);
+   alpha = max(alpha, -LSCORE + state.ply);
+   beta = min(beta, WSCORE - state.ply);
 
-   tree_node_entry(ply, alpha, beta, side);
+   tree_node_entry(state.ply, alpha, beta, state.side);
 
    int32_t alpha_parent = alpha;
    move_t move_store = (move_t){0};
 
-   if (step > 3) {
-      uint32_t curr = step & 0x7;
+   if (state.step > 3) {
+      uint32_t curr = state.step & 0x7;
       if (htable[curr] == htable[curr ^ 0x4]) {
-         uint32_t prev = (step - 1) & 0x7;
-         if (step > 4 && htable[prev] == htable[prev ^ 0x4])
-            return WSCORE - ply;
+         uint32_t prev = (state.step - 1) & 0x7;
+         if (state.step > 4 && htable[prev] == htable[prev ^ 0x4])
+            return WSCORE - state.ply;
          else
             goto search_quiescence;
       }
    }
 
    for (uint32_t t = 0; t < BASKETS; ++t) {
-      ttentry_t entry = ttable[(hash_state & HASHMASK) ^ t];
-      if (entry._.hash == hash_state >> HASHBITS && entry._.move.bits) {
-         if (!is_legal(entry._.move, side)) { continue; }
+      ttentry_t entry = ttable[(state.hash & HASHMASK) ^ t];
+      if (entry._.hash == state.hash >> HASHBITS && entry._.move.bits) {
+         if (!is_legal(entry._.move, state.side)) { continue; }
          move_store = entry._.move;
 
          if (entry._.depth < depth) { continue; }
          debug_variable_increment(1, &tthits);
 
          int32_t score = entry._.score;
-         score = (score > WSCORE - PLYLIMIT) ? score - ply :
-            (score < -LSCORE + PLYLIMIT) ? score + ply : score;
+         score = (score > WSCORE - PLYLIMIT) ? score - state.ply :
+            (score < -LSCORE + PLYLIMIT) ? score + state.ply : score;
 
          switch (entry._.flags) {
             case FEXACT:
@@ -90,17 +90,17 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta) {
 search_quiescence:
    if (!depth) {
       int32_t score = quiescence(alpha, beta);
-      tree_node_exit(ply, alpha, beta, score, side);
+      tree_node_exit(state.ply, alpha, beta, score, state.side);
       return score;
    }
 
-   int32_t best = -INFSCORE + ply;
+   int32_t best = -INFSCORE + state.ply;
 
    if (move_store.bits) {
       advance(move_store);
-      __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
+      __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
       int32_t score = -negamax(depth - 1, -beta, -alpha);
-      tree_node_exit(ply, alpha, beta, score, side);
+      tree_node_exit(state.ply, alpha, beta, score, state.side);
       retract(move_store);
 
       best = max(best, score);
@@ -109,11 +109,11 @@ search_quiescence:
       if (alpha >= beta) { goto search_save; }
    }
 
-   if (ply > 1 && depth > 4 && !in_check(side)) {
+   if (state.ply > 1 && depth > 4 && !in_check(state.side)) {
       move_t null = { ._ = { 0x7f, 0x7f, empty, empty } };
       advance(null);
       int32_t score = -negamax(depth - 3, -beta, -alpha);
-      tree_node_exit(ply, alpha, beta, score, side);
+      tree_node_exit(state.ply, alpha, beta, score, state.side);
       retract(null);
 
       if (score > best) { move_store = (move_t){0}; }
@@ -124,13 +124,13 @@ search_quiescence:
       if (alpha >= beta) { goto search_save; }
    }
 
-   move_array_t moves = sort_moves(generate_pseudolegal(side));
+   move_array_t moves = sort_moves(generate_pseudolegal(state.side));
 
    for (uint32_t i = 0; i != moves.quiet; ++i) {
       advance(moves.data[i]);
-      __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
+      __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
       int32_t score = -negamax(depth - 1, -beta, -alpha);
-      tree_node_exit(ply, alpha, beta, score, side);
+      tree_node_exit(state.ply, alpha, beta, score, state.side);
       retract(moves.data[i]);
 
       if (score > best) { move_store = moves.data[i]; }
@@ -143,12 +143,12 @@ search_quiescence:
 
    move_t move_killer;
    for (uint32_t k = 0; k < 2; ++k) {
-      move_killer = ktable[ply][k].move;
-      if (move_killer.bits && is_legal(move_killer, side)) {
+      move_killer = ktable[state.ply][k].move;
+      if (move_killer.bits && is_legal(move_killer, state.side)) {
          advance(move_killer);
-         __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
+         __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
          int32_t score = -negamax(depth - 1, -beta, -alpha);
-         tree_node_exit(ply, alpha, beta, score, side);
+         tree_node_exit(state.ply, alpha, beta, score, state.side);
          retract(move_killer);
 
          if (score > best) { move_store = move_killer; }
@@ -157,10 +157,10 @@ search_quiescence:
          alpha = max(alpha, score);
 
          if (alpha >= beta) {
-            ktable[ply][k].count++;
-            if (ktable[ply][1].count > ktable[ply][0].count) {
-               ktable[ply][0] = ktable[ply][1];
-               ktable[ply][1] = (killer_t){{0}, 0};
+            ktable[state.ply][k].count++;
+            if (ktable[state.ply][1].count > ktable[state.ply][0].count) {
+               ktable[state.ply][0] = ktable[state.ply][1];
+               ktable[state.ply][1] = (killer_t){{0}, 0};
             }
 
             goto search_free;
@@ -170,9 +170,9 @@ search_quiescence:
 
    for (uint32_t i = moves.quiet; i != moves.count; ++i) {
       advance(moves.data[i]);
-      __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
+      __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
       int32_t score = -negamax(depth - 1, -beta, -alpha);
-      tree_node_exit(ply, alpha, beta, score, side);
+      tree_node_exit(state.ply, alpha, beta, score, state.side);
       retract(moves.data[i]);
 
       if (score > best) { move_store = moves.data[i]; }
@@ -181,14 +181,14 @@ search_quiescence:
       alpha = max(alpha, score);
 
       if (alpha >= beta) {
-         if (!ktable[ply][0].move.bits) {
-            ktable[ply][0].move = move_store;
+         if (!ktable[state.ply][0].move.bits) {
+            ktable[state.ply][0].move = move_store;
          } else {
-            if (!ktable[ply][1].count) {
-               ktable[ply][1].move = move_store;
-               ktable[ply][1].count++;
+            if (!ktable[state.ply][1].count) {
+               ktable[state.ply][1].move = move_store;
+               ktable[state.ply][1].count++;
             } else {
-               ktable[ply][1].count--;
+               ktable[state.ply][1].count--;
             }
          }
 
@@ -208,17 +208,17 @@ search_save:
 int32_t quiescence(int32_t alpha, int32_t beta) {
    debug_variable_increment(1, &qnodes);
 
-   int32_t stand = eval(side);
-   tree_node_entry(ply + 1, alpha, beta, side);
+   int32_t stand = eval(state.side);
+   tree_node_entry(state.ply + 1, alpha, beta, state.side);
    if (stand >= beta) { return stand; }
 
    alpha = max(alpha, stand);
 
-   move_array_t moves = sort_moves(generate_captures(side));
+   move_array_t moves = sort_moves(generate_captures(state.side));
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
       int32_t score = -quiescence(-beta, -alpha);
-      tree_node_exit(ply + 1, alpha, beta, score, side);
+      tree_node_exit(state.ply + 1, alpha, beta, score, state.side);
       retract(moves.data[i]);
 
       alpha = max(alpha, score);
@@ -232,13 +232,13 @@ int32_t quiescence(int32_t alpha, int32_t beta) {
 
 void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
                 move_t move_hashed) {
-   uint32_t index = hash_state & HASHMASK;
+   uint32_t index = state.hash & HASHMASK;
 
    uint8_t flags = (int32t_abs(score) > WSCORE - PLYLIMIT) ? FEXACT :
       (score <= alpha) ? FUPPER : (score >= beta) ? FLOWER : FEXACT;
 
-   score = (score > WSCORE - PLYLIMIT) ? score + ply :
-      (score < -LSCORE + PLYLIMIT) ? score - ply : score;
+   score = (score > WSCORE - PLYLIMIT) ? score + state.ply :
+      (score < -LSCORE + PLYLIMIT) ? score - state.ply : score;
 
    uint32_t replace = HASHSIZE;
    for (uint32_t t = 0; t != BASKETS; ++t) {
@@ -246,7 +246,7 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
       if (!ttable[entry].bits) {
          replace = entry;
          break;
-      } else if (ttable[entry]._.hash == hash_state >> HASHBITS) {
+      } else if (ttable[entry]._.hash == state.hash >> HASHBITS) {
          replace = entry;
          break;
       } else if (ttable[entry]._.age != age) {
@@ -268,6 +268,6 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
    }
 
    ttable[replace] = (ttentry_t) {
-      ._ = { hash_state >> HASHBITS, depth, flags, score, age, move_hashed }
+      ._ = { state.hash >> HASHBITS, depth, flags, score, age, move_hashed }
    };
 }
