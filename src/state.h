@@ -24,6 +24,8 @@ extern uint32_t age;
 
 extern killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
 
+extern uint32_t ply;
+
 /*!
  * init_hashes
  * @ initialise zobrist hashes
