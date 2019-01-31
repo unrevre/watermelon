@@ -107,7 +107,7 @@ void tree_root_exit() {
 
 void tree_node_entry(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
    for (uint32_t t = 0; t < ply - 1; ++t) { printf("│"); }
-   char* fen = dump_fen(side); printf("├┬╸%s\n", fen);
+   char* fen = dump_fen(); printf("├┬╸%s\n", fen);
    for (uint32_t t = 0; t < ply; ++t) { printf("│"); }
    printf("├╸      [%5i, %5i]\n", alpha, beta);
    free(fen);
@@ -116,7 +116,7 @@ void tree_node_entry(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
 void tree_node_exit(uint32_t ply, int32_t alpha, int32_t beta, int32_t score,
                     uint32_t side) {
    for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
-   char* fen = dump_fen(o(side)); printf("├╸%s\n", fen);
+   char* fen = dump_fen(); printf("├╸%s\n", fen);
    for (uint32_t t = 0; t < ply + 1; ++t) { printf("│"); }
    printf("└╸%5i [%5i, %5i]\n", -score, -beta, -alpha);
    free(fen);
