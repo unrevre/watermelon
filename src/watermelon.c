@@ -27,12 +27,12 @@ int main(int argc, char const* argv[]) {
 }
 
 int watermelon(int32_t depth, char const* fen) {
-   uint32_t side = init_state(fen);
+   init_state(fen);
 
    printf("fen: %s\n", fen);
 
    clock_t cpu_time = clock();
-   move_t move = iter_dfs(depth, side);
+   move_t move = iter_dfs(depth);
    cpu_time = clock() - cpu_time;
 
    printf("cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);

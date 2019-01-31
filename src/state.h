@@ -24,6 +24,7 @@ extern uint32_t age;
 
 extern killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
 
+extern uint32_t side;
 extern uint32_t ply;
 
 /*!
@@ -45,7 +46,7 @@ void init_tables(void);
  * @ initialise global state variables
  */
 
-uint32_t init_state(const char* fen);
+void init_state(const char* fen);
 
 /*!
  * advance

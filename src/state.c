@@ -27,6 +27,7 @@ uint32_t age;
 
 killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
 
+uint32_t side;
 uint32_t ply;
 
 void init_hashes(void) {
@@ -60,20 +61,20 @@ void init_tables(void) {
    age = 0;
 }
 
-uint32_t init_state(const char* fen) {
+void init_state(const char* fen) {
    init_tables();
    init_masks();
 
-   uint32_t side = init_fen(fen);
+   side = init_fen(fen);
+
    init_hashes();
 
    ply = 0;
-
-   return side;
 }
 
 void advance(move_t move) {
    ++ply;
+   side = o(side);
 
    hash_state ^= PSHASH[move._.pfrom][move._.from];
    hash_state ^= PSHASH[move._.pfrom][move._.to];
@@ -96,6 +97,7 @@ void advance(move_t move) {
 
 void retract(move_t move) {
    --ply;
+   side = o(side);
 
    hash_state ^= PSHASH[move._.pfrom][move._.from];
    hash_state ^= PSHASH[move._.pfrom][move._.to];
