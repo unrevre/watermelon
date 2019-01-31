@@ -13,7 +13,8 @@ int main(int argc, char* argv[]) {
    }
 
    uint32_t depth = atoi(argv[1]);
-   uint32_t side = init_state(argv[2]);
+
+   init_state(argv[2]);
 
    printf("fen: %s\n", argv[2]);
    printf("perft:");
