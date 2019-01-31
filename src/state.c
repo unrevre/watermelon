@@ -16,19 +16,15 @@ uint32_t board[128] __attribute__((aligned(64)));
 uint32_t PSHASH[15][128] __attribute__((aligned(64)));
 uint32_t MVHASH;
 
-uint32_t hash_state;
-
 move_t history[TURNLIMIT];
 uint32_t htable[8];
-uint32_t step;
 
 ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
 uint32_t age;
 
 killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
 
-uint32_t side;
-uint32_t ply;
+transient_t state;
 
 void init_hashes(void) {
    srand(0x91);
@@ -42,15 +38,14 @@ void init_hashes(void) {
    for (uint32_t i = 0x0; i != 0xe; ++i) {
       __uint128_t piece = game.pieces[i];
       for (; piece; piece &= piece - 1)
-         hash_state ^= PSHASH[i][bsf(piece)];
+         state.hash ^= PSHASH[i][bsf(piece)];
    }
 
-   hash_state ^= rand();
+   state.hash ^= rand();
 
    MVHASH = rand();
 
-   htable[0] = hash_state;
-   step = 0;
+   htable[0] = state.hash;
 }
 
 void init_tables(void) {
@@ -62,26 +57,26 @@ void init_tables(void) {
 }
 
 void init_state(const char* fen) {
+   state = (transient_t){ 0, 0, 0, 0 };
+
    init_tables();
    init_masks();
 
    init_fen(fen);
 
    init_hashes();
-
-   ply = 0;
 }
 
 void advance(move_t move) {
-   ++ply;
-   side = o(side);
+   ++state.ply;
+   state.side = o(state.side);
 
-   hash_state ^= PSHASH[move._.pfrom][move._.from];
-   hash_state ^= PSHASH[move._.pfrom][move._.to];
-   hash_state ^= PSHASH[move._.pto][move._.to];
-   hash_state ^= MVHASH;
+   state.hash ^= PSHASH[move._.pfrom][move._.from];
+   state.hash ^= PSHASH[move._.pfrom][move._.to];
+   state.hash ^= PSHASH[move._.pto][move._.to];
+   state.hash ^= MVHASH;
 
-   htable[++step & 0x7] = hash_state;
+   htable[++state.step & 0x7] = state.hash;
 
    game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
    game.pieces[move._.pto] ^= PMASK[move._.to];
@@ -96,15 +91,15 @@ void advance(move_t move) {
 }
 
 void retract(move_t move) {
-   --ply;
-   side = o(side);
+   --state.ply;
+   state.side = o(state.side);
 
-   hash_state ^= PSHASH[move._.pfrom][move._.from];
-   hash_state ^= PSHASH[move._.pfrom][move._.to];
-   hash_state ^= PSHASH[move._.pto][move._.to];
-   hash_state ^= MVHASH;
+   state.hash ^= PSHASH[move._.pfrom][move._.from];
+   state.hash ^= PSHASH[move._.pfrom][move._.to];
+   state.hash ^= PSHASH[move._.pto][move._.to];
+   state.hash ^= MVHASH;
 
-   --step;
+   --state.step;
 
    game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
    game.pieces[move._.pto] ^= PMASK[move._.to];

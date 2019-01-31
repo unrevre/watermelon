@@ -75,7 +75,7 @@ void init_fen(const char* fen_str) {
       free(lines[i]);
    free(fstr_cat);
 
-   side = (schar == 'b') ? BSIDE : RSIDE;
+   state.side = (schar == 'b') ? BSIDE : RSIDE;
 }
 
 char* info_fen(uint32_t side) {
