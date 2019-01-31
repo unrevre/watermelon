@@ -236,7 +236,7 @@ int32_t quiescence(int32_t alpha, int32_t beta) {
 }
 
 void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
-                move_t move_hashed) {
+                move_t move) {
    uint32_t index = state.hash & HASHMASK;
 
    uint8_t flags = (int32t_abs(score) > WSCORE - PLYLIMIT) ? FEXACT :
@@ -273,6 +273,6 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
    }
 
    ttable[replace] = (ttentry_t) {
-      ._ = { state.hash >> HASHBITS, depth, flags, score, age, move_hashed }
+      ._ = { state.hash >> HASHBITS, depth, flags, score, age, move }
    };
 }
