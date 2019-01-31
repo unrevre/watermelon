@@ -111,10 +111,11 @@ search_quiescence:
    }
 
    if (ply > 1 && depth > 4 && !in_check(side)) {
-      hash_state ^= MVHASH;
+      move_t null = { ._ = { 0x7f, 0x7f, empty, empty } };
+      advance(null);
       int32_t score = -negamax(depth - 3, ply + 1, -beta, -alpha, o(side));
       tree_node_exit(ply, alpha, beta, score, side);
-      hash_state ^= MVHASH;
+      retract(null);
 
       if (score > best) { move_store = (move_t){0}; }
 

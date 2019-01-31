@@ -3,7 +3,7 @@
 __uint128_t NMASK;
 __uint128_t BMASK;
 
-__uint128_t PMASK[90] __attribute__((aligned(64)));
+__uint128_t PMASK[128] __attribute__((aligned(64)));
 
 __uint128_t UMASK[90] __attribute__((aligned(64)));
 __uint128_t LMASK[90] __attribute__((aligned(64)));
