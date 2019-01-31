@@ -1,8 +1,6 @@
 #ifndef PERF_H
 #define PERF_H
 
-#include "structs.h"
-
 #include <stdint.h>
 
 /*!
