@@ -65,7 +65,7 @@ void init_state(const char* fen) {
    init_tables();
    init_masks();
 
-   side = init_fen(fen);
+   init_fen(fen);
 
    init_hashes();
 

@@ -13,7 +13,7 @@ extern char fen_rep[16];
  * # (almost) no sanity checks
  */
 
-uint32_t init_fen(const char* fen_str);
+void init_fen(const char* fen_str);
 
 /*!
  * info_fen

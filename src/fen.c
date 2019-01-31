@@ -12,7 +12,7 @@ char fen_side[2] = {'r', 'b'};
 
 char fen_rep[16] = "KkRrNnCcAaBbPp ";
 
-uint32_t init_fen(const char* fen_str) {
+void init_fen(const char* fen_str) {
    char* lines[10];
    for (uint32_t i = 0; i < 10; ++i)
       lines[i] = malloc(10 * sizeof(char));
@@ -75,11 +75,7 @@ uint32_t init_fen(const char* fen_str) {
       free(lines[i]);
    free(fstr_cat);
 
-   switch (schar) {
-      case 'r': return RSIDE;
-      case 'b': return BSIDE;
-      default: return RSIDE;
-   }
+   side = (schar == 'b') ? BSIDE : RSIDE;
 }
 
 char* info_fen(uint32_t side) {
