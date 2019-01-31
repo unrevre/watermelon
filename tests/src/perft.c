@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 
    printf("fen: %s\n", argv[2]);
    printf("perft:");
-   for (int32_t i = 1; i < depth; ++i)
+   for (uint32_t i = 1; i < depth; ++i)
       printf(" %"PRIu64, perft(i, side));
    printf("\n");
 
