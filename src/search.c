@@ -57,34 +57,8 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta) {
       }
    }
 
-   for (uint32_t t = 0; t < BASKETS; ++t) {
-      ttentry_t entry = ttable[(state.hash & HASHMASK) ^ t];
-      if (entry._.hash == state.hash >> HASHBITS && entry._.move.bits) {
-         if (!is_legal(entry._.move, state.side)) { continue; }
-         move_store = entry._.move;
-
-         if (entry._.depth < depth) { continue; }
-         debug_variable_increment(1, &tthits);
-
-         int32_t score = entry._.score;
-         score = (score > WSCORE - PLYLIMIT) ? score - state.ply :
-            (score < -LSCORE + PLYLIMIT) ? score + state.ply : score;
-
-         switch (entry._.flags) {
-            case FEXACT:
-               return score;
-            case FLOWER:
-               alpha = max(alpha, score);
-               break;
-            case FUPPER:
-               beta = min(beta, score);
-               break;
-         }
-
-         if (alpha >= beta) { return score; }
-         break;
-      }
-   }
+   int32_t best = probe_hash(depth, &alpha, &beta, &move_store);
+   if (best != (int32_t)(-INFSCORE + state.ply)) { return best; }
 
 search_quiescence:
    if (!depth) {
@@ -93,8 +67,6 @@ search_quiescence:
       tree_node_exit(alpha, beta, score, 1);
       return score;
    }
-
-   int32_t best = -INFSCORE + state.ply;
 
    if (move_store.bits) {
       advance(move_store);
@@ -275,4 +247,38 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
    ttable[replace] = (ttentry_t) {
       ._ = { state.hash >> HASHBITS, depth, flags, score, age, move }
    };
+}
+
+int32_t probe_hash(uint32_t depth, int32_t* alpha, int32_t* beta,
+                   move_t* move) {
+   for (uint32_t t = 0; t < BASKETS; ++t) {
+      ttentry_t entry = ttable[(state.hash & HASHMASK) ^ t];
+      if (entry._.hash == state.hash >> HASHBITS && entry._.move.bits) {
+         if (!is_legal(entry._.move, state.side)) { continue; }
+         *move = entry._.move;
+
+         if (entry._.depth < depth) { continue; }
+         debug_variable_increment(1, &tthits);
+
+         int32_t score = entry._.score;
+         score = (score > WSCORE - PLYLIMIT) ? score - state.ply :
+            (score < -LSCORE + PLYLIMIT) ? score + state.ply : score;
+
+         switch (entry._.flags) {
+            case FEXACT:
+               return score;
+            case FLOWER:
+               *alpha = max(*alpha, score);
+               break;
+            case FUPPER:
+               *beta = min(*beta, score);
+               break;
+         }
+
+         if (*alpha >= *beta) { return score; }
+         break;
+      }
+   }
+
+   return -INFSCORE + state.ply;
 }
