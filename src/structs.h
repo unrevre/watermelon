@@ -78,4 +78,16 @@ typedef struct {
    uint32_t step;
 } transient_t;
 
+/*
+ * generator_t
+ * @ move ordering controller
+ */
+
+typedef struct {
+   uint32_t state;
+   uint32_t index;
+   move_array_t moves;
+   move_t move;
+} generator_t;
+
 #endif /* STRUCTS_H */
