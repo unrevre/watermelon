@@ -24,6 +24,6 @@ uint64_t perft_capture(uint32_t depth);
  * @ trace principal variation
  */
 
-void trace();
+void trace(void);
 
 #endif /* PERF_H */

@@ -10,7 +10,7 @@
  * @ print game board (prettily)
  */
 
-void info_game_state();
+void info_game_state(void);
 
 /*!
  * info_move
@@ -72,14 +72,14 @@ void debug_variable_values(uint32_t count, ...);
  * @ print tree root character (entry)
  */
 
-void tree_root_entry();
+void tree_root_entry(void);
 
 /*!
  * tree_root_exit
  * @ print tree root character (exit)
  */
 
-void tree_root_exit();
+void tree_root_exit(void);
 
 /*!
  * tree_node_entry

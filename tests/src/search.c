@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
    info_move(move, ' ');
    printf("at depth %i\n", depth);
 
-   trace(0);
+   trace();
    printf("\n");
 
    return 0;

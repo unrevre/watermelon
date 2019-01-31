@@ -33,6 +33,6 @@ extern __uint128_t FMASKN78;
  * @ initialise masks
  */
 
-void init_masks();
+void init_masks(void);
 
 #endif /* MASKS_H */

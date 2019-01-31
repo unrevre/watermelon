@@ -28,14 +28,14 @@ extern transient_t state;
  * @ initialise zobrist hashes
  */
 
-void init_hashes();
+void init_hashes(void);
 
 /*!
  * init_tables
  * @ initialise tranposition/killer move tables
  */
 
-void init_tables();
+void init_tables(void);
 
 /*!
  * init_state

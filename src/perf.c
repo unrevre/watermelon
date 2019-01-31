@@ -62,7 +62,7 @@ void trace() {
                && htable[state.step & 0x7] == htable[(state.step & 0x7) ^ 0x4])
             printf("  # (%c) infinite repetition!\n", fen_side[state.side]);
          else
-            trace(state.side);
+            trace();
       } else {
          printf("  # (%c) lost!\n", fen_side[o(state.side)]);
       }
