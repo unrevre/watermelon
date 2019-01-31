@@ -16,7 +16,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
 
    for (uint32_t d = 1; d != depth; ++d) {
       tree_root_entry();
-      int32_t score = negamax(d, 1, -INFINITY, INFINITY, side);
+      int32_t score = negamax(d, -INFINITY, INFINITY, side);
       tree_node_exit(0, -INFINITY, INFINITY, score, side);
       tree_root_exit();
 
@@ -36,8 +36,7 @@ move_t iter_dfs(uint32_t depth, uint32_t side) {
    return move;
 }
 
-int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
-                uint32_t side) {
+int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta, uint32_t side) {
    debug_variable_increment(1, &nodes);
 
    alpha = max(alpha, -LSCORE + ply);
@@ -90,7 +89,7 @@ int32_t negamax(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
 
 search_quiescence:
    if (!depth) {
-      int32_t score = quiescence(ply, alpha, beta, side);
+      int32_t score = quiescence(alpha, beta, side);
       tree_node_exit(ply, alpha, beta, score, side);
       return score;
    }
@@ -100,7 +99,7 @@ search_quiescence:
    if (move_store.bits) {
       advance(move_store);
       __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
-      int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
+      int32_t score = -negamax(depth - 1, -beta, -alpha, o(side));
       tree_node_exit(ply, alpha, beta, score, side);
       retract(move_store);
 
@@ -113,7 +112,7 @@ search_quiescence:
    if (ply > 1 && depth > 4 && !in_check(side)) {
       move_t null = { ._ = { 0x7f, 0x7f, empty, empty } };
       advance(null);
-      int32_t score = -negamax(depth - 3, ply + 1, -beta, -alpha, o(side));
+      int32_t score = -negamax(depth - 3, -beta, -alpha, o(side));
       tree_node_exit(ply, alpha, beta, score, side);
       retract(null);
 
@@ -130,7 +129,7 @@ search_quiescence:
    for (uint32_t i = 0; i != moves.quiet; ++i) {
       advance(moves.data[i]);
       __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
-      int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
+      int32_t score = -negamax(depth - 1, -beta, -alpha, o(side));
       tree_node_exit(ply, alpha, beta, score, side);
       retract(moves.data[i]);
 
@@ -148,7 +147,7 @@ search_quiescence:
       if (move_killer.bits && is_legal(move_killer, side)) {
          advance(move_killer);
          __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
-         int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
+         int32_t score = -negamax(depth - 1, -beta, -alpha, o(side));
          tree_node_exit(ply, alpha, beta, score, side);
          retract(move_killer);
 
@@ -172,7 +171,7 @@ search_quiescence:
    for (uint32_t i = moves.quiet; i != moves.count; ++i) {
       advance(moves.data[i]);
       __builtin_prefetch(&ttable[hash_state & (HASHMASK ^ 0x3)], 1, 3);
-      int32_t score = -negamax(depth - 1, ply + 1, -beta, -alpha, o(side));
+      int32_t score = -negamax(depth - 1, -beta, -alpha, o(side));
       tree_node_exit(ply, alpha, beta, score, side);
       retract(moves.data[i]);
 
@@ -201,12 +200,12 @@ search_free:
    free(moves.data);
 
 search_save:
-   store_hash(depth, ply, alpha_parent, beta, best, move_store);
+   store_hash(depth, alpha_parent, beta, best, move_store);
 
    return best;
 }
 
-int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
+int32_t quiescence(int32_t alpha, int32_t beta, uint32_t side) {
    debug_variable_increment(1, &qnodes);
 
    int32_t stand = eval(side);
@@ -218,7 +217,7 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
    move_array_t moves = sort_moves(generate_captures(side));
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
-      int32_t score = -quiescence(ply + 1, -beta, -alpha, o(side));
+      int32_t score = -quiescence(-beta, -alpha, o(side));
       tree_node_exit(ply + 1, alpha, beta, score, side);
       retract(moves.data[i]);
 
@@ -231,8 +230,8 @@ int32_t quiescence(uint32_t ply, int32_t alpha, int32_t beta, uint32_t side) {
    return alpha;
 }
 
-void store_hash(uint32_t depth, uint32_t ply, int32_t alpha, int32_t beta,
-                int32_t score, move_t move_hashed) {
+void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
+                move_t move_hashed) {
    uint32_t index = hash_state & HASHMASK;
 
    uint8_t flags = (int32t_abs(score) > WSCORE - PLYLIMIT) ? FEXACT :
