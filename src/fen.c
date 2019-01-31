@@ -78,7 +78,7 @@ void init_fen(const char* fen_str) {
    state.side = (schar == 'b') ? BSIDE : RSIDE;
 }
 
-char* info_fen(uint32_t side) {
+char* info_fen(void) {
    char* fen_str = malloc(102 * sizeof(char));
 
    uint32_t f = 0;
@@ -98,7 +98,7 @@ char* info_fen(uint32_t side) {
    }
 
    fen_str[--f] = ' ';
-   fen_str[++f] = fen_side[side];
+   fen_str[++f] = fen_side[state.side];
    fen_str[++f] = '\0';
 
    return fen_str;

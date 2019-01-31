@@ -10,15 +10,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-uint64_t perft(uint32_t depth, uint32_t side) {
+uint64_t perft(uint32_t depth) {
    if (!depth) { return 1; }
 
    uint64_t nmoves = 0;
-   move_array_t moves = generate(side);
+   move_array_t moves = generate(state.side);
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
-      if (!in_check(side))
-         nmoves += perft(depth - 1, o(side));
+      if (!in_check(o(state.side)))
+         nmoves += perft(depth - 1);
       retract(moves.data[i]);
    }
    free(moves.data);
@@ -26,15 +26,15 @@ uint64_t perft(uint32_t depth, uint32_t side) {
    return nmoves;
 }
 
-uint64_t perft_capture(uint32_t depth, uint32_t side) {
+uint64_t perft_capture(uint32_t depth) {
    if (!depth) { return 1; }
 
    uint64_t nmoves = 0;
-   move_array_t moves = generate_captures(side);
+   move_array_t moves = generate_captures(state.side);
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
-      if (!in_check(side))
-         nmoves += perft_capture(depth - 1, o(side));
+      if (!in_check(o(state.side)))
+         nmoves += perft_capture(depth - 1);
       retract(moves.data[i]);
    }
    free(moves.data);
@@ -42,7 +42,7 @@ uint64_t perft_capture(uint32_t depth, uint32_t side) {
    return nmoves;
 }
 
-void trace(uint32_t side) {
+void trace(void) {
    ttentry_t entry = {0};
    for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t index = (state.hash & HASHMASK) ^ t;
@@ -54,17 +54,17 @@ void trace(uint32_t side) {
    }
 
    move_t next = entry._.move;
-   if (next.bits && is_legal(next, side)) {
+   if (next.bits && is_legal(next, state.side)) {
       advance(next);
-      if (!in_check(side)) {
+      if (!in_check(o(state.side))) {
          info_transposition_table_entry(entry, '\n');
          if (state.step > 3
                && htable[state.step & 0x7] == htable[(state.step & 0x7) ^ 0x4])
-            printf("  # (%c) infinite repetition!\n", fen_side[!side]);
+            printf("  # (%c) infinite repetition!\n", fen_side[state.side]);
          else
-            trace(o(side));
+            trace();
       } else {
-         printf("  # (%c) lost!\n", fen_side[side]);
+         printf("  # (%c) lost!\n", fen_side[o(state.side)]);
       }
       retract(next);
    }

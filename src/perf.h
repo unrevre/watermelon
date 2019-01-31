@@ -10,20 +10,20 @@
  * @ number of legal moves
  */
 
-uint64_t perft(uint32_t depth, uint32_t side);
+uint64_t perft(uint32_t depth);
 
 /*!
  * perft_capture
  * @ number of legal capture moves
  */
 
-uint64_t perft_capture(uint32_t depth, uint32_t side);
+uint64_t perft_capture(uint32_t depth);
 
 /*!
  * trace
  * @ trace principal variation
  */
 
-void trace(uint32_t side);
+void trace(void);
 
 #endif /* PERF_H */
