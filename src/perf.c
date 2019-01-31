@@ -4,6 +4,7 @@
 #include "fen.h"
 #include "generate.h"
 #include "magics.h"
+#include "memory.h"
 #include "state.h"
 #include "structs.h"
 

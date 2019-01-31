@@ -4,6 +4,7 @@
 #include "inlines.h"
 #include "magics.h"
 #include "masks.h"
+#include "memory.h"
 #include "structs.h"
 
 #include <stdlib.h>
@@ -15,14 +16,6 @@ uint32_t board[128] __attribute__((aligned(64)));
 
 uint32_t PSHASH[15][128] __attribute__((aligned(64)));
 uint32_t MVHASH;
-
-move_t history[TURNLIMIT];
-uint32_t htable[8];
-
-ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
-uint32_t age;
-
-killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
 
 transient_t state;
 
@@ -46,14 +39,6 @@ void init_hashes(void) {
    MVHASH = rand();
 
    htable[0] = state.hash;
-}
-
-void init_tables(void) {
-   memset(htable, 0, 8 * sizeof(uint32_t));
-   memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
-   memset(ktable, 0, PLYLIMIT * 2 * sizeof(killer_t));
-
-   age = 0;
 }
 
 void init_state(const char* fen) {
