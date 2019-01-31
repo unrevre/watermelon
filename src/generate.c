@@ -3,6 +3,7 @@
 #include "inlines.h"
 #include "magics.h"
 #include "masks.h"
+#include "memory.h"
 #include "state.h"
 
 #include <stdlib.h>
@@ -683,4 +684,42 @@ move_array_t sort_moves(move_array_t moves) {
    free(moves.data);
 
    return sorted;
+}
+
+move_t next(generator_t* engine, uint32_t depth) {
+   switch (engine->state) {
+      case 0:
+         ++(engine->state);
+         if (engine->move.bits)
+            return engine->move;
+      case 1:
+         ++(engine->state);
+         if (state.ply > 1 && depth > 4 && !in_check(state.side))
+            return (move_t){ ._ = { 0x7f, 0x7f, empty, empty } };
+      case 2:
+         ++(engine->state);
+         engine->moves = sort_moves(generate_pseudolegal(state.side));
+      case 3:
+         if (engine->index++ < engine->moves.quiet)
+            return engine->moves.data[engine->index - 1];
+      case 4:
+         ++(engine->state);
+         ++(engine->state);
+         move_t killer = ktable[state.ply][0].move;
+         if (killer.bits && is_legal(killer, state.side))
+            return killer;
+      case 5:
+         ++(engine->state);
+         killer = ktable[state.ply][1].move;
+         if (killer.bits && is_legal(killer, state.side))
+            return killer;
+      case 6:
+         ++(engine->state);
+      case 7:
+         if (engine->index++ < engine->moves.count)
+            return engine->moves.data[engine->index - 1];
+      default:
+         return (move_t){0};
+         break;
+   }
 }

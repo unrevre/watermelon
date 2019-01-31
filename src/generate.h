@@ -74,4 +74,11 @@ void add_shiftwise(__uint128_t set, int32_t shift, move_array_t* moves);
 
 move_array_t sort_moves(move_array_t moves);
 
+/*!
+ * next
+ * @ iterate through moves to be searched
+ */
+
+move_t next(generator_t* engine, uint32_t depth);
+
 #endif /* GENERATE_H */
