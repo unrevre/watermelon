@@ -45,7 +45,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta) {
    beta = min(beta, WSCORE - state.ply);
 
    int32_t alpha_parent = alpha;
-   move_t move_store = (move_t){0};
+   move_t store = (move_t){0};
 
    if (state.step > 3) {
       uint32_t curr = state.step & 0x7;
@@ -58,7 +58,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta) {
       }
    }
 
-   int32_t best = probe_hash(depth, &alpha, &beta, &move_store);
+   int32_t best = probe_hash(depth, &alpha, &beta, &store);
    if (best != (int32_t)(-INFSCORE + state.ply)) { return best; }
 
 search_quiescence:
@@ -69,116 +69,57 @@ search_quiescence:
       return score;
    }
 
-   if (move_store.bits) {
-      advance(move_store);
+   generator_t engine = { 0, 0, {0, 0, 0}, store };
+
+   move_t move;
+
+   while ((move = next(&engine, depth)).bits != 0) {
+      uint32_t layers = (move.bits == 0x0e0e7f7f) ? 3 : 1;
+
+      advance(move);
       __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
       tree_node_entry(alpha, beta, 0);
-      int32_t score = -negamax(depth - 1, -beta, -alpha);
+      int32_t score = -negamax(depth - layers, -beta, -alpha);
       tree_node_exit(alpha, beta, score, 0);
-      retract(move_store);
+      retract(move);
 
-      best = max(best, score);
-      alpha = max(alpha, score);
-
-      if (alpha >= beta) { goto search_save; }
-   }
-
-   if (state.ply > 1 && depth > 4 && !in_check(state.side)) {
-      move_t null = { ._ = { 0x7f, 0x7f, empty, empty } };
-      advance(null);
-      tree_node_entry(alpha, beta, 0);
-      int32_t score = -negamax(depth - 3, -beta, -alpha);
-      tree_node_exit(alpha, beta, score, 0);
-      retract(null);
-
-      if (score > best) { move_store = (move_t){0}; }
-
-      best = max(best, score);
-      alpha = max(alpha, score);
-
-      if (alpha >= beta) { goto search_save; }
-   }
-
-   move_array_t moves = sort_moves(generate_pseudolegal(state.side));
-
-   for (uint32_t i = 0; i != moves.quiet; ++i) {
-      advance(moves.data[i]);
-      __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
-      tree_node_entry(alpha, beta, 0);
-      int32_t score = -negamax(depth - 1, -beta, -alpha);
-      tree_node_exit(alpha, beta, score, 0);
-      retract(moves.data[i]);
-
-      if (score > best) { move_store = moves.data[i]; }
-
-      best = max(best, score);
-      alpha = max(alpha, score);
-
-      if (alpha >= beta) { goto search_free; }
-   }
-
-   move_t move_killer;
-   for (uint32_t k = 0; k < 2; ++k) {
-      move_killer = ktable[state.ply][k].move;
-      if (move_killer.bits && is_legal(move_killer, state.side)) {
-         advance(move_killer);
-         __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
-         tree_node_entry(alpha, beta, 0);
-         int32_t score = -negamax(depth - 1, -beta, -alpha);
-         tree_node_exit(alpha, beta, score, 0);
-         retract(move_killer);
-
-         if (score > best) { move_store = move_killer; }
-
-         best = max(best, score);
-         alpha = max(alpha, score);
-
-         if (alpha >= beta) {
-            ktable[state.ply][k].count++;
-            if (ktable[state.ply][1].count > ktable[state.ply][0].count) {
-               ktable[state.ply][0] = ktable[state.ply][1];
-               ktable[state.ply][1] = (killer_t){{0}, 0};
-            }
-
-            goto search_free;
-         }
-      }
-   }
-
-   for (uint32_t i = moves.quiet; i != moves.count; ++i) {
-      advance(moves.data[i]);
-      __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
-      tree_node_entry(alpha, beta, 0);
-      int32_t score = -negamax(depth - 1, -beta, -alpha);
-      tree_node_exit(alpha, beta, score, 0);
-      retract(moves.data[i]);
-
-      if (score > best) { move_store = moves.data[i]; }
+      if (score > best) { store = move; }
 
       best = max(best, score);
       alpha = max(alpha, score);
 
       if (alpha >= beta) {
-         if (!ktable[state.ply][0].move.bits) {
-            ktable[state.ply][0].move = move_store;
-         } else {
-            if (!ktable[state.ply][1].count) {
-               ktable[state.ply][1].move = move_store;
+         switch (engine.state) {
+            case 5:
+               ktable[state.ply][0].count++;
+               break;
+            case 6:
                ktable[state.ply][1].count++;
-            } else {
-               ktable[state.ply][1].count--;
-            }
+               if (ktable[state.ply][1].count > ktable[state.ply][0].count) {
+                  ktable[state.ply][0] = ktable[state.ply][1];
+                  ktable[state.ply][1] = (killer_t){{0}, 0};
+               }
+               break;
+            case 7:
+               if (!ktable[state.ply][0].move.bits) {
+                  ktable[state.ply][0].move = move;
+               } else {
+                  if (!ktable[state.ply][1].count) {
+                     ktable[state.ply][1].move = move;
+                     ktable[state.ply][1].count++;
+                  } else {
+                     ktable[state.ply][1].count--;
+                  }
+               }
+               break;
          }
 
          break;
       }
    }
 
-search_free:
-   free(moves.data);
-
-search_save:
-   store_hash(depth, alpha_parent, beta, best, move_store);
+   if (engine.state > 2) { free(engine.moves.data); }
+   store_hash(depth, alpha_parent, beta, best, store);
 
    return best;
 }
