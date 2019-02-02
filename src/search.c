@@ -18,7 +18,7 @@ move_t iter_dfs(uint32_t depth) {
    for (uint32_t d = 1; d != depth; ++d) {
       tree_root_entry();
       tree_node_entry(-INFINITY, INFINITY);
-      int32_t score = negamax(d, -INFINITY, INFINITY);
+      int32_t score = negamax(d, -INFINITY, INFINITY, 1);
       tree_node_exit(-INFINITY, INFINITY, score);
       tree_root_exit();
 
@@ -38,7 +38,8 @@ move_t iter_dfs(uint32_t depth) {
    return move;
 }
 
-int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta) {
+int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta,
+                uint32_t principal) {
    debug_variable_increment(1, &nodes);
 
    alpha = max(alpha, -LSCORE + state.ply);
@@ -65,13 +66,13 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta) {
 search_quiescence:
    if (!depth) { return quiescence(alpha, beta); }
 
-   if (state.ply > 1 && depth > 4 && !in_check(state.side)) {
+   if (state.ply > 1 && depth > 4 && !principal && !in_check(state.side)) {
       move_t null = { ._ = { 0x7f, 0x7f, empty, empty } };
 
       advance(null);
       __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
       tree_node_entry(alpha, beta);
-      int32_t score = -negamax(depth - 3, -beta, -alpha);
+      int32_t score = -negamax(depth - 3, -beta, -alpha, 0);
       tree_node_exit(alpha, beta, score);
       retract(null);
 
@@ -89,7 +90,7 @@ search_quiescence:
       advance(move);
       __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
       tree_node_entry(alpha, beta);
-      int32_t score = -negamax(depth - 1, -beta, -alpha);
+      int32_t score = -negamax(depth - 1, -beta, -alpha, 1);
       tree_node_exit(alpha, beta, score);
       retract(move);
 
