@@ -79,6 +79,6 @@ move_array_t sort_moves(move_array_t moves);
  * @ iterate through moves to be searched
  */
 
-move_t next(generator_t* engine, uint32_t depth);
+move_t next(generator_t* engine);
 
 #endif /* GENERATE_H */
