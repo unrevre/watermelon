@@ -686,7 +686,7 @@ move_array_t sort_moves(move_array_t moves) {
    return sorted;
 }
 
-move_t next(generator_t* engine, uint32_t depth) {
+move_t next(generator_t* engine) {
    switch (engine->state) {
       case 0:
          ++(engine->state);
@@ -694,28 +694,24 @@ move_t next(generator_t* engine, uint32_t depth) {
             return engine->move;
       case 1:
          ++(engine->state);
-         if (state.ply > 1 && depth > 4 && !in_check(state.side))
-            return (move_t){ ._ = { 0x7f, 0x7f, empty, empty } };
-      case 2:
-         ++(engine->state);
          engine->moves = sort_moves(generate_pseudolegal(state.side));
-      case 3:
+      case 2:
          if (engine->index++ < engine->moves.quiet)
             return engine->moves.data[engine->index - 1];
-      case 4:
+      case 3:
          ++(engine->state);
          ++(engine->state);
          move_t killer = ktable[state.ply][0].move;
          if (killer.bits && is_legal(killer, state.side))
             return killer;
-      case 5:
+      case 4:
          ++(engine->state);
          killer = ktable[state.ply][1].move;
          if (killer.bits && is_legal(killer, state.side))
             return killer;
-      case 6:
+      case 5:
          ++(engine->state);
-      case 7:
+      case 6:
          if (engine->index++ < engine->moves.count)
             return engine->moves.data[engine->index - 1];
       default:

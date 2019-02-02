@@ -65,17 +65,31 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta) {
 search_quiescence:
    if (!depth) { return quiescence(alpha, beta); }
 
+   if (state.ply > 1 && depth > 4 && !in_check(state.side)) {
+      move_t null = { ._ = { 0x7f, 0x7f, empty, empty } };
+
+      advance(null);
+      __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
+      tree_node_entry(alpha, beta);
+      int32_t score = -negamax(depth - 3, -beta, -alpha);
+      tree_node_exit(alpha, beta, score);
+      retract(null);
+
+      best = max(best, score);
+      alpha = max(alpha, score);
+
+      if (alpha >= beta) { return best; }
+   }
+
    generator_t engine = { 0, 0, {0, 0, 0}, store };
 
    move_t move;
 
-   while ((move = next(&engine, depth)).bits != 0) {
-      uint32_t layers = (move.bits == 0x0e0e7f7f) ? 3 : 1;
-
+   while ((move = next(&engine)).bits != 0) {
       advance(move);
       __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
       tree_node_entry(alpha, beta);
-      int32_t score = -negamax(depth - layers, -beta, -alpha);
+      int32_t score = -negamax(depth - 1, -beta, -alpha);
       tree_node_exit(alpha, beta, score);
       retract(move);
 
@@ -86,17 +100,17 @@ search_quiescence:
 
       if (alpha >= beta) {
          switch (engine.state) {
-            case 5:
+            case 4:
                ktable[state.ply][0].count++;
                break;
-            case 6:
+            case 5:
                ktable[state.ply][1].count++;
                if (ktable[state.ply][1].count > ktable[state.ply][0].count) {
                   ktable[state.ply][0] = ktable[state.ply][1];
                   ktable[state.ply][1] = (killer_t){{0}, 0};
                }
                break;
-            case 7:
+            case 6:
                if (!ktable[state.ply][0].move.bits) {
                   ktable[state.ply][0].move = move;
                } else {
@@ -114,7 +128,7 @@ search_quiescence:
       }
    }
 
-   if (engine.state > 2) { free(engine.moves.data); }
+   if (engine.state > 1) { free(engine.moves.data); }
    store_hash(depth, alpha_parent, beta, best, store);
 
    return best;
