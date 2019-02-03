@@ -41,7 +41,7 @@ int watermelon(int32_t depth, char const* fen) {
    info_move(move, '\n');
    printf("\n");
 
-   trace();
+   trace_principal_variation();
    printf("\n");
 
    debug_variable_headers(3, "alpha-beta nodes", "quiescence nodes",
