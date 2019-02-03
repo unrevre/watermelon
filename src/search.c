@@ -60,8 +60,10 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta,
       }
    }
 
-   int32_t best = probe_hash(depth, &alpha, &beta, &store);
-   if (best != (int32_t)(-INFSCORE + state.ply)) { return best; }
+   int32_t best = -INFSCORE + state.ply;
+   if (!principal && (best = probe_hash(depth, &alpha, &beta, &store))
+         != (int32_t)(-INFSCORE + state.ply))
+      return best;
 
 search_quiescence:
    if (!depth) { return quiescence(alpha, beta); }
@@ -72,7 +74,7 @@ search_quiescence:
       advance(null);
       __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
       tree_node_entry(alpha, beta);
-      int32_t score = -negamax(depth - 3, -beta, -alpha, 0);
+      int32_t score = -negamax(depth - 3, -beta, -beta + 1, 0);
       tree_node_exit(alpha, beta, score);
       retract(null);
 
@@ -90,7 +92,14 @@ search_quiescence:
       advance(move);
       __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
       tree_node_entry(alpha, beta);
-      int32_t score = -negamax(depth - 1, -beta, -alpha, 1);
+      int32_t score;
+      if (best == (int32_t)(-INFSCORE + state.ply)) {
+         score = -negamax(depth - 1, -beta, -alpha, principal);
+      } else {
+         score = -negamax(depth - 1, -alpha - 1, -alpha, 0);
+         if (score > alpha && score < beta)
+            score = -negamax(depth - 1, -beta, -alpha, 1);
+      }
       tree_node_exit(alpha, beta, score);
       retract(move);
 
