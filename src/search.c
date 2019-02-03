@@ -17,9 +17,9 @@ move_t iter_dfs(uint32_t depth) {
 
    for (uint32_t d = 1; d != depth; ++d) {
       tree_root_entry();
-      tree_node_entry(-INFINITY, INFINITY, 0);
+      tree_node_entry(-INFINITY, INFINITY);
       int32_t score = negamax(d, -INFINITY, INFINITY);
-      tree_node_exit(-INFINITY, INFINITY, score, 0);
+      tree_node_exit(-INFINITY, INFINITY, score);
       tree_root_exit();
 
       if (int32t_abs(score) >= INFDELAY - d) { break; }
@@ -62,12 +62,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta) {
    if (best != (int32_t)(-INFSCORE + state.ply)) { return best; }
 
 search_quiescence:
-   if (!depth) {
-      tree_node_entry(alpha, beta, 1);
-      int32_t score = quiescence(alpha, beta);
-      tree_node_exit(alpha, beta, score, 1);
-      return score;
-   }
+   if (!depth) { return quiescence(alpha, beta); }
 
    generator_t engine = { 0, 0, {0, 0, 0}, store };
 
@@ -78,9 +73,9 @@ search_quiescence:
 
       advance(move);
       __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
-      tree_node_entry(alpha, beta, 0);
+      tree_node_entry(alpha, beta);
       int32_t score = -negamax(depth - layers, -beta, -alpha);
-      tree_node_exit(alpha, beta, score, 0);
+      tree_node_exit(alpha, beta, score);
       retract(move);
 
       if (score > best) { store = move; }
@@ -135,9 +130,9 @@ int32_t quiescence(int32_t alpha, int32_t beta) {
    move_array_t moves = sort_moves(generate_captures(state.side));
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
-      tree_node_entry(alpha, beta, 1);
+      tree_node_entry(alpha, beta);
       int32_t score = -quiescence(-beta, -alpha);
-      tree_node_exit(alpha, beta, score, 1);
+      tree_node_exit(alpha, beta, score);
       retract(moves.data[i]);
 
       alpha = max(alpha, score);

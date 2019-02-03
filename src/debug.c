@@ -105,19 +105,18 @@ void tree_root_exit(void) {
    printf("╹\n");
 }
 
-void tree_node_entry(int32_t alpha, int32_t beta, int32_t offset) {
-   for (uint32_t t = 0; t < state.ply + offset; ++t) { printf("│"); }
+void tree_node_entry(int32_t alpha, int32_t beta) {
+   for (uint32_t t = 0; t < state.ply; ++t) { printf("│"); }
    char* fen = info_fen(); printf("├┬╸%s\n", fen);
-   for (uint32_t t = 0; t < state.ply + offset + 1; ++t) { printf("│"); }
+   for (uint32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
    printf("├╸      [%5i, %5i]\n", alpha, beta);
    free(fen);
 }
 
-void tree_node_exit(int32_t alpha, int32_t beta, int32_t score,
-                    int32_t offset) {
-   for (uint32_t t = 0; t < state.ply + offset + 1; ++t) { printf("│"); }
+void tree_node_exit(int32_t alpha, int32_t beta, int32_t score) {
+   for (uint32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
    char* fen = info_fen(); printf("├╸%s\n", fen);
-   for (uint32_t t = 0; t < state.ply + offset + 1; ++t) { printf("│"); }
+   for (uint32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
    printf("└╸%5i [%5i, %5i]\n", -score, -beta, -alpha);
    free(fen);
 }
