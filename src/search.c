@@ -43,6 +43,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta) {
 
    alpha = max(alpha, -LSCORE + state.ply);
    beta = min(beta, WSCORE - state.ply);
+   if (alpha >= beta) { return alpha; }
 
    int32_t alpha_parent = alpha;
    move_t store = (move_t){0};
