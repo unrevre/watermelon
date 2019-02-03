@@ -3,7 +3,7 @@
 
 /* search */
 
-#define PLYSTART 1
+#define PLYSTART 0
 #define PLYDELAY 2
 #define PLYLIMIT 32
 
