@@ -59,11 +59,16 @@ void trace(void) {
       advance(next);
       if (!in_check(o(state.side))) {
          info_transposition_table_entry(entry, '\n');
-         if (state.step > 3
-               && htable[state.step & 0x7] == htable[(state.step & 0x7) ^ 0x4])
-            printf("  # (%c) infinite repetition!\n", fen_side[state.side]);
-         else
+         if (state.step > 4) {
+            uint32_t curr = state.step & 0x7;
+            uint32_t prev = (state.step - 1) & 0x7;
+            if (htable[curr] == htable[curr ^ 0x4]
+                  && htable[prev] == htable[prev ^ 0x4])
+               printf("  # (%c) infinite repetition!\n",
+                  fen_side[o(state.side)]);
+         } else {
             trace();
+         }
       } else {
          printf("  # (%c) lost!\n", fen_side[o(state.side)]);
       }
