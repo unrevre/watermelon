@@ -104,34 +104,34 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta,
       best = max(best, score);
       alpha = max(alpha, score);
 
-      if (alpha >= beta) {
-         switch (engine.state) {
-            case 4:
-               ktable[state.ply][0].count++;
-               break;
-            case 5:
-               ktable[state.ply][1].count++;
-               if (ktable[state.ply][1].count > ktable[state.ply][0].count) {
-                  ktable[state.ply][0] = ktable[state.ply][1];
-                  ktable[state.ply][1] = (killer_t){{0}, 0};
-               }
-               break;
-            case 6:
-               if (!ktable[state.ply][0].move.bits) {
-                  ktable[state.ply][0].move = move;
-               } else {
-                  if (!ktable[state.ply][1].count) {
-                     ktable[state.ply][1].move = move;
-                     ktable[state.ply][1].count++;
-                  } else {
-                     ktable[state.ply][1].count--;
-                  }
-               }
-               break;
-         }
+      if (alpha < beta) { continue; }
 
-         break;
+      switch (engine.state) {
+         case 4:
+            ktable[state.ply][0].count++;
+            break;
+         case 5:
+            ktable[state.ply][1].count++;
+            if (ktable[state.ply][1].count > ktable[state.ply][0].count) {
+               ktable[state.ply][0] = ktable[state.ply][1];
+               ktable[state.ply][1] = (killer_t){{0}, 0};
+            }
+            break;
+         case 6:
+            if (!ktable[state.ply][0].move.bits) {
+               ktable[state.ply][0].move = move;
+            } else {
+               if (!ktable[state.ply][1].count) {
+                  ktable[state.ply][1].move = move;
+                  ktable[state.ply][1].count++;
+               } else {
+                  ktable[state.ply][1].count--;
+               }
+            }
+            break;
       }
+
+      break;
    }
 
    if (engine.state > 1) { free(engine.moves.data); }
