@@ -43,7 +43,7 @@ uint64_t perft_capture(uint32_t depth) {
    return nmoves;
 }
 
-void trace() {
+void trace_principal_variation() {
    ttentry_t entry = {0};
    for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t index = (state.hash & HASHMASK) ^ t;
@@ -67,7 +67,7 @@ void trace() {
                printf("  # (%c) infinite repetition!\n",
                   fen_side[o(state.side)]);
          } else {
-            trace();
+            trace_principal_variation();
          }
       } else {
          printf("  # (%c) lost!\n", fen_side[o(state.side)]);
