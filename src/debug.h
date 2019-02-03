@@ -86,15 +86,14 @@ void tree_root_exit(void);
  * @ print node status (on entry) in tree format
  */
 
-void tree_node_entry(int32_t alpha, int32_t beta, int32_t offset);
+void tree_node_entry(int32_t alpha, int32_t beta);
 
 /*!
  * tree_node_exit
  * @ print node status (on exit) in tree format
  */
 
-void tree_node_exit(int32_t alpha, int32_t beta, int32_t score,
-                    int32_t offset);
+void tree_node_exit(int32_t alpha, int32_t beta, int32_t score);
 #else
 #define tree_root_entry(...)
 #define tree_root_exit(...)
