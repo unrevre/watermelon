@@ -696,8 +696,8 @@ move_t next(generator_t* engine) {
          ++(engine->state);
          engine->moves = sort_moves(generate_pseudolegal(state.side));
       case 2:
-         if (engine->index++ < engine->moves.quiet)
-            return engine->moves.data[engine->index - 1];
+         if (engine->index < engine->moves.quiet)
+            return engine->moves.data[engine->index++];
       case 3:
          ++(engine->state);
          ++(engine->state);
@@ -712,8 +712,8 @@ move_t next(generator_t* engine) {
       case 5:
          ++(engine->state);
       case 6:
-         if (engine->index++ < engine->moves.count)
-            return engine->moves.data[engine->index - 1];
+         if (engine->index < engine->moves.count)
+            return engine->moves.data[engine->index++];
       default:
          return (move_t){0};
          break;
