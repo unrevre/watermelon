@@ -20,6 +20,6 @@ void init_fen(const char* fen_str);
  * @ dump current game state as fen string
  */
 
-char* dump_fen(void);
+char* info_fen(void);
 
 #endif /* FEN_H */

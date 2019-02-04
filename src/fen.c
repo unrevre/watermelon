@@ -78,7 +78,7 @@ void init_fen(const char* fen_str) {
    state.side = (schar == 'b') ? BSIDE : RSIDE;
 }
 
-char* dump_fen() {
+char* info_fen() {
    char* fen_str = malloc(102 * sizeof(char));
 
    uint32_t f = 0;

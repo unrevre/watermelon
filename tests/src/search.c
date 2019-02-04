@@ -1,4 +1,5 @@
 #include "../../src/debug.h"
+#include "../../src/magics.h"
 #include "../../src/perf.h"
 #include "../../src/search.h"
 #include "../../src/state.h"
@@ -20,11 +21,23 @@ int main(int argc, char* argv[]) {
 
    printf("fen: %s\n", argv[2]);
    move_t move = iter_dfs(depth);
-   info_move(move, ' ');
-   printf("at depth %i\n", depth);
 
-   trace_principal_variation();
+   char* buffer = calloc(201, sizeof(char));
+   char** buffers = calloc(PLYLIMIT, sizeof(char*));
+
+   info_move(buffer, move);
+   printf("%s at depth %i\n", buffer, depth);
+
+   trace_principal_variation(buffers);
+   for (uint32_t i = 0; i < PLYLIMIT && buffers[i]; ++i)
+      printf("%s", buffers[i]);
    printf("\n");
+
+   for (uint32_t i = 0; i < PLYLIMIT && buffers[i]; ++i)
+      free(buffers[i]);
+
+   free(buffer);
+   free(buffers);
 
    return 0;
 }
