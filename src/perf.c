@@ -8,8 +8,8 @@
 #include "state.h"
 #include "structs.h"
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 uint64_t perft(uint32_t depth) {
    if (!depth) { return 1; }
@@ -43,7 +43,7 @@ uint64_t perft_capture(uint32_t depth) {
    return nmoves;
 }
 
-void trace_principal_variation(void) {
+void trace_principal_variation(char** buffer) {
    ttentry_t entry = {0};
    for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t index = (state.hash & HASHMASK) ^ t;
@@ -58,19 +58,21 @@ void trace_principal_variation(void) {
    if (next.bits && is_legal(next, state.side)) {
       advance(next);
       if (!in_check(o(state.side))) {
-         info_transposition_table_entry(entry, '\n');
+         *buffer = calloc(41, sizeof(char));
+         info_transposition_table_entry(*buffer, entry);
          if (state.step > 4) {
             uint32_t curr = state.step & 0x7;
             uint32_t prev = (state.step - 1) & 0x7;
             if (htable[curr] == htable[curr ^ 0x4]
                   && htable[prev] == htable[prev ^ 0x4])
-               printf("  # (%c) infinite repetition!\n",
-                  fen_side[o(state.side)]);
+               strcat(*buffer, " %\n");
          } else {
-            trace_principal_variation();
+            strcat(*buffer, "  \n");
+            trace_principal_variation(++buffer);
          }
       } else {
-         printf("  # (%c) lost!\n", fen_side[o(state.side)]);
+         --buffer;
+         (*buffer)[strlen(*buffer) - 2] = '#';
       }
       retract(next);
    }

@@ -9,50 +9,40 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void info_game_state(void) {
+int32_t info_game_state(char* buffer) {
    char b[90] = {0};
 
-   for (uint32_t i = 0; i < 90; ++i)
-      b[i] = ' ';
-
-   for (uint32_t i = 0x0; i < 0xf; ++i)
+   for (uint32_t i = 0x0; i != empty; ++i)
       for (__uint128_t bits = game.pieces[i]; bits; bits &= bits - 1)
          b[bsf_branchless(bits)] = fen_rep[i];
 
-   printf("┎───────────────────┒\n");
+   uint32_t g = 0;
    for (uint32_t i = 10; i > 0; --i) {
-      switch (i) {
-         case 5: case 6:
-            printf("┠");
-            for (uint32_t j = 0; j < 9; ++j) {
-               if (b[9 * (i - 1) + j] == ' ')
-                  printf("──");
-               else
-                  printf("─%c", b[9 * (i - 1) + j]);
-            }
-            printf("─┨\n");
-            break;
-         default:
-            printf("┃");
-            for (uint32_t j = 0; j < 9; ++j)
-               printf(" %c", b[9 * (i - 1) + j]);
-            printf(" ┃\n");
-            break;
+      char filler = (i == 5 || i == 6) ? '-' : ' ';
+      for (uint32_t j = 0; j < 9; ++j) {
+         buffer[g++] = filler;
+         buffer[g++] = (b[9 * (i - 1) + j]) ?
+            b[9 * (i - 1) + j] : filler;
       }
+
+      buffer[g++] = filler;
+      buffer[g++] = '\n';
    }
-   printf("┖───────────────────┚\n");
-   printf("\n");
+
+   buffer[g++] = '\0';
+
+   return g;
 }
 
-void info_move(move_t move, char end) {
-   printf("%c: %2i - %2i [%c]%c", fen_rep[move._.pfrom],
-      move._.from, move._.to, fen_rep[move._.pto], end);
+int32_t info_move(char* buffer, move_t move) {
+   return sprintf(buffer, "%c: %2i - %2i [%c]",
+      fen_rep[move._.pfrom], move._.from, move._.to, fen_rep[move._.pto]);
 }
 
-void info_transposition_table_entry(ttentry_t entry, char end) {
-   info_move(entry._.move, ' ');
-   printf(" %5i (%2u) [0x%x, 0x%x]%c", entry._.score, entry._.depth,
-      entry._.flags, entry._.age, end);
+int32_t info_transposition_table_entry(char* buffer, ttentry_t entry) {
+   int32_t offset = info_move(buffer, entry._.move);
+   return offset + sprintf(buffer + offset, "  %5i (%2u) [0x%x, 0x%x]",
+      entry._.score, entry._.depth, entry._.flags, entry._.age);
 }
 
 #ifdef DEBUG

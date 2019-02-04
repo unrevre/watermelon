@@ -10,21 +10,21 @@
  * @ print current game state
  */
 
-void info_game_state(void);
+int32_t info_game_state(char* buffer);
 
 /*!
  * info_move
  * @ print move details
  */
 
-void info_move(move_t move, char end);
+int32_t info_move(char* buffer, move_t move);
 
 /*!
  * info_transposition_table_entry
  * @ print transposition table entry details
  */
 
-void info_transposition_table_entry(ttentry_t entry, char end);
+int32_t info_transposition_table_entry(char* buffer, ttentry_t entry);
 
 #ifdef DEBUG
 extern uint32_t nodes;
