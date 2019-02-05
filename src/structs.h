@@ -90,4 +90,14 @@ typedef struct {
    move_t move;
 } generator_t;
 
+/*
+ * debug_t
+ * @ string buffers for informative/debugging purposes
+ */
+
+typedef struct {
+   char* buffer;
+   char** buffers;
+} debug_t;
+
 #endif /* STRUCTS_H */
