@@ -1,7 +1,4 @@
 #include "debug.h"
-#include "fen.h"
-#include "magics.h"
-#include "perf.h"
 #include "search.h"
 #include "state.h"
 
@@ -31,9 +28,10 @@ int main(int argc, char const* argv[]) {
 int watermelon(int32_t depth, char const* fen) {
    init_state(fen);
 
-   char* fen_str = info_fen();
-   printf("%s\n", fen_str);
-   free(fen_str);
+   debug_t info;
+   init_debug(&info);
+
+   printf("%s\n", info_fen(&info));
 
    clock_t cpu_time = clock();
    move_t move = iter_dfs(depth);
@@ -41,34 +39,16 @@ int watermelon(int32_t depth, char const* fen) {
 
    printf("cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
 
-   char* buffer = calloc(201, sizeof(char));
-   char** buffers = calloc(PLYLIMIT, sizeof(char*));
+   printf("%s\n\n", info_game_state(&info));
+   printf("%s\n\n", info_move(&info, move));
+   printf("%s\n", info_principal_variation(&info));
 
-   info_game_state(buffer);
-   printf("%s\n", buffer);
-
-   info_move(buffer, move);
-   printf("%s\n", buffer);
-
-   printf("\n");
-
-   trace_principal_variation(buffers);
-   for (uint32_t i = 0; i < PLYLIMIT && buffers[i]; ++i)
-      printf("%s", buffers[i]);
-
-   printf("\n");
+   free_debug(&info);
 
    debug_variable_headers(3,
       "alpha-beta nodes", "quiescence nodes", "hash table hits");
    debug_variable_values(3, nodes, qnodes, tthits);
-
    printf("\n");
-
-   for (uint32_t i = 0; i < PLYLIMIT && buffers[i]; ++i)
-      free(buffers[i]);
-
-   free(buffer);
-   free(buffers);
 
    return 0;
 }

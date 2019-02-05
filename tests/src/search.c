@@ -1,6 +1,4 @@
 #include "../../src/debug.h"
-#include "../../src/magics.h"
-#include "../../src/perf.h"
 #include "../../src/search.h"
 #include "../../src/state.h"
 
@@ -15,29 +13,20 @@ int main(int argc, char* argv[]) {
       return 1;
    }
 
-   uint32_t depth = atoi(argv[1]);
-
    init_state(argv[2]);
 
-   printf("fen: %s\n", argv[2]);
+   debug_t info;
+   init_debug(&info);
+
+   printf("%s\n", info_fen(&info));
+
+   uint32_t depth = atoi(argv[1]);
+
    move_t move = iter_dfs(depth);
+   printf("%s at depth %i\n", info_move(&info, move), depth);
+   printf("%s\n", info_principal_variation(&info));
 
-   char* buffer = calloc(201, sizeof(char));
-   char** buffers = calloc(PLYLIMIT, sizeof(char*));
-
-   info_move(buffer, move);
-   printf("%s at depth %i\n", buffer, depth);
-
-   trace_principal_variation(buffers);
-   for (uint32_t i = 0; i < PLYLIMIT && buffers[i]; ++i)
-      printf("%s", buffers[i]);
-   printf("\n");
-
-   for (uint32_t i = 0; i < PLYLIMIT && buffers[i]; ++i)
-      free(buffers[i]);
-
-   free(buffer);
-   free(buffers);
+   free_debug(&info);
 
    return 0;
 }

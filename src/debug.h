@@ -6,25 +6,53 @@
 #include <stdint.h>
 
 /*!
- * info_game_state
- * @ print current game state
+ * init_debug
+ * @ initialise buffers
  */
 
-int32_t info_game_state(char* buffer);
+void init_debug(debug_t* info);
+
+/*!
+ * free_debug
+ * @ free allocated memory
+ */
+
+void free_debug(debug_t* info);
+
+/*!
+ * info_fen
+ * @ return fen string of current game state
+ */
+
+char* info_fen(debug_t* info);
+
+/*!
+ * info_game_state
+ * @ return string of current game state
+ */
+
+char* info_game_state(debug_t* info);
 
 /*!
  * info_move
- * @ print move details
+ * @ return string of move details
  */
 
-int32_t info_move(char* buffer, move_t move);
+char* info_move(debug_t* info, move_t move);
 
 /*!
  * info_transposition_table_entry
- * @ print transposition table entry details
+ * @ return string of transposition table entry details
  */
 
-int32_t info_transposition_table_entry(char* buffer, ttentry_t entry);
+char* info_transposition_table_entry(debug_t* info, ttentry_t entry);
+
+/*!
+ * info_principal_variation
+ * @ trace and return string of principal variation
+ */
+
+char* info_principal_variation(debug_t* info);
 
 #ifdef DEBUG
 extern uint32_t nodes;

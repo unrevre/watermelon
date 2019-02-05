@@ -5,6 +5,7 @@
 #include "state.h"
 
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -76,30 +77,4 @@ void init_fen(const char* fen_str) {
    free(fstr_cat);
 
    state.side = (schar == 'b') ? BSIDE : RSIDE;
-}
-
-char* info_fen(void) {
-   char* fen_str = malloc(102 * sizeof(char));
-
-   uint32_t f = 0;
-   for (uint32_t i = 0; i < 10; ++i) {
-      uint32_t s = 0;
-      for (uint32_t j = 0; j < 9; ++j) {
-         if (board[(9 - i) * 9 + j] == empty) {
-            ++s;
-         } else {
-            if (s) { fen_str[f++] = '0' + s; s = 0; }
-            fen_str[f++] = fen_rep[board[(9 - i) * 9 + j]];
-         }
-      }
-
-      if (s) { fen_str[f++] = '0' + s; }
-      fen_str[f++] = '/';
-   }
-
-   fen_str[--f] = ' ';
-   fen_str[++f] = fen_side[state.side];
-   fen_str[++f] = '\0';
-
-   return fen_str;
 }

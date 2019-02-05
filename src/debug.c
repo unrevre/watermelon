@@ -1,15 +1,59 @@
 #include "debug.h"
 
 #include "fen.h"
+#include "generate.h"
 #include "inlines.h"
 #include "magics.h"
+#include "memory.h"
 #include "state.h"
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-int32_t info_game_state(char* buffer) {
+void init_debug(debug_t* info) {
+   info->buffer = calloc(1281, sizeof(char));
+   info->buffers = calloc(PLYLIMIT, sizeof(char*));
+}
+
+void free_debug(debug_t* info) {
+   for (uint32_t i = 0; i < PLYLIMIT && info->buffers[i]; ++i)
+      free(info->buffers[i]);
+
+   free(info->buffer);
+   free(info->buffers);
+}
+
+void impl_fen(char* buffer) {
+   uint32_t f = 0;
+   for (uint32_t i = 0; i < 10; ++i) {
+      uint32_t s = 0;
+      for (uint32_t j = 0; j < 9; ++j) {
+         if (board[(9 - i) * 9 + j] == empty) {
+            ++s;
+         } else {
+            if (s) { buffer[f++] = '0' + s; s = 0; }
+            buffer[f++] = fen_rep[board[(9 - i) * 9 + j]];
+         }
+      }
+
+      if (s) { buffer[f++] = '0' + s; }
+      buffer[f++] = '/';
+   }
+
+   buffer[--f] = ' ';
+   buffer[++f] = fen_side[state.side];
+   buffer[++f] = '\0';
+}
+
+char* info_fen(debug_t* info) {
+   impl_fen(info->buffer);
+
+   return info->buffer;
+}
+
+void impl_game_state(char* buffer) {
    char b[90] = {0};
 
    for (uint32_t i = 0x0; i != empty; ++i)
@@ -30,19 +74,80 @@ int32_t info_game_state(char* buffer) {
    }
 
    buffer[g++] = '\0';
-
-   return g;
 }
 
-int32_t info_move(char* buffer, move_t move) {
-   return sprintf(buffer, "%c: %2i - %2i [%c]",
+char* info_game_state(debug_t* info) {
+   impl_game_state(info->buffer);
+
+   return info->buffer;
+}
+
+void impl_move(char* buffer, move_t move) {
+   sprintf(buffer, "%c: %2i - %2i [%c]",
       fen_rep[move._.pfrom], move._.from, move._.to, fen_rep[move._.pto]);
 }
 
-int32_t info_transposition_table_entry(char* buffer, ttentry_t entry) {
-   int32_t offset = info_move(buffer, entry._.move);
-   return offset + sprintf(buffer + offset, "  %5i (%2u) [0x%x, 0x%x]",
+char* info_move(debug_t* info, move_t move) {
+   impl_move(info->buffer, move);
+
+   return info->buffer;
+}
+
+void impl_transposition_table_entry(char* buffer, ttentry_t entry) {
+   impl_move(buffer, entry._.move);
+   sprintf(buffer + strlen(buffer), "  %5i (%2u) [0x%x, 0x%x]",
       entry._.score, entry._.depth, entry._.flags, entry._.age);
+}
+
+char* info_transposition_table_entry(debug_t* info, ttentry_t entry) {
+   impl_transposition_table_entry(info->buffer, entry);
+
+   return info->buffer;
+}
+
+void trace_principal_variation(char** buffer) {
+   ttentry_t entry = {0};
+   for (uint32_t t = 0; t != BASKETS; ++t) {
+      uint32_t index = (state.hash & HASHMASK) ^ t;
+      if (ttable[index]._.hash == state.hash >> HASHBITS
+            && ttable[index]._.flags == FEXACT) {
+         entry = ttable[index];
+         break;
+      }
+   }
+
+   move_t next = entry._.move;
+   if (next.bits && is_legal(next, state.side)) {
+      advance(next);
+      if (!in_check(o(state.side))) {
+         *buffer = calloc(41, sizeof(char));
+         impl_transposition_table_entry(*buffer, entry);
+         if (state.step > 4) {
+            uint32_t curr = state.step & 0x7;
+            uint32_t prev = (state.step - 1) & 0x7;
+            if (htable[curr] == htable[curr ^ 0x4]
+                  && htable[prev] == htable[prev ^ 0x4])
+               strcat(*buffer, " %\n");
+         } else {
+            strcat(*buffer, "  \n");
+            trace_principal_variation(++buffer);
+         }
+      } else {
+         --buffer;
+         (*buffer)[strlen(*buffer) - 2] = '#';
+      }
+      retract(next);
+   }
+}
+
+char* info_principal_variation(debug_t* info) {
+   trace_principal_variation(info->buffers);
+
+   info->buffer[0] = '\0';
+   for (uint32_t i = 0; i < PLYLIMIT && info->buffers[i]; i++)
+      strcat(info->buffer, info->buffers[i]);
+
+   return info->buffer;
 }
 
 #ifdef DEBUG
