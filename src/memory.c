@@ -98,3 +98,17 @@ int32_t probe_hash(uint32_t depth, int32_t* alpha, int32_t* beta,
 
    return -INFSCORE + state.ply;
 }
+
+ttentry_t probe_hash_for_entry() {
+   ttentry_t entry = {0};
+   for (uint32_t t = 0; t != BASKETS; ++t) {
+      uint32_t index = (state.hash & HASHMASK) ^ t;
+      if (ttable[index]._.hash == state.hash >> HASHBITS
+            && ttable[index]._.flags == FEXACT) {
+         entry = ttable[index];
+         break;
+      }
+   }
+
+   return entry;
+}
