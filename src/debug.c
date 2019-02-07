@@ -15,10 +15,13 @@
 void init_debug(debug_t* info) {
    info->buffer = calloc(1281, sizeof(char));
    info->buffers = calloc(PLYLIMIT, sizeof(char*));
+
+   for (uint32_t i = 0; i < PLYLIMIT; ++i)
+      info->buffers[i] = calloc(41, sizeof(char));;
 }
 
 void free_debug(debug_t* info) {
-   for (uint32_t i = 0; i < PLYLIMIT && info->buffers[i]; ++i)
+   for (uint32_t i = 0; i < PLYLIMIT; ++i)
       free(info->buffers[i]);
 
    free(info->buffer);
@@ -120,7 +123,7 @@ void trace_principal_variation(char** buffer) {
    if (next.bits && is_legal(next, state.side)) {
       advance(next);
       if (!in_check(o(state.side))) {
-         *buffer = calloc(41, sizeof(char));
+         (*(buffer + 1))[0] = '\0';
          impl_transposition_table_entry(*buffer, entry);
          if (state.step > 4) {
             uint32_t curr = state.step & 0x7;
@@ -141,10 +144,11 @@ void trace_principal_variation(char** buffer) {
 }
 
 char* info_principal_variation(debug_t* info) {
+   info->buffers[0][0] = '\0';
    trace_principal_variation(info->buffers);
 
    info->buffer[0] = '\0';
-   for (uint32_t i = 0; i < PLYLIMIT && info->buffers[i]; i++)
+   for (uint32_t i = 0; i < PLYLIMIT && info->buffers[i][0]; i++)
       strcat(info->buffer, info->buffers[i]);
 
    return info->buffer;
