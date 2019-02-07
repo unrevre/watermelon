@@ -6,8 +6,8 @@
 
 #include <stdint.h>
 
-extern move_t history[TURNLIMIT];
-extern uint32_t htable[8];
+extern move_t history[STEPLIMIT];
+extern uint32_t htable[STEPLIMIT];
 
 extern ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
 extern uint32_t age;

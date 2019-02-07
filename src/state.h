@@ -49,4 +49,11 @@ void retract(move_t move);
 
 uint32_t is_legal(move_t move);
 
+/*!
+ * is_repetition
+ * @ test if current position is in state of repetition
+ */
+
+uint32_t is_repetition();
+
 #endif /* STATE_H */

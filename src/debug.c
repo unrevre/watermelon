@@ -118,12 +118,8 @@ void trace_principal_variation(char** buffer) {
 
          (*(buffer + 1))[0] = '\0';
          impl_transposition_table_entry(*buffer, entry);
-         if (state.step > 4) {
-            uint32_t curr = state.step & 0x7;
-            uint32_t prev = (state.step - 1) & 0x7;
-            if (htable[curr] == htable[curr ^ 0x4]
-                  && htable[prev] == htable[prev ^ 0x4])
-               strcat(*buffer, " %\n");
+         if (is_repetition()) {
+            strcat(*buffer, " %\n");
          } else {
             strcat(*buffer, "  \n");
             trace_principal_variation(++buffer);

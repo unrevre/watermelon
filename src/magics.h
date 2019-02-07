@@ -5,7 +5,7 @@
 
 #define PLYSTART 0
 #define PLYDELAY 2
-#define PLYLIMIT 32
+#define PLYLIMIT 0x20
 
 #define INFINITY 2048
 #define INFDELAY (INFINITY - PLYDELAY)
@@ -28,7 +28,7 @@
 
 /* history */
 
-#define TURNLIMIT 256
+#define STEPLIMIT 0x0100
 
 /* state */
 
