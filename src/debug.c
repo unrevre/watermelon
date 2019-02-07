@@ -112,9 +112,10 @@ void trace_principal_variation(char** buffer) {
    ttentry_t entry = probe_hash_for_entry();
 
    move_t next = entry._.move;
-   if (next.bits && is_legal(next, state.side)) {
-      advance(next);
-      if (!in_check(o(state.side))) {
+   if (next.bits && is_valid(next, state.side)) {
+      if (is_legal(next)) {
+         advance(next);
+
          (*(buffer + 1))[0] = '\0';
          impl_transposition_table_entry(*buffer, entry);
          if (state.step > 4) {

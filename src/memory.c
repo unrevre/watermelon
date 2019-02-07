@@ -70,7 +70,7 @@ int32_t probe_hash(uint32_t depth, int32_t* alpha, int32_t* beta,
    for (uint32_t t = 0; t < BASKETS; ++t) {
       ttentry_t entry = ttable[(state.hash & HASHMASK) ^ t];
       if (entry._.hash == state.hash >> HASHBITS && entry._.move.bits) {
-         if (!is_legal(entry._.move, state.side)) { continue; }
+         if (!is_valid(entry._.move, state.side)) { continue; }
          *move = entry._.move;
 
          if (entry._.depth < depth) { continue; }

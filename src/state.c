@@ -1,6 +1,7 @@
 #include "state.h"
 
 #include "fen.h"
+#include "generate.h"
 #include "inlines.h"
 #include "magics.h"
 #include "masks.h"
@@ -97,4 +98,14 @@ void retract(move_t move) {
 
    board[move._.from] = move._.pfrom;
    board[move._.to] = move._.pto;
+}
+
+uint32_t is_legal(move_t move) {
+   if (!is_valid(move, state.side)) { return 0; }
+
+   advance(move);
+   uint32_t legal = !in_check(o(state.side));
+   retract(move);
+
+   return legal;
 }

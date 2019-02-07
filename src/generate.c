@@ -617,7 +617,7 @@ uint32_t in_check(uint32_t side) {
    return 0;
 }
 
-uint32_t is_legal(move_t move, uint32_t side) {
+uint32_t is_valid(move_t move, uint32_t side) {
    if (side != s(move._.pfrom)) { return 0; }
 
    uint32_t from = move._.from;
@@ -702,12 +702,12 @@ move_t next(generator_t* engine) {
          ++(engine->state);
          ++(engine->state);
          move_t killer = ktable[state.ply][0].move;
-         if (killer.bits && is_legal(killer, state.side))
+         if (killer.bits && is_valid(killer, state.side))
             return killer;
       case 4:
          ++(engine->state);
          killer = ktable[state.ply][1].move;
-         if (killer.bits && is_legal(killer, state.side))
+         if (killer.bits && is_valid(killer, state.side))
             return killer;
       case 5:
          ++(engine->state);
