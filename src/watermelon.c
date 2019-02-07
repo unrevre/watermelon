@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-enum options { opt_depth, nopts };
+enum options { opt_depth, opt_once, nopts };
 option_t** set_options(uint32_t nopts);
 void free_options(option_t** options, uint32_t nopts);
 
@@ -34,6 +34,7 @@ int main(int argc, char const* argv[]) {
 
 int watermelon(option_t** options, char const* fen) {
    uint32_t depth = atoi(options[opt_depth]->opt_str);
+   uint32_t once = options[opt_once]->active;
 
    free_options(options, nopts);
 
@@ -44,15 +45,21 @@ int watermelon(option_t** options, char const* fen) {
 
    printf("%s\n", info_fen(&info));
 
-   clock_t cpu_time = clock();
-   move_t move = iter_dfs(depth);
-   cpu_time = clock() - cpu_time;
+   move_t move;
 
-   printf("cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
+   do {
+      clock_t cpu_time = clock();
+      move = iter_dfs(depth);
+      cpu_time = clock() - cpu_time;
 
-   printf("%s\n\n", info_game_state(&info));
-   printf("%s\n\n", info_move(&info, move));
-   printf("%s\n", info_principal_variation(&info));
+      printf("cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
+
+      printf("%s\n\n", info_game_state(&info));
+      printf("%s\n\n", info_move(&info, move));
+      printf("%s\n", info_principal_variation(&info));
+
+      printf("\n");
+   } while (!once && is_legal(move) && (advance(move), 1));
 
    free_debug(&info);
 
@@ -74,6 +81,9 @@ option_t** set_options(uint32_t nopts) {
    options[opt_depth]->long_opt = "depth";
    options[opt_depth]->opt_str = "4";
    options[opt_depth]->flags = 0x1;
+
+   options[opt_once]->short_opt = "1";
+   options[opt_once]->long_opt = "once";
 
    return options;
 }
