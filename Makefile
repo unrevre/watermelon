@@ -3,6 +3,12 @@ CFLAGS += -O3 -std=gnu99 -march=native -Wall -Wextra \
 	  -fno-exceptions -fno-strict-aliasing -fno-stack-protector \
 	  -fomit-frame-pointer
 
+ifeq ($(CC), clang)
+	CFLAGS += -Wno-for-loop-analysis
+else
+	CFLAGS += -Wno-implicit-fallthrough
+endif
+
 ASMDIR = ./asm
 BINDIR = ./bin
 BLDDIR = ./build
