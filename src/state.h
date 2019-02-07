@@ -42,4 +42,11 @@ void advance(move_t move);
 
 void retract(move_t move);
 
+/*!
+ * is_legal
+ * @ test if given move is legal in current position
+ */
+
+uint32_t is_legal(move_t move);
+
 #endif /* STATE_H */
