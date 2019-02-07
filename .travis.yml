@@ -18,7 +18,7 @@ matrix:
           packages: ['gcc-8']
 
 script:
-  - make CC=$COMPILER && ./bin/watermelon 5
+  - make CC=$COMPILER && ./bin/watermelon -d 5
   - diff <(./tests/scripts/unit.sh tests/bin/perft 6 tests/data/general.dat)
     tests/logs/perft-general-6.log
   - diff <(./tests/scripts/unit.sh tests/bin/perft 7 tests/data/movegen.dat)
