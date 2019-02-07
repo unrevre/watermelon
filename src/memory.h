@@ -37,4 +37,12 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
 int32_t probe_hash(uint32_t depth, int32_t* alpha, int32_t* beta,
                    move_t* move);
 
+/*!
+ * probe_hash_for_entry
+ * @ probe transposition table for current position and return first matching
+ * entry
+ */
+
+ttentry_t probe_hash_for_entry();
+
 #endif /* MEMORY_H */

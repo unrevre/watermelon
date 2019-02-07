@@ -109,15 +109,7 @@ char* info_transposition_table_entry(debug_t* info, ttentry_t entry) {
 }
 
 void trace_principal_variation(char** buffer) {
-   ttentry_t entry = {0};
-   for (uint32_t t = 0; t != BASKETS; ++t) {
-      uint32_t index = (state.hash & HASHMASK) ^ t;
-      if (ttable[index]._.hash == state.hash >> HASHBITS
-            && ttable[index]._.flags == FEXACT) {
-         entry = ttable[index];
-         break;
-      }
-   }
+   ttentry_t entry = probe_hash_for_entry();
 
    move_t next = entry._.move;
    if (next.bits && is_legal(next, state.side)) {
