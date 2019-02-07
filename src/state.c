@@ -62,7 +62,7 @@ void advance(move_t move) {
    state.hash ^= PSHASH[move._.pto][move._.to];
    state.hash ^= MVHASH;
 
-   htable[++state.step & 0x7] = state.hash;
+   htable[++state.step] = state.hash;
 
    game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
    game.pieces[move._.pto] ^= PMASK[move._.to];
@@ -108,4 +108,10 @@ uint32_t is_legal(move_t move) {
    retract(move);
 
    return legal;
+}
+
+uint32_t is_repetition() {
+   return state.step > 4
+      && (htable[state.step] == htable[state.step - 0x4])
+      && (htable[state.step - 0x1] == htable[state.step - 0x5]);
 }

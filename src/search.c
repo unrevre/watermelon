@@ -49,13 +49,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta,
    int32_t alpha_parent = alpha;
    move_t store = (move_t){0};
 
-   if (state.step > 4) {
-      uint32_t curr = state.step & 0x7;
-      uint32_t prev = (state.step - 1) & 0x7;
-      if (htable[curr] == htable[curr ^ 0x4]
-            && htable[prev] == htable[prev ^ 0x4])
-         return WSCORE - state.ply;
-   }
+   if (is_repetition()) { return WSCORE - state.ply; }
 
    int32_t best = -INFSCORE + state.ply;
    if (!principal && (best = probe_hash(depth, &alpha, &beta, &store))
