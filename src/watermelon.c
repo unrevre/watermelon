@@ -1,4 +1,5 @@
 #include "debug.h"
+#include "interface.h"
 #include "options.h"
 #include "search.h"
 #include "state.h"
@@ -9,7 +10,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-enum options { opt_depth, opt_once, nopts };
+enum options { opt_depth, opt_once, opt_curses, nopts };
 option_t** set_options(uint32_t nopts);
 void free_options(option_t** options, uint32_t nopts);
 
@@ -34,7 +35,8 @@ int main(int argc, char const* argv[]) {
 
 int watermelon(option_t** options, char const* fen) {
    uint32_t depth = atoi(options[opt_depth]->opt_str);
-   uint32_t once = options[opt_once]->active;
+   uint64_t once = options[opt_once]->active;
+   uint64_t mode = options[opt_curses]->active;
 
    free_options(options, nopts);
 
@@ -43,7 +45,10 @@ int watermelon(option_t** options, char const* fen) {
    debug_t info;
    init_debug(&info);
 
-   printf("%s\n", info_fen(&info));
+   interface_t* itf = malloc(sizeof(interface_t));;
+   init_interface(itf, mode);
+
+   wmprint(itf, stdscr, "%s\n", info_fen(&info));
 
    move_t move;
 
@@ -52,13 +57,18 @@ int watermelon(option_t** options, char const* fen) {
       move = iter_dfs(depth);
       cpu_time = clock() - cpu_time;
 
-      printf("cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
+      wmprint(itf, itf->win_info, "cpu_time: %fs\n\n",
+         (float)cpu_time / CLOCKS_PER_SEC);
 
-      printf("%s\n\n", info_game_state(&info));
-      printf("%s\n\n", info_move(&info, move));
-      printf("%s\n", info_principal_variation(&info));
+      wmprint(itf, itf->win_state, "%s\n\n", info_game_state(&info));
+      wmprint(itf, itf->win_info, "%s\n\n", info_move(&info, move));
+      wmprint(itf, itf->win_info, "%s\n", info_principal_variation(&info));
 
-      printf("\n");
+      wmprint(itf, itf->win_info, "\n");
+
+      refresh_windows(itf);
+
+      getch();
    } while (!once && is_legal(move) && (advance(move), 1));
 
    free_debug(&info);
@@ -66,7 +76,9 @@ int watermelon(option_t** options, char const* fen) {
    debug_variable_headers(3,
       "alpha-beta nodes", "quiescence nodes", "hash table hits");
    debug_variable_values(3, nodes, qnodes, tthits);
-   printf("\n");
+   wmprint(itf, itf->win_info, "\n");
+
+   free_interface(itf);
 
    return 0;
 }
@@ -84,6 +96,9 @@ option_t** set_options(uint32_t nopts) {
 
    options[opt_once]->short_opt = "1";
    options[opt_once]->long_opt = "once";
+
+   options[opt_curses]->short_opt = "c";
+   options[opt_curses]->long_opt = "curses";
 
    return options;
 }
