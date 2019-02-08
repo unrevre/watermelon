@@ -9,6 +9,8 @@ else
 	CFLAGS += -Wno-implicit-fallthrough
 endif
 
+LIBS += -lncurses
+
 ASMDIR = ./asm
 BINDIR = ./bin
 BLDDIR = ./build
@@ -31,7 +33,7 @@ tree: $(BINDIR)/$(BIN)
 
 $(BINDIR)/$(BIN): $(SRCDIR)/$(BIN).c $(OBJS)
 	@mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) $(LIBS) $^ -o $@
+	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
 
 $(BLDDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(BLDDIR)
@@ -52,7 +54,7 @@ tests: $(TESTS)
 $(TBINDIR)/%: $(TSRCDIR)/%.c $(OBJS)
 	@mkdir -p $(TBINDIR)
 	@mkdir -p $(TBLDDIR)
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
 
 asm: $(ASML)
 
