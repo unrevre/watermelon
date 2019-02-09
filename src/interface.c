@@ -21,10 +21,12 @@ void init_interface(interface_t* itf, uint64_t mode) {
 void init_windows(interface_t* itf) {
    if (itf->mode) {
       itf->win_state = newwin(10, 20, 4, 3);
-      itf->win_info = newwin(12, 44, 18, 3);
+      itf->win_info = newwin(18, 44, 18, 3);
+
+      scrollok(itf->win_info, TRUE);
 
       itf->border_state = newwin(14, 23, 2, 1);
-      itf->border_info = newwin(16, 48, 17, 1);
+      itf->border_info = newwin(20, 48, 17, 1);
 
       box(itf->border_state, 0, 0);
       box(itf->border_info, 0, 0);
@@ -41,6 +43,8 @@ void refresh_windows(interface_t* itf) {
 
       wrefresh(itf->win_state);
       wrefresh(itf->win_info);
+
+      werase(itf->win_state);
 
       wrefresh(itf->border_state);
       wrefresh(itf->border_info);
