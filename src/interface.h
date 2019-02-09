@@ -29,13 +29,6 @@ typedef struct {
 void init_interface(interface_t* itf, uint64_t mode);
 
 /*!
- * init_windows
- * @ initialise windows layout
- */
-
-void init_windows(interface_t* itf);
-
-/*!
  * refresh_windows
  * @ refresh window contents
  */
