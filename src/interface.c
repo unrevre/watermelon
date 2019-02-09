@@ -67,3 +67,12 @@ void wmprint(interface_t* itf, WINDOW* w, char const* fmt, ...) {
    itf->print(w, fmt, args);
    va_end(args);
 }
+
+uint64_t handle_key(int32_t key) {
+   switch (key) {
+      case 'q':
+         return 0;
+      default:
+         return 1;
+   }
+}
