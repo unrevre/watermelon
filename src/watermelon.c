@@ -53,6 +53,11 @@ int watermelon(option_t** options, char const* fen) {
    move_t move;
 
    do {
+      wmprint(itf, itf->win_state, "%s", info_game_state(&info));
+      refresh_windows(itf);
+
+      if (itf->mode) { getch(); }
+
       clock_t cpu_time = clock();
       move = iter_dfs(depth);
       cpu_time = clock() - cpu_time;
@@ -60,15 +65,8 @@ int watermelon(option_t** options, char const* fen) {
       wmprint(itf, itf->win_info, "cpu_time: %fs\n\n",
          (float)cpu_time / CLOCKS_PER_SEC);
 
-      wmprint(itf, itf->win_state, "%s\n\n", info_game_state(&info));
       wmprint(itf, itf->win_info, "%s\n\n", info_move(&info, move));
       wmprint(itf, itf->win_info, "%s\n", info_principal_variation(&info));
-
-      wmprint(itf, itf->win_info, "\n");
-
-      refresh_windows(itf);
-
-      getch();
    } while (!once && is_legal(move) && (advance(move), 1));
 
    free_debug(&info);
