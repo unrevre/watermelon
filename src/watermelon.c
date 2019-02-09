@@ -48,25 +48,25 @@ int watermelon(option_t** options, char const* fen) {
    interface_t* itf = malloc(sizeof(interface_t));;
    init_interface(itf, mode);
 
-   wmprint(itf, stdscr, "%s\n", info_fen(&info));
+   wmprint(itf, stdscr, 0, "%s\n", info_fen(&info));
 
    move_t move;
 
    do {
-      wmprint(itf, itf->win_state, "%s", info_game_state(&info));
+      wmprint(itf, itf->win_state, 1, "%s", info_game_state(&info));
       refresh_windows(itf);
 
-      if (itf->mode && !event_loop()) { break; }
+      if (itf->mode && !event_loop(itf)) { break; }
 
       clock_t cpu_time = clock();
       move = iter_dfs(depth);
       cpu_time = clock() - cpu_time;
 
-      wmprint(itf, itf->win_info, "cpu_time: %fs\n\n",
+      wmprint(itf, itf->win_info, 0, "cpu_time: %fs\n\n",
          (float)cpu_time / CLOCKS_PER_SEC);
 
-      wmprint(itf, itf->win_info, "%s\n\n", info_move(&info, move));
-      wmprint(itf, itf->win_info, "%s\n", info_principal_variation(&info));
+      wmprint(itf, itf->win_info, 0, "%s\n\n", info_move(&info, move));
+      wmprint(itf, itf->win_info, 0, "%s\n", info_principal_variation(&info));
    } while (!once && is_legal(move) && (advance(move), 1));
 
    free_debug(&info);
@@ -74,7 +74,7 @@ int watermelon(option_t** options, char const* fen) {
    debug_variable_headers(3,
       "alpha-beta nodes", "quiescence nodes", "hash table hits");
    debug_variable_values(3, nodes, qnodes, tthits);
-   wmprint(itf, itf->win_info, "\n");
+   wmprint(itf, itf->win_info, 0, "\n");
 
    free_interface(itf);
 
