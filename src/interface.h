@@ -12,7 +12,10 @@
 
 typedef struct {
    uint64_t mode;
-   int (*print) (WINDOW*, char const*, va_list args);
+   int (*print) (WINDOW*, uint64_t, char const*, va_list);
+
+   uint32_t x;
+   uint32_t y;
 
    WINDOW* win_state;
    WINDOW* win_info;
@@ -36,6 +39,13 @@ void init_interface(interface_t* itf, uint64_t mode);
 void refresh_windows(interface_t* itf);
 
 /*!
+ * refresh_state
+ * @ refresh game state window
+ */
+
+void refresh_state(interface_t* itf);
+
+/*!
  * free_interface
  * @ exit ncurses interface and clean up
  */
@@ -43,24 +53,31 @@ void refresh_windows(interface_t* itf);
 void free_interface(interface_t* itf);
 
 /*!
+ * wmprintw
+ * @ wrapper for mvwprintw
+ */
+
+int wmprintw(WINDOW* w, uint64_t clear, char const* fmt, va_list args);
+
+/*!
  * wmprintf
  * @ wrapper for printf, discarding extra argument
  */
 
-int wmprintf(WINDOW* w, char const* fmt, va_list args);
+int wmprintf(WINDOW* w, uint64_t clear, char const* fmt, va_list args);
 
 /*!
  * wmprint
  * @ wrapper for print functions
  */
 
-void wmprint(interface_t* itf, WINDOW* w, char const* fmt, ...);
+void wmprint(interface_t* itf, WINDOW* w, uint64_t clear, char const* fmt, ...);
 
 /*!
  * event_loop
  * @ event loop handling key events in curses mode
  */
 
-uint64_t event_loop();
+uint64_t event_loop(interface_t* itf);
 
 #endif /* INTERFACE_H */
