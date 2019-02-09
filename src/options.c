@@ -19,13 +19,11 @@ int parse_opts(int argc, char const* argv[], uint32_t nopts, option_t** opts) {
    int positional = 1;
 
    for (int i = 1; i < argc; ++i) {
-      if (argv[i][0] != '-' || argv[i][1] == '\0')
-         sink(i--, positional++, argv);
+      if (argv[i][0] != '-' || argv[i][1] == '\0') {
+         sink(i, positional++, argv);
+         continue;
+      }
 
-      ++i;
-   }
-
-   for (int i = positional; i < argc; ++i) {
       uint32_t type = argv[i][1] == '-';
       for (uint32_t j = 0; j < nopts; ++j) {
          if (opts[j]->active) { continue; }
