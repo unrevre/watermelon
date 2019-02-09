@@ -12,42 +12,18 @@ void init_interface(interface_t* itf, uint64_t mode) {
       initscr();
       cbreak();
       noecho();
-   }
 
-   init_windows(itf);
-   refresh_windows(itf);
-}
-
-void init_windows(interface_t* itf) {
-   if (itf->mode) {
-      itf->win_state = newwin(10, 20, 4, 3);
-      itf->win_info = newwin(18, 44, 18, 3);
-
-      scrollok(itf->win_info, TRUE);
-
-      itf->border_state = newwin(14, 23, 2, 1);
       itf->border_info = newwin(20, 48, 17, 1);
+      itf->win_info = newwin(18, 44, 18, 3);
+      itf->border_state = newwin(14, 23, 2, 1);
+      itf->win_state = newwin(10, 20, 4, 3);
 
+      keypad(stdscr, TRUE);
+      scrollok(itf->win_info, TRUE);
       box(itf->border_state, 0, 0);
       box(itf->border_info, 0, 0);
 
-      wmove(itf->win_state, 0, 0);
-
-      keypad(stdscr, TRUE);
-   }
-}
-
-void refresh_windows(interface_t* itf) {
-   if (itf->mode) {
-      wrefresh(stdscr);
-
-      wrefresh(itf->win_state);
-      wrefresh(itf->win_info);
-
-      werase(itf->win_state);
-
-      wrefresh(itf->border_state);
-      wrefresh(itf->border_info);
+      refresh_windows(itf);
    }
 }
 
@@ -55,6 +31,22 @@ void free_interface(interface_t* itf) {
    if (itf->mode) { endwin(); }
 
    free(itf);
+}
+
+void refresh_windows(interface_t* itf) {
+   if (itf->mode) {
+      wnoutrefresh(stdscr);
+      wnoutrefresh(itf->border_info);
+      wnoutrefresh(itf->win_info);
+      wnoutrefresh(itf->border_state);
+      wnoutrefresh(itf->win_state);
+
+      wmove(itf->win_state, 0, 0);
+
+      doupdate();
+
+      werase(itf->win_state);
+   }
 }
 
 int wmprintf(WINDOW* w __attribute__((unused)), char const* fmt, va_list args) {
