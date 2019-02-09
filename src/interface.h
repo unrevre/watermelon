@@ -63,4 +63,11 @@ int wmprintf(WINDOW* w, char const* fmt, va_list args);
 
 void wmprint(interface_t* itf, WINDOW* w, char const* fmt, ...);
 
+/*!
+ * handle_key_event
+ * @ handle key down event in ncurses mode
+ */
+
+uint64_t handle_key(int32_t key);
+
 #endif /* INTERFACE_H */
