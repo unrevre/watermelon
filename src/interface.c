@@ -68,11 +68,13 @@ void wmprint(interface_t* itf, WINDOW* w, char const* fmt, ...) {
    va_end(args);
 }
 
-uint64_t handle_key(int32_t key) {
-   switch (key) {
-      case 'q':
-         return 0;
-      default:
-         return 1;
+uint64_t event_loop() {
+   for (;;) {
+      switch (getch()) {
+         case 'n':
+            return 1;
+         case 'q':
+            return 0;
+      }
    }
 }

@@ -64,10 +64,10 @@ int wmprintf(WINDOW* w, char const* fmt, va_list args);
 void wmprint(interface_t* itf, WINDOW* w, char const* fmt, ...);
 
 /*!
- * handle_key_event
- * @ handle key down event in ncurses mode
+ * event_loop
+ * @ event loop handling key events in curses mode
  */
 
-uint64_t handle_key(int32_t key);
+uint64_t event_loop();
 
 #endif /* INTERFACE_H */

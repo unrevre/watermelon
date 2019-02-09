@@ -56,7 +56,7 @@ int watermelon(option_t** options, char const* fen) {
       wmprint(itf, itf->win_state, "%s", info_game_state(&info));
       refresh_windows(itf);
 
-      if (itf->mode && !handle_key(getch())) { break; }
+      if (itf->mode && !event_loop()) { break; }
 
       clock_t cpu_time = clock();
       move = iter_dfs(depth);
