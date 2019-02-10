@@ -42,18 +42,15 @@ int watermelon(option_t** options, char const* fen) {
 
    init_state(fen);
 
-   debug_t info;
-   init_debug(&info);
-
    interface_t* itf = malloc(sizeof(interface_t));;
    init_interface(itf, mode);
 
-   wmprint(itf, stdscr, 0, "%s\n", info_fen(&info));
+   wmprint(itf, stdscr, 0, "%s\n", info_fen(itf->info));
 
    move_t move;
 
    do {
-      wmprint(itf, itf->win_state, 1, "%s", info_game_state(&info));
+      wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));
       refresh_windows(itf);
 
       if (itf->mode && !event_loop(itf)) { break; }
@@ -65,11 +62,10 @@ int watermelon(option_t** options, char const* fen) {
       wmprint(itf, itf->win_info, 0, "cpu_time: %fs\n\n",
          (float)cpu_time / CLOCKS_PER_SEC);
 
-      wmprint(itf, itf->win_info, 0, "%s\n\n", info_move(&info, move));
-      wmprint(itf, itf->win_info, 0, "%s\n", info_principal_variation(&info));
+      wmprint(itf, itf->win_info, 0, "%s\n\n", info_move(itf->info, move));
+      wmprint(itf, itf->win_info, 0, "%s\n",
+         info_principal_variation(itf->info));
    } while (!once && is_legal(move) && (advance(move), 1));
-
-   free_debug(&info);
 
    debug_variable_headers(3,
       "alpha-beta nodes", "quiescence nodes", "hash table hits");

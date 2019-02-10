@@ -7,6 +7,10 @@
 #include <stdlib.h>
 
 void init_interface(interface_t* itf, uint64_t mode) {
+   itf->info = malloc(sizeof(debug_t));
+
+   init_debug(itf->info);
+
    itf->mode = mode;
    itf->print = mode ? wmprintw : wmprintf;
 
@@ -34,6 +38,8 @@ void init_interface(interface_t* itf, uint64_t mode) {
 
 void free_interface(interface_t* itf) {
    if (itf->mode) { endwin(); }
+
+   free_debug(itf->info);
 
    free(itf);
 }

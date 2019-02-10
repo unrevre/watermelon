@@ -1,6 +1,8 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
+#include "debug.h"
+
 #include <ncurses.h>
 
 #include <stdint.h>
@@ -16,6 +18,8 @@ typedef struct {
 
    uint32_t x;
    uint32_t y;
+
+   debug_t* info;
 
    WINDOW* win_state;
    WINDOW* win_info;
