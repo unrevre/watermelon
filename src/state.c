@@ -115,3 +115,7 @@ uint32_t is_repetition() {
       && (htable[state.step] == htable[state.step - 0x4])
       && (htable[state.step - 0x1] == htable[state.step - 0x5]);
 }
+
+uint32_t is_index_movable(uint32_t index) {
+   return (board[index] != empty && s(board[index]) == state.side);
+}

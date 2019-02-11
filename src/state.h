@@ -56,4 +56,11 @@ uint32_t is_legal(move_t move);
 
 uint32_t is_repetition();
 
+/*!
+ * is_index_movable
+ * @ test if piece at index is on side to move
+ */
+
+uint32_t is_index_movable(uint32_t index);
+
 #endif /* STATE_H */
