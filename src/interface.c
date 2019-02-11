@@ -64,11 +64,14 @@ void refresh_windows(interface_t* itf) {
    }
 }
 
-void refresh_state(interface_t* itf) {
+void refresh_state_window(interface_t* itf) {
    if (itf->mode) {
       wmove(itf->win_state, itf->y, itf->x);
 
-      wrefresh(itf->win_state);
+      wnoutrefresh(stdscr);
+      wnoutrefresh(itf->win_state);
+
+      doupdate();
    }
 }
 
@@ -100,19 +103,19 @@ uint64_t event_loop(interface_t* itf) {
             break;
          case 'h': case KEY_LEFT:
             itf->x = max(1, itf->x - 2);
-            refresh_state(itf);
+            refresh_state_window(itf);
             break;
          case 'j': case KEY_DOWN:
             itf->y = min(9, itf->y + 1);
-            refresh_state(itf);
+            refresh_state_window(itf);
             break;
          case 'k': case KEY_UP:
             itf->y = max(0, itf->y - 1);
-            refresh_state(itf);
+            refresh_state_window(itf);
             break;
          case 'l': case KEY_RIGHT:
             itf->x = min(17, itf->x + 2);
-            refresh_state(itf);
+            refresh_state_window(itf);
             break;
          case 'n':
             itf->index = 0xff;
@@ -137,8 +140,10 @@ void fetch(interface_t* itf) {
 
       if (move.bits && is_legal(move)) {
          advance(move);
+
+         wmprint(itf, stdscr, 1, "%s\n", info_fen(itf->info));
          wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));
-         refresh_state(itf);
+         refresh_state_window(itf);
 
          itf->index = 0xff;
       }
