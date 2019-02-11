@@ -617,6 +617,54 @@ uint32_t in_check(uint32_t side) {
    return 0;
 }
 
+move_t move_for_indices(uint32_t from, uint32_t to) {
+   uint32_t side = state.side;
+
+   if (is_index_movable(to)) { return (move_t){0}; }
+
+   switch (p(board[from])) {
+      case 0:
+         if (!(PMASK[to] & JMASK[side] & (PMASK[from] << 9 | PMASK[from] >> 9
+               | PMASK[from] << 1 | PMASK[from] >> 1)))
+            return (move_t){0};
+         break;
+      case 1: case 3:
+         if ((from % 9 != to % 9) && (from / 9 != to / 9))
+            return (move_t){0};
+         break;
+      case 2:
+         if (!(PMASK[to] & BMASK & ((PMASK[from] << 0x11 & FMASKN8)
+               | (PMASK[from] >> 0x11 & FMASKN0)
+               | (PMASK[from] << 0x13 & FMASKN0)
+               | (PMASK[from] >> 0x13 & FMASKN8)
+               | (PMASK[from] << 0x07 & FMASKN78)
+               | (PMASK[from] >> 0x07 & FMASKN01)
+               | (PMASK[from] << 0x0b & FMASKN01)
+               | (PMASK[from] >> 0x0b & FMASKN78))))
+            return (move_t){0};
+         break;
+      case 4:
+         if (!(PMASK[to] & SMASK[side] & (PMASK[from] << 0x8
+               | PMASK[from] << 0xa | PMASK[from] >> 0x8
+               | PMASK[from] >> 0xa)))
+            return (move_t){0};
+         break;
+      case 5:
+         if (!(PMASK[to] & XMASK[side] & (PMASK[from] << 0x10
+               | PMASK[from] << 0x14 | PMASK[from] >> 0x10
+               | PMASK[from] >> 0x14)))
+            return (move_t){0};
+         break;
+      case 6:
+         if (!(PMASK[to] & ZMASK[side] & ((PMASK[from] << 9) >> (18 * side)
+               | (PMASK[from] << 1 & FMASKN0) | (PMASK[from] >> 1 & FMASKN8))))
+            return (move_t){0};
+         break;
+   }
+
+   return (move_t){ ._ = { from, to, board[from], board[to] } };
+}
+
 uint32_t is_valid(move_t move, uint32_t side) {
    if (side != s(move._.pfrom)) { return 0; }
 

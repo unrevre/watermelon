@@ -49,6 +49,13 @@ uint32_t in_check(uint32_t side);
 uint32_t is_valid(move_t move, uint32_t side);
 
 /*!
+ * move_for_indices
+ * @ return move if indices constitute a valid movement
+ */
+
+move_t move_for_indices(uint32_t from, uint32_t to);
+
+/*!
  * add_piecewise
  * @ add moves (for fixed piece)
  */

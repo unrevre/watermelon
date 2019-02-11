@@ -19,6 +19,8 @@ typedef struct {
    uint32_t x;
    uint32_t y;
 
+   uint64_t index;
+
    debug_t* info;
 
    WINDOW* win_state;
@@ -83,5 +85,12 @@ void wmprint(interface_t* itf, WINDOW* w, uint64_t clear, char const* fmt, ...);
  */
 
 uint64_t event_loop(interface_t* itf);
+
+/*!
+ * fetch
+ * @ fetch board information
+ */
+
+void fetch(interface_t* itf);
 
 #endif /* INTERFACE_H */
