@@ -132,8 +132,18 @@ void fetch(interface_t* itf) {
    uint64_t index = (9 - y) * 9 + x / 2;
 
    if (itf->index == 0xff) {
-      if (is_index_movable(index)) { itf->index = index; }
+      if (is_index_movable(index)) {
+         wattron(itf->win_state, A_BOLD);
+         waddch(itf->win_state, winch(itf->win_state));
+         wattroff(itf->win_state, A_BOLD);
+         refresh_state_window(itf);
+
+         itf->index = index;
+      }
    } else if (itf->index == index) {
+      waddch(itf->win_state, winch(itf->win_state) & A_CHARTEXT);
+      refresh_state_window(itf);
+
       itf->index = 0xff;
    } else {
       move_t move = move_for_indices(itf->index, index);
@@ -143,6 +153,7 @@ void fetch(interface_t* itf) {
 
          wmprint(itf, stdscr, 1, "%s\n", info_fen(itf->info));
          wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));
+         waddch(itf->win_state, winch(itf->win_state));
          refresh_state_window(itf);
 
          itf->index = 0xff;
