@@ -45,11 +45,10 @@ int watermelon(option_t** options, char const* fen) {
    interface_t* itf = malloc(sizeof(interface_t));;
    init_interface(itf, mode);
 
-   wmprint(itf, stdscr, 0, "%s\n", info_fen(itf->info));
-
    move_t move;
 
    do {
+      wmprint(itf, stdscr, 1, "%s\n\n", info_fen(itf->info));
       wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));
       refresh_windows(itf);
 

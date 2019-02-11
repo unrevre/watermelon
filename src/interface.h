@@ -45,11 +45,11 @@ void init_interface(interface_t* itf, uint64_t mode);
 void refresh_windows(interface_t* itf);
 
 /*!
- * refresh_state
+ * refresh_state_window
  * @ refresh game state window
  */
 
-void refresh_state(interface_t* itf);
+void refresh_state_window(interface_t* itf);
 
 /*!
  * free_interface
