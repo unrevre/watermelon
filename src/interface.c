@@ -101,6 +101,12 @@ uint64_t event_loop(interface_t* itf) {
          case 'f':
             fetch(itf);
             break;
+         case 'g':
+            if (itf->index != 0xff)
+               fetch(itf);
+            if (itf->index == 0xff)
+               return 1;
+            break;
          case 'h': case KEY_LEFT:
             itf->x = max(1, itf->x - 2);
             refresh_state_window(itf);
