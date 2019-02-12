@@ -66,6 +66,10 @@ int watermelon(option_t** options, char const* fen) {
          info_principal_variation(itf->info));
    } while (!once && is_legal(move) && (advance_with_history(move), 1));
 
+   wmprint(itf, itf->win_info, 0, " - exit -\n");
+   refresh_windows(itf);
+   spin(itf);
+
    debug_variable_headers(3,
       "alpha-beta nodes", "quiescence nodes", "hash table hits");
    debug_variable_values(3, nodes, qnodes, tthits);

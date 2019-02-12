@@ -178,3 +178,7 @@ void fetch(interface_t* itf) {
       }
    }
 }
+
+void spin(interface_t* itf) {
+   if (itf->mode) { getch(); }
+}
