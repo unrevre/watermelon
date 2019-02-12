@@ -43,6 +43,20 @@ void advance(move_t move);
 void retract(move_t move);
 
 /*!
+ * advance_with_history
+ * @ advance move with record in history table
+ */
+
+void advance_with_history(move_t move);
+
+/*!
+ * retract_with_history
+ * @ retract move with record in history table
+ */
+
+void retract_with_history(move_t move);
+
+/*!
  * is_legal
  * @ test if given move is legal in current position
  */

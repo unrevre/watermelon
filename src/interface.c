@@ -155,7 +155,7 @@ void fetch(interface_t* itf) {
       move_t move = move_for_indices(itf->index, index);
 
       if (move.bits && is_legal(move)) {
-         advance(move);
+         advance_with_history(move);
 
          wmprint(itf, stdscr, 1, "%s\n", info_fen(itf->info));
          wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));

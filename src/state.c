@@ -100,6 +100,18 @@ void retract(move_t move) {
    board[move._.to] = move._.pto;
 }
 
+void advance_with_history(move_t move) {
+   history[state.step] = move;
+
+   advance(move);
+}
+
+void retract_with_history(move_t move) {
+   retract(move);
+
+   history[state.step] = (move_t){0};
+}
+
 uint32_t is_legal(move_t move) {
    if (!is_valid(move, state.side)) { return 0; }
 
