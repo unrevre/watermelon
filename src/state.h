@@ -57,6 +57,20 @@ void advance_with_history(move_t move);
 void retract_with_history(move_t move);
 
 /*!
+ * undo_history
+ * @ undo last move
+ */
+
+void undo_history();
+
+/*!
+ * redo_history
+ * @ redo last undone move, if possible
+ */
+
+void redo_history();
+
+/*!
  * is_legal
  * @ test if given move is legal in current position
  */

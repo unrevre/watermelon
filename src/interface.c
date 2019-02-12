@@ -128,6 +128,18 @@ uint64_t event_loop(interface_t* itf) {
             return 1;
          case 'q':
             return 0;
+         case 'r':
+            redo_history();
+            wmprint(itf, stdscr, 1, "%s\n", info_fen(itf->info));
+            wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));
+            refresh_state_window(itf);
+            break;
+         case 'u':
+            undo_history();
+            wmprint(itf, stdscr, 1, "%s\n", info_fen(itf->info));
+            wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));
+            refresh_state_window(itf);
+            break;
       }
    }
 }

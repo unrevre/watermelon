@@ -101,6 +101,13 @@ void retract(move_t move) {
 }
 
 void advance_with_history(move_t move) {
+   move_t future = history[state.step];
+   if (future.bits && move.bits != future.bits) {
+      uint32_t step = state.step;
+      while (history[++step].bits)
+         history[step] = (move_t){0};
+   }
+
    history[state.step] = move;
 
    advance(move);
@@ -108,8 +115,14 @@ void advance_with_history(move_t move) {
 
 void retract_with_history(move_t move) {
    retract(move);
+}
 
-   history[state.step] = (move_t){0};
+void undo_history() {
+   if (state.step) { retract_with_history(history[state.step - 1]); }
+}
+
+void redo_history() {
+   if (history[state.step].bits) { advance_with_history(history[state.step]); }
 }
 
 uint32_t is_legal(move_t move) {
