@@ -124,11 +124,12 @@ void trace_principal_variation(char** buffer) {
             strcat(*buffer, "  \n");
             trace_principal_variation(++buffer);
          }
-      } else {
+
+         retract(next);
+      } else if (state.ply) {
          --buffer;
          (*buffer)[strlen(*buffer) - 2] = '#';
       }
-      retract(next);
    }
 }
 
