@@ -111,10 +111,12 @@ void advance_with_history(move_t move) {
    history[state.step] = move;
 
    advance(move);
+   state.ply = 0;
 }
 
 void retract_with_history(move_t move) {
    retract(move);
+   state.ply = 0;
 }
 
 void undo_history() {
