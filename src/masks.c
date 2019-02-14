@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 
-__uint128_t NMASK;
 __uint128_t BMASK;
 
 __uint128_t PMASK[128] __attribute__((aligned(64)));
@@ -19,8 +18,6 @@ __uint128_t JMASK[2];
 __uint128_t SMASK[2];
 __uint128_t XMASK[2];
 __uint128_t ZMASK[2];
-
-__uint128_t GMASK[2];
 
 __uint128_t FMASKN0;
 __uint128_t FMASKN8;
@@ -72,7 +69,4 @@ void init_masks(void) {
    FMASKN8 = ~FMASK[8];
    FMASKN01 = ~(FMASK[0] | FMASK[1]);
    FMASKN78 = ~(FMASK[7] | FMASK[8]);
-
-   GMASK[0] = XMASK[0] | SMASK[0] | JMASK[0];
-   GMASK[1] = XMASK[1] | SMASK[1] | JMASK[1];
 }

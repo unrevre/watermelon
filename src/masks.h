@@ -1,7 +1,6 @@
 #ifndef MASKS_H
 #define MASKS_H
 
-extern __uint128_t NMASK;
 extern __uint128_t BMASK;
 
 extern __uint128_t PMASK[128] __attribute__((aligned(64)));
@@ -18,8 +17,6 @@ extern __uint128_t JMASK[2];
 extern __uint128_t SMASK[2];
 extern __uint128_t XMASK[2];
 extern __uint128_t ZMASK[2];
-
-extern __uint128_t GMASK[2];
 
 extern __uint128_t FMASKN0;
 extern __uint128_t FMASKN8;
