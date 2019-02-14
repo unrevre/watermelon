@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-state_t game = {{0x0}, {0x0}};
+state_t game __attribute__((aligned(64)));
 
 uint32_t board[128] __attribute__((aligned(64)));
 
@@ -43,6 +43,7 @@ void init_hashes(void) {
 }
 
 void init_state(const char* fen) {
+   game = (state_t){{0x0}, {0x0}};
    state = (transient_t){ 0, 0, 0, 0 };
 
    init_tables();

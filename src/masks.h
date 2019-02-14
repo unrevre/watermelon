@@ -3,15 +3,15 @@
 
 extern __uint128_t BMASK;
 
-extern __uint128_t PMASK[128] __attribute__((aligned(64)));
+extern __uint128_t PMASK[128];
 
-extern __uint128_t UMASK[90] __attribute__((aligned(64)));
-extern __uint128_t LMASK[90] __attribute__((aligned(64)));
+extern __uint128_t UMASK[90];
+extern __uint128_t LMASK[90];
 
-extern __uint128_t RMASK[90] __attribute__((aligned(64)));
-extern __uint128_t FMASK[90] __attribute__((aligned(64)));
+extern __uint128_t RMASK[90];
+extern __uint128_t FMASK[90];
 
-extern __uint128_t OMASK[90] __attribute__((aligned(64)));
+extern __uint128_t OMASK[90];
 
 extern __uint128_t JMASK[2];
 extern __uint128_t SMASK[2];

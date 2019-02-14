@@ -9,10 +9,10 @@
 extern move_t history[STEPLIMIT];
 extern uint32_t htable[STEPLIMIT];
 
-extern ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
+extern ttentry_t ttable[HASHSIZE];
 extern uint32_t age;
 
-extern killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
+extern killer_t ktable[PLYLIMIT][2];
 
 /*!
  * init_tables
