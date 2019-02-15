@@ -15,17 +15,14 @@
 typedef struct {
    uint64_t mode;
    int (*print) (WINDOW*, uint64_t, char const*, va_list);
-
    uint32_t x;
    uint32_t y;
-
    uint64_t index;
 
    debug_t* info;
 
    WINDOW* win_state;
    WINDOW* win_info;
-
    WINDOW* border_state;
    WINDOW* border_info;
 } interface_t;
