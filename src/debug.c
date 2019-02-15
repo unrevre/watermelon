@@ -194,17 +194,15 @@ void tree_root_exit(void) {
 
 void tree_node_entry(int32_t alpha, int32_t beta) {
    for (uint32_t t = 0; t < state.ply; ++t) { printf("│"); }
-   char* fen = info_fen(); printf("├┬╸%s\n", fen);
+   char buffer[102]; impl_fen(buffer); printf("├┬╸%s\n", buffer);
    for (uint32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
    printf("├╸      [%5i, %5i]\n", alpha, beta);
-   free(fen);
 }
 
 void tree_node_exit(int32_t alpha, int32_t beta, int32_t score) {
    for (uint32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
-   char* fen = info_fen(); printf("├╸%s\n", fen);
+   char buffer[102]; impl_fen(buffer); printf("├╸%s\n", buffer);
    for (uint32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
    printf("└╸%5i [%5i, %5i]\n", -score, -beta, -alpha);
-   free(fen);
 }
 #endif /* TREE */
