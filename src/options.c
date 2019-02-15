@@ -1,7 +1,15 @@
 #include "options.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+void free_options(option_t** options, uint32_t nopts) {
+   for (uint32_t i = 0; i < nopts; ++i)
+      free(options[i]);
+
+   free(options);
+}
 
 /*!
  * sink
