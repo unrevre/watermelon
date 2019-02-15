@@ -38,18 +38,18 @@ typedef struct {
 void init_interface(interface_t* itf, uint64_t mode);
 
 /*!
- * refresh_windows
- * @ refresh window contents
+ * refresh_all
+ * @ refresh all window contents
  */
 
-void refresh_windows(interface_t* itf);
+void refresh_all(interface_t* itf);
 
 /*!
- * refresh_state_window
- * @ refresh game state window
+ * refresh_state
+ * @ refresh windows displaying game state
  */
 
-void refresh_state_window(interface_t* itf);
+void refresh_state(interface_t* itf);
 
 /*!
  * free_interface
@@ -78,6 +78,13 @@ int wmprintf(WINDOW* w, uint64_t clear, char const* fmt, va_list args);
  */
 
 void wmprint(interface_t* itf, WINDOW* w, uint64_t clear, char const* fmt, ...);
+
+/*!
+ * update_state
+ * @ helper function - print new game state info and refresh windows
+ */
+
+void update_state(interface_t* itf);
 
 /*!
  * event_loop
