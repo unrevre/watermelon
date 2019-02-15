@@ -10,6 +10,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*!
+ * wmprintf
+ * @ wrapper for printf, discarding extra argument
+ */
+
+int wmprintf(WINDOW* w __attribute__((unused)),
+             uint64_t clear __attribute__((unused)),
+             char const* fmt, va_list args) {
+   return vprintf(fmt, args);
+}
+
+/*!
+ * wmprintw
+ * @ wrapper for mvwprintw
+ */
+
+int wmprintw(WINDOW* w, uint64_t clear, char const* fmt, va_list args) {
+   if (clear) { wmove(w, 0, 0); }
+
+   return vwprintw(w, fmt, args);
+}
+
 void init_interface(interface_t* itf, uint64_t mode) {
    itf->info = malloc(sizeof(debug_t));
    init_debug(itf->info);
@@ -69,18 +91,6 @@ void refresh_state(interface_t* itf) {
 
       doupdate();
    }
-}
-
-int wmprintf(WINDOW* w __attribute__((unused)),
-             uint64_t clear __attribute__((unused)),
-             char const* fmt, va_list args) {
-   return vprintf(fmt, args);
-}
-
-int wmprintw(WINDOW* w, uint64_t clear, char const* fmt, va_list args) {
-   if (clear) { wmove(w, 0, 0); }
-
-   return vwprintw(w, fmt, args);
 }
 
 void wmprint(interface_t* itf, WINDOW* w, uint64_t clear, char const* fmt,
