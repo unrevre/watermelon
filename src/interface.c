@@ -197,15 +197,13 @@ void fetch(interface_t* itf) {
 
    if (itf->index == 0xff) {
       if (is_index_movable(index)) {
-         waddch(itf->win_state, winch(itf->win_state) | A_BOLD);
-         refresh_cursor(itf);
-
+         wchgat(itf->win_state, 1, A_BOLD, 0, NULL);
+         wrefresh(itf->win_state);
          itf->index = index;
       }
    } else if (itf->index == index) {
-      waddch(itf->win_state, winch(itf->win_state) & A_CHARTEXT);
-      refresh_cursor(itf);
-
+      wchgat(itf->win_state, 1, A_NORMAL, 0, NULL);
+      wrefresh(itf->win_state);
       itf->index = 0xff;
    } else {
       move_t move = move_for_indices(itf->index, index);
