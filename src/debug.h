@@ -87,11 +87,19 @@ void debug_variable_headers(uint32_t count, ...);
  */
 
 void debug_variable_values(uint32_t count, ...);
+
+/*!
+ * debug_printf
+ * @ wrapper for printf with debug target
+ */
+
+void debug_printf(char const* fmt, ...);
 #else
 #define debug_variable_reset(count, ...)
 #define debug_variable_increment(count, ...)
 #define debug_variable_headers(count, ...)
 #define debug_variable_values(count, ...)
+#define debug_printf(fmt, ...)
 #endif /* DEBUG */
 
 #ifdef TREE
