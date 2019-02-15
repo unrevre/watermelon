@@ -35,11 +35,11 @@ typedef struct {
 void init_interface(interface_t* itf, uint64_t mode);
 
 /*!
- * free_interface
+ * close_interface
  * @ exit ncurses interface and clean up
  */
 
-void free_interface(interface_t* itf);
+void close_interface(interface_t* itf);
 
 /*!
  * refresh_all
@@ -103,12 +103,5 @@ uint64_t event_loop(interface_t* itf);
  */
 
 void fetch(interface_t* itf);
-
-/*!
- * spin
- * @ wait for key press event
- */
-
-void spin(interface_t* itf);
 
 #endif /* INTERFACE_H */
