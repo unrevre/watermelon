@@ -181,6 +181,13 @@ void debug_variable_values(uint32_t count, ...) {
    printf("\n");
    va_end(args);
 }
+
+void debug_printf(char const* fmt, ...) {
+   va_list args;
+   va_start(args, fmt);
+   vprintf(fmt, args);
+   va_end(args);
+}
 #endif /* DEBUG */
 
 #ifdef TREE

@@ -66,7 +66,7 @@ int watermelon(option_t** options, char const* fen) {
    debug_variable_headers(3,
       "alpha-beta nodes", "quiescence nodes", "hash table hits");
    debug_variable_values(3, nodes, qnodes, tthits);
-   wmprint_info(itf, "\n");
+   debug_printf("\n");
 
    return 0;
 }
