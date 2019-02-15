@@ -47,14 +47,14 @@ void wmprint(interface_t* itf, WINDOW* w, uint64_t clear, char const* fmt,
 }
 
 void init_interface(interface_t* itf, uint64_t mode) {
-   itf->info = malloc(sizeof(debug_t));
-   init_debug(itf->info);
-
    itf->mode = mode;
    itf->print = mode ? wmprintw : wmprintf;
    itf->x = 1;
    itf->y = 0;
    itf->index = 0xff;
+
+   itf->info = malloc(sizeof(debug_t));
+   init_debug(itf->info);
 
    if (itf->mode) {
       initscr();
