@@ -17,6 +17,20 @@ typedef struct {
 } option_t;
 
 /*!
+ * set_options
+ * @ set parameters for options
+ */
+
+option_t** set_options(uint32_t nopts);
+
+/*!
+ * free_options
+ * @ free memory of option_t structs
+ */
+
+void free_options(option_t** options, uint32_t nopts);
+
+/*!
  * parse_opts
  * @ parse command line options
  */

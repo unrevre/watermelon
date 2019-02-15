@@ -10,8 +10,6 @@
 #include <time.h>
 
 enum options { opt_depth, opt_once, opt_curses, nopts };
-option_t** set_options(uint32_t nopts);
-void free_options(option_t** options, uint32_t nopts);
 
 int watermelon(option_t** options, char const* fen);
 
@@ -89,11 +87,4 @@ option_t** set_options(uint32_t nopts) {
    options[opt_curses]->long_opt = "curses";
 
    return options;
-}
-
-void free_options(option_t** options, uint32_t nopts) {
-   for (uint32_t i = 0; i < nopts; ++i)
-      free(options[i]);
-
-   free(options);
 }
