@@ -25,8 +25,6 @@ void init_tables(void) {
 
 void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
                 move_t move) {
-   uint32_t index = state.hash & HASHMASK;
-
    uint8_t flags = (int32t_abs(score) > WSCORE - PLYLIMIT) ? FEXACT :
       (score <= alpha) ? FUPPER : (score >= beta) ? FLOWER : FEXACT;
 
@@ -34,6 +32,7 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
       (score < -LSCORE + PLYLIMIT) ? score - state.ply : score;
 
    uint32_t replace = HASHSIZE;
+   uint32_t index = state.hash & HASHMASK;
    for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t entry = index ^ t;
       if (!ttable[entry].bits) {
@@ -60,9 +59,8 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
       }
    }
 
-   ttable[replace] = (ttentry_t) {
-      ._ = { state.hash >> HASHBITS, depth, flags, score, age, move }
-   };
+   ttable[replace] = (ttentry_t) { ._ = {
+      state.hash >> HASHBITS, depth, flags, score, age, move } };
 }
 
 int32_t probe_hash(uint32_t depth, int32_t* alpha, int32_t* beta,

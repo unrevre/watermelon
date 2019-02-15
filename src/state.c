@@ -23,34 +23,29 @@ transient_t state;
 void init_hashes(void) {
    srand(0x91);
 
-   for (uint32_t i = 0x0; i != 0xe; ++i)
-      for (uint32_t j = 0; j < 90; ++j)
+   for (uint32_t i = 0x0; i != empty; ++i)
+      for (uint32_t j = 0; j != 90; ++j)
          PSHASH[i][j] = rand();
-   for (uint32_t i = 0; i < 128; ++i)
+   for (uint32_t i = 0; i != 128; ++i)
       PSHASH[empty][i] = 0x0;
 
-   for (uint32_t i = 0x0; i != 0xe; ++i) {
-      __uint128_t piece = game.pieces[i];
-      for (; piece; piece &= piece - 1)
-         state.hash ^= PSHASH[i][bsf(piece)];
-   }
+   for (uint32_t i = 0x0; i != empty; ++i)
+      for (__uint128_t p = game.pieces[i]; p; p &= p - 1)
+         state.hash ^= PSHASH[i][bsf(p)];
 
    state.hash ^= rand();
+   htable[0] = state.hash;
 
    MVHASH = rand();
-
-   htable[0] = state.hash;
 }
 
 void init_state(const char* fen) {
-   game = (state_t){{0x0}, {0x0}};
+   game = (state_t){ {0}, {0} };
    state = (transient_t){ 0, 0, 0, 0 };
 
    init_tables();
    init_masks();
-
    init_fen(fen);
-
    init_hashes();
 }
 
@@ -102,12 +97,11 @@ void retract(move_t move) {
 }
 
 void advance_with_history(move_t move) {
-   move_t future = history[state.step];
-   if (future.bits && move.bits != future.bits) {
-      uint32_t step = state.step;
+   uint32_t step = state.step;
+   move_t future = history[step];
+   if (future.bits && move.bits != future.bits)
       while (history[++step].bits)
          history[step] = (move_t){0};
-   }
 
    history[state.step] = move;
 

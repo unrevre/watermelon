@@ -53,8 +53,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta,
 
    int32_t best = -INFSCORE + state.ply;
    if (!principal && (best = probe_hash(depth, &alpha, &beta, &store))
-         != (int32_t)(-INFSCORE + state.ply))
-      return best;
+         != (int32_t)(-INFSCORE + state.ply)) { return best; }
 
    if (!depth) { return quiescence(alpha, beta); }
 
@@ -70,11 +69,10 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta,
 
       best = max(best, score);
       alpha = max(alpha, score);
-
       if (alpha >= beta) { return best; }
    }
 
-   generator_t engine = { 0, 0, {0, 0, 0}, store };
+   generator_t engine = { 0, 0, { 0, 0, 0 }, store };
 
    move_t move;
 
@@ -97,7 +95,6 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta,
 
       best = max(best, score);
       alpha = max(alpha, score);
-
       if (alpha < beta) { continue; }
 
       switch (engine.state) {
@@ -108,7 +105,7 @@ int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta,
             ktable[state.ply][1].count++;
             if (ktable[state.ply][1].count > ktable[state.ply][0].count) {
                ktable[state.ply][0] = ktable[state.ply][1];
-               ktable[state.ply][1] = (killer_t){{0}, 0};
+               ktable[state.ply][1] = (killer_t){ {0}, 0 };
             }
             break;
          case 6:
