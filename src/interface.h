@@ -59,20 +59,6 @@ void refresh_state(interface_t* itf);
 void free_interface(interface_t* itf);
 
 /*!
- * wmprintw
- * @ wrapper for mvwprintw
- */
-
-int wmprintw(WINDOW* w, uint64_t clear, char const* fmt, va_list args);
-
-/*!
- * wmprintf
- * @ wrapper for printf, discarding extra argument
- */
-
-int wmprintf(WINDOW* w, uint64_t clear, char const* fmt, va_list args);
-
-/*!
  * wmprint
  * @ wrapper for print functions
  */
