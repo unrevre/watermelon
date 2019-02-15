@@ -9,16 +9,13 @@
 #include <stdio.h>
 #include <string.h>
 
-char fen_side[2] = {'r', 'b'};
-
-char fen_rep[16] = "KkRrNnCcAaBbPp ";
+char fen_side[2] = { 'r', 'b' };
+char fen_char[16] = "KkRrNnCcAaBbPp ";
 
 void init_fen(const char* fen_str) {
-   char* lines[10];
-   for (uint32_t i = 0; i < 10; ++i)
-      lines[i] = malloc(10 * sizeof(char));
-
    char schar;
+   char lines[10][10] = {{0}};
+   char fstr_cat[91] = {0};
 
    sscanf(fen_str,
       "%[A-Za-z0-9]/%[A-Za-z0-9]/%[A-Za-z0-9]/"
@@ -28,7 +25,6 @@ void init_fen(const char* fen_str) {
       lines[4], lines[3], lines[2], lines[1], lines[0],
       &schar);
 
-   char* fstr_cat = calloc(91, sizeof(char));
    for (uint32_t i = 0; i < 10; ++i)
       strcat(fstr_cat, lines[i]);
 
@@ -71,10 +67,6 @@ void init_fen(const char* fen_str) {
    }
 
    game.pieces[empty] = ~(game.occupancy[0] | game.occupancy[1]);
-
-   for (uint32_t i = 0; i < 10; ++i)
-      free(lines[i]);
-   free(fstr_cat);
 
    state.side = (schar == 'b') ? BSIDE : RSIDE;
 }

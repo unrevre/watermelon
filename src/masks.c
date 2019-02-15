@@ -24,7 +24,7 @@ __uint128_t FMASKN8;
 __uint128_t FMASKN01;
 __uint128_t FMASKN78;
 
-void init_masks() {
+void init_masks(void) {
    BMASK = 0x3ffffff;
    BMASK = (BMASK << 64) + 0xffffffffffffffff;
 

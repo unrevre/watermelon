@@ -12,15 +12,12 @@
 
 void init_interface(interface_t* itf, uint64_t mode) {
    itf->info = malloc(sizeof(debug_t));
-
    init_debug(itf->info);
 
    itf->mode = mode;
    itf->print = mode ? wmprintw : wmprintf;
-
    itf->x = 1;
    itf->y = 0;
-
    itf->index = 0xff;
 
    if (itf->mode) {
@@ -46,7 +43,6 @@ void free_interface(interface_t* itf) {
    if (itf->mode) { endwin(); }
 
    free_debug(itf->info);
-
    free(itf);
 }
 

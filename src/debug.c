@@ -37,7 +37,7 @@ void impl_fen(char* buffer) {
             ++s;
          } else {
             if (s) { buffer[f++] = '0' + s; s = 0; }
-            buffer[f++] = fen_rep[board[(9 - i) * 9 + j]];
+            buffer[f++] = fen_char[board[(9 - i) * 9 + j]];
          }
       }
 
@@ -58,10 +58,8 @@ char* info_fen(debug_t* info) {
 
 void impl_game_state(char* buffer) {
    char b[90] = {0};
-
-   for (uint32_t i = 0x0; i != empty; ++i)
-      for (__uint128_t bits = game.pieces[i]; bits; bits &= bits - 1)
-         b[bsf_branchless(bits)] = fen_rep[i];
+   for (uint32_t i = 0; i != 90; ++i)
+      b[i] = board[i] != empty ? fen_char[board[i]] : 0;
 
    uint32_t g = 0;
    for (uint32_t i = 10; i > 0; --i) {
@@ -87,7 +85,7 @@ char* info_game_state(debug_t* info) {
 
 void impl_move(char* buffer, move_t move) {
    sprintf(buffer, "%c: %2i - %2i [%c]",
-      fen_rep[move._.pfrom], move._.from, move._.to, fen_rep[move._.pto]);
+      fen_char[move._.pfrom], move._.from, move._.to, fen_char[move._.pto]);
 }
 
 char* info_move(debug_t* info, move_t move) {

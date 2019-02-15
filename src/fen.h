@@ -2,8 +2,7 @@
 #define FEN_H
 
 extern char fen_side[2];
-
-extern char fen_rep[16];
+extern char fen_char[16];
 
 /*!
  * init_fen
