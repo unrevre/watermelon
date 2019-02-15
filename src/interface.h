@@ -38,6 +38,13 @@ typedef struct {
 void init_interface(interface_t* itf, uint64_t mode);
 
 /*!
+ * free_interface
+ * @ exit ncurses interface and clean up
+ */
+
+void free_interface(interface_t* itf);
+
+/*!
  * refresh_all
  * @ refresh all window contents
  */
@@ -46,31 +53,45 @@ void refresh_all(interface_t* itf);
 
 /*!
  * refresh_state
- * @ refresh windows displaying game state
+ * @ refresh default and game state window contents
  */
 
 void refresh_state(interface_t* itf);
 
 /*!
- * free_interface
- * @ exit ncurses interface and clean up
+ * refresh_cursor
+ * @ refresh cursor position (refreshes game state window contents)
  */
 
-void free_interface(interface_t* itf);
+void refresh_cursor(interface_t* itf);
 
 /*!
- * wmprint
- * @ wrapper for print functions
+ * refresh_info
+ * @ refresh info window contents
  */
 
-void wmprint(interface_t* itf, WINDOW* w, uint64_t clear, char const* fmt, ...);
+void refresh_info(interface_t* itf);
 
 /*!
- * update_state
- * @ helper function - print new game state info and refresh windows
+ * wmprint_state
+ * @ helper function - print game state info
  */
 
-void update_state(interface_t* itf);
+void wmprint_state(interface_t* itf);
+
+/*!
+ * wmprint_search
+ * @ helper function - print search results (move, trace)
+ */
+
+void wmprint_search(interface_t* itf, move_t move);
+
+/*!
+ * wmprint_info
+ * @ helper function - print into info window
+ */
+
+void wmprint_info(interface_t* itf, char const* fmt, ...);
 
 /*!
  * event_loop

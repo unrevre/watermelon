@@ -48,7 +48,8 @@ int watermelon(option_t** options, char const* fen) {
    move_t move;
 
    do {
-      update_state(itf);
+      wmprint_state(itf);
+      refresh_all(itf);
 
       if (itf->mode && !event_loop(itf)) { break; }
 
@@ -56,22 +57,19 @@ int watermelon(option_t** options, char const* fen) {
       move = iter_dfs(depth);
       cpu_time = clock() - cpu_time;
 
-      wmprint(itf, itf->win_info, 0, "cpu_time: %fs\n\n",
-         (float)cpu_time / CLOCKS_PER_SEC);
+      wmprint_info(itf, "cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
 
-      wmprint(itf, itf->win_info, 0, "%s\n\n", info_move(itf->info, move));
-      wmprint(itf, itf->win_info, 0, "%s\n",
-         info_principal_variation(itf->info));
+      wmprint_search(itf, move);
    } while (!once && is_legal(move) && (advance_with_history(move), 1));
 
-   wmprint(itf, itf->win_info, 0, " - exit -\n");
-   refresh_all(itf);
+   wmprint_info(itf, " - exit -\n");
+   refresh_info(itf);
    spin(itf);
 
    debug_variable_headers(3,
       "alpha-beta nodes", "quiescence nodes", "hash table hits");
    debug_variable_values(3, nodes, qnodes, tthits);
-   wmprint(itf, itf->win_info, 0, "\n");
+   wmprint_info(itf, "\n");
 
    free_interface(itf);
 
