@@ -71,8 +71,6 @@ void init_interface(interface_t* itf, uint64_t mode) {
       box(itf->border_state, 0, 0);
       box(itf->border_info, 0, 0);
 
-      wmove(itf->win_state, itf->y, itf->x);
-
       wnoutrefresh(stdscr);
       wnoutrefresh(itf->border_info);
       wnoutrefresh(itf->border_state);
