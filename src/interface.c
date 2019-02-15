@@ -181,10 +181,12 @@ uint64_t event_loop(interface_t* itf) {
          case 'r':
             redo_history();
             update_state(itf);
+            itf->index = 0xff;
             break;
          case 'u':
             undo_history();
             update_state(itf);
+            itf->index = 0xff;
             break;
       }
    }
@@ -207,12 +209,9 @@ void fetch(interface_t* itf) {
       itf->index = 0xff;
    } else {
       move_t move = move_for_indices(itf->index, index);
-
       if (move.bits && is_legal(move)) {
          advance_with_history(move);
-
          update_state(itf);
-
          itf->index = 0xff;
       }
    }
