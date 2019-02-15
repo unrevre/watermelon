@@ -79,8 +79,14 @@ void init_interface(interface_t* itf, uint64_t mode) {
    }
 }
 
-void free_interface(interface_t* itf) {
-   if (itf->mode) { endwin(); }
+void close_interface(interface_t* itf) {
+   wmprint_info(itf, " - exit -\n");
+   refresh_info(itf);
+
+   if (itf->mode) {
+      getch();
+      endwin();
+   }
 
    free_debug(itf->info);
    free(itf);
@@ -213,8 +219,4 @@ void fetch(interface_t* itf) {
          itf->index = 0xff;
       }
    }
-}
-
-void spin(interface_t* itf) {
-   if (itf->mode) { getch(); }
 }

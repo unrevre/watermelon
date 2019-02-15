@@ -61,16 +61,12 @@ int watermelon(option_t** options, char const* fen) {
       wmprint_search(itf, move);
    } while (!once && is_legal(move) && (advance_with_history(move), 1));
 
-   wmprint_info(itf, " - exit -\n");
-   refresh_info(itf);
-   spin(itf);
+   close_interface(itf);
 
    debug_variable_headers(3,
       "alpha-beta nodes", "quiescence nodes", "hash table hits");
    debug_variable_values(3, nodes, qnodes, tthits);
    wmprint_info(itf, "\n");
-
-   free_interface(itf);
 
    return 0;
 }
