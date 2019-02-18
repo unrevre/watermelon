@@ -65,28 +65,28 @@ extern uint64_t tthits;
  * @ reset debug variable(s)
  */
 
-void debug_variable_reset(uint32_t count, ...);
+void debug_variable_reset(int64_t count, ...);
 
 /*!
  * debug_variable_increment
  * @ increment debug variable(s)
  */
 
-void debug_variable_increment(uint32_t count, ...);
+void debug_variable_increment(int64_t count, ...);
 
 /*!
  * debug_variable_headers
  * @ print labels for debug variable(s)
  */
 
-void debug_variable_headers(uint32_t count, ...);
+void debug_variable_headers(int64_t count, ...);
 
 /*!
  * debug_variable_values
  * @ print value of debug variable(s)
  */
 
-void debug_variable_values(uint32_t count, ...);
+void debug_variable_values(int64_t count, ...);
 
 /*!
  * debug_printf

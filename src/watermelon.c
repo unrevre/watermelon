@@ -69,10 +69,10 @@ int watermelon(option_t** options, char const* fen) {
    return 0;
 }
 
-option_t** set_options(uint32_t nopts) {
+option_t** set_options(int64_t nopts) {
    option_t** options = malloc(nopts * sizeof(option_t*));
 
-   for (uint32_t i = 0; i < nopts; ++i)
+   for (int64_t i = 0; i < nopts; ++i)
       options[i] = calloc(1, sizeof(option_t));
 
    options[opt_depth]->short_opt = "d";

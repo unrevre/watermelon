@@ -16,12 +16,12 @@ void init_debug(debug_t* info) {
    info->buffer = calloc(1281, sizeof(char));
    info->buffers = calloc(PLYLIMIT, sizeof(char*));
 
-   for (uint32_t i = 0; i < PLYLIMIT; ++i)
+   for (int64_t i = 0; i < PLYLIMIT; ++i)
       info->buffers[i] = calloc(41, sizeof(char));;
 }
 
 void free_debug(debug_t* info) {
-   for (uint32_t i = 0; i < PLYLIMIT; ++i)
+   for (int64_t i = 0; i < PLYLIMIT; ++i)
       free(info->buffers[i]);
 
    free(info->buffer);
@@ -29,10 +29,10 @@ void free_debug(debug_t* info) {
 }
 
 void impl_fen(char* buffer) {
-   uint32_t f = 0;
-   for (uint32_t i = 0; i < 10; ++i) {
-      uint32_t s = 0;
-      for (uint32_t j = 0; j < 9; ++j) {
+   int64_t f = 0;
+   for (int64_t i = 0; i < 10; ++i) {
+      int64_t s = 0;
+      for (int64_t j = 0; j < 9; ++j) {
          if (board[(9 - i) * 9 + j] == empty) {
             ++s;
          } else {
@@ -58,13 +58,13 @@ char* info_fen(debug_t* info) {
 
 void impl_game_state(char* buffer) {
    char b[90] = {0};
-   for (uint32_t i = 0; i != 90; ++i)
+   for (int64_t i = 0; i != 90; ++i)
       b[i] = board[i] != empty ? fen_char[board[i]] : 0;
 
-   uint32_t g = 0;
-   for (uint32_t i = 10; i > 0; --i) {
+   int64_t g = 0;
+   for (int64_t i = 10; i > 0; --i) {
       char filler = (i == 5 || i == 6) ? '-' : ' ';
-      for (uint32_t j = 0; j < 9; ++j) {
+      for (int64_t j = 0; j < 9; ++j) {
          buffer[g++] = filler;
          buffer[g++] = (b[9 * (i - 1) + j]) ?
             b[9 * (i - 1) + j] : filler;
@@ -136,7 +136,7 @@ char* info_principal_variation(debug_t* info) {
    trace_principal_variation(info->buffers);
 
    info->buffer[0] = '\0';
-   for (uint32_t i = 0; i < PLYLIMIT && info->buffers[i][0]; i++)
+   for (int64_t i = 0; i < PLYLIMIT && info->buffers[i][0]; i++)
       strcat(info->buffer, info->buffers[i]);
 
    return info->buffer;
@@ -148,35 +148,35 @@ uint64_t qnodes;
 
 uint64_t tthits;
 
-void debug_variable_reset(uint32_t count, ...) {
+void debug_variable_reset(int64_t count, ...) {
    va_list args;
    va_start(args, count);
-   for (uint32_t i = 0; i < count; ++i)
+   for (int64_t i = 0; i < count; ++i)
       *(va_arg(args, uint64_t*)) = 0;
    va_end(args);
 }
 
-void debug_variable_increment(uint32_t count, ...) {
+void debug_variable_increment(int64_t count, ...) {
    va_list args;
    va_start(args, count);
-   for (uint32_t i = 0; i < count; ++i)
+   for (int64_t i = 0; i < count; ++i)
       ++(*(va_arg(args, uint64_t*)));
    va_end(args);
 }
 
-void debug_variable_headers(uint32_t count, ...) {
+void debug_variable_headers(int64_t count, ...) {
    va_list args;
    va_start(args, count);
-   for (uint32_t i = 0; i < count; ++i)
+   for (int64_t i = 0; i < count; ++i)
       printf("%16s | ", va_arg(args, const char*));
    printf("\n");
    va_end(args);
 }
 
-void debug_variable_values(uint32_t count, ...) {
+void debug_variable_values(int64_t count, ...) {
    va_list args;
    va_start(args, count);
-   for (uint32_t i = 0; i < count; ++i)
+   for (int64_t i = 0; i < count; ++i)
       printf("%16llu | ", va_arg(args, uint64_t));
    printf("\n");
    va_end(args);

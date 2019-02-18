@@ -21,20 +21,20 @@ typedef struct {
  * @ set parameters for options
  */
 
-option_t** set_options(uint32_t nopts);
+option_t** set_options(int64_t nopts);
 
 /*!
  * free_options
  * @ free memory of option_t structs
  */
 
-void free_options(option_t** options, uint32_t nopts);
+void free_options(option_t** options, int64_t nopts);
 
 /*!
  * parse_opts
  * @ parse command line options
  */
 
-int parse_opts(int argc, char const* argv[], uint32_t nopts, option_t** opts);
+int parse_opts(int argc, char const* argv[], int64_t nopts, option_t** opts);
 
 #endif /* OPTIONS_H */
