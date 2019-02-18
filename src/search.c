@@ -25,17 +25,7 @@ move_t iter_dfs(uint32_t depth) {
       if (int32t_abs(score) >= INFDELAY - d) { break; }
    }
 
-   move_t move = {0};
-   for (uint32_t t = 0; t != BASKETS; ++t) {
-      uint32_t index = (state.hash & HASHMASK) ^ t;
-      if (ttable[index]._.hash == state.hash >> HASHBITS
-            && ttable[index]._.flags == FEXACT) {
-         move = ttable[index]._.move;
-         break;
-      }
-   }
-
-   return move;
+   return probe_hash_for_entry()._.move;
 }
 
 int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta,
