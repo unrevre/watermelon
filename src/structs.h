@@ -72,7 +72,7 @@ typedef struct {
  */
 
 typedef struct {
-   uint32_t ply;
+   int32_t ply;
    uint32_t side;
    uint32_t hash;
    uint32_t step;
