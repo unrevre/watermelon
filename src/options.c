@@ -16,9 +16,9 @@ void free_options(option_t** options, int64_t nopts) {
  * @ (static) shift arguments forward
  */
 
-static void sink(uint32_t start, uint32_t end, char const* argv[]) {
+static void sink(int64_t start, int64_t end, char const* argv[]) {
    char const* a = argv[start];
-   for (uint32_t i = start; i > end; --i)
+   for (int64_t i = start; i > end; --i)
       argv[i] = argv[i - 1];
    argv[end] = a;
 }
@@ -32,7 +32,7 @@ int parse_opts(int argc, char const* argv[], int64_t nopts, option_t** opts) {
          continue;
       }
 
-      uint32_t type = argv[i][1] == '-';
+      int64_t type = argv[i][1] == '-';
       for (int64_t j = 0; j < nopts; ++j) {
          if (opts[j]->active) { continue; }
 

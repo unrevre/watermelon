@@ -12,8 +12,8 @@ typedef struct {
    char const* short_opt;
    char const* long_opt;
    char const* opt_str;
-   uint32_t active;
-   uint32_t flags;
+   int64_t active;
+   int64_t flags;
 } option_t;
 
 /*!
