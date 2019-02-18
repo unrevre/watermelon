@@ -143,16 +143,16 @@ char* info_principal_variation(debug_t* info) {
 }
 
 #ifdef DEBUG
-uint32_t nodes;
-uint32_t qnodes;
+uint64_t nodes;
+uint64_t qnodes;
 
-uint32_t tthits;
+uint64_t tthits;
 
 void debug_variable_reset(uint32_t count, ...) {
    va_list args;
    va_start(args, count);
    for (uint32_t i = 0; i < count; ++i)
-      *(va_arg(args, uint32_t*)) = 0;
+      *(va_arg(args, uint64_t*)) = 0;
    va_end(args);
 }
 
@@ -160,7 +160,7 @@ void debug_variable_increment(uint32_t count, ...) {
    va_list args;
    va_start(args, count);
    for (uint32_t i = 0; i < count; ++i)
-      ++(*(va_arg(args, uint32_t*)));
+      ++(*(va_arg(args, uint64_t*)));
    va_end(args);
 }
 
@@ -177,7 +177,7 @@ void debug_variable_values(uint32_t count, ...) {
    va_list args;
    va_start(args, count);
    for (uint32_t i = 0; i < count; ++i)
-      printf("%16u | ", va_arg(args, uint32_t));
+      printf("%16llu | ", va_arg(args, uint64_t));
    printf("\n");
    va_end(args);
 }
