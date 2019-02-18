@@ -25,16 +25,16 @@ void init_fen(const char* fen_str) {
       lines[4], lines[3], lines[2], lines[1], lines[0],
       &schar);
 
-   for (uint32_t i = 0; i < 10; ++i)
+   for (int64_t i = 0; i < 10; ++i)
       strcat(fstr_cat, lines[i]);
 
-   for (uint32_t i = 0; i < 15; ++i)
+   for (int64_t i = 0; i < 15; ++i)
       game.pieces[i] = 0x0;
-   for (uint32_t i = 0; i < 90; ++i)
+   for (int64_t i = 0; i < 90; ++i)
       board[i] = empty;
 
    char* fstr_p = fstr_cat;
-   for (uint32_t i = 0; *fstr_p; ++fstr_p, ++i) {
+   for (int64_t i = 0; *fstr_p; ++fstr_p, ++i) {
       int32_t piece = -1;
 
       switch (*fstr_p) {
@@ -61,7 +61,7 @@ void init_fen(const char* fen_str) {
    game.occupancy[0] = 0x0;
    game.occupancy[1] = 0x0;
 
-   for (uint32_t i = 0; i < 7; ++i) {
+   for (int64_t i = 0; i < 7; ++i) {
       game.occupancy[0] |= game.pieces[ps(0x0, i)];
       game.occupancy[1] |= game.pieces[po(0x0, i)];
    }

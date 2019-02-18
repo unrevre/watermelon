@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-void free_options(option_t** options, uint32_t nopts) {
-   for (uint32_t i = 0; i < nopts; ++i)
+void free_options(option_t** options, int64_t nopts) {
+   for (int64_t i = 0; i < nopts; ++i)
       free(options[i]);
 
    free(options);
@@ -23,7 +23,7 @@ static void sink(uint32_t start, uint32_t end, char const* argv[]) {
    argv[end] = a;
 }
 
-int parse_opts(int argc, char const* argv[], uint32_t nopts, option_t** opts) {
+int parse_opts(int argc, char const* argv[], int64_t nopts, option_t** opts) {
    int positional = 1;
 
    for (int i = 1; i < argc; ++i) {
@@ -33,7 +33,7 @@ int parse_opts(int argc, char const* argv[], uint32_t nopts, option_t** opts) {
       }
 
       uint32_t type = argv[i][1] == '-';
-      for (uint32_t j = 0; j < nopts; ++j) {
+      for (int64_t j = 0; j < nopts; ++j) {
          if (opts[j]->active) { continue; }
 
          if (!strcmp(argv[i] + 1 + type, type ?

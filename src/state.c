@@ -23,13 +23,13 @@ transient_t state;
 void init_hashes(void) {
    srand(0x91);
 
-   for (uint32_t i = 0x0; i != empty; ++i)
-      for (uint32_t j = 0; j != 90; ++j)
+   for (int64_t i = 0x0; i != empty; ++i)
+      for (int64_t j = 0; j != 90; ++j)
          PSHASH[i][j] = rand();
-   for (uint32_t i = 0; i != 128; ++i)
+   for (int64_t i = 0; i != 128; ++i)
       PSHASH[empty][i] = 0x0;
 
-   for (uint32_t i = 0x0; i != empty; ++i)
+   for (int64_t i = 0x0; i != empty; ++i)
       for (__uint128_t p = game.pieces[i]; p; p &= p - 1)
          state.hash ^= PSHASH[i][bsf(p)];
 
