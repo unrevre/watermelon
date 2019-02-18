@@ -13,11 +13,11 @@
  */
 
 typedef struct {
-   uint64_t mode;
+   int64_t mode;
    int (*print) (WINDOW*, uint64_t, char const*, va_list);
-   uint32_t x;
-   uint32_t y;
-   uint64_t index;
+   int32_t x;
+   int32_t y;
+   int64_t index;
 
    debug_t* info;
 
@@ -32,7 +32,7 @@ typedef struct {
  * @ initialise ncurses interface
  */
 
-void init_interface(interface_t* itf, uint64_t mode);
+void init_interface(interface_t* itf, int64_t mode);
 
 /*!
  * close_interface
@@ -95,7 +95,7 @@ void wmprint_info(interface_t* itf, char const* fmt, ...);
  * @ event loop handling key events in curses mode
  */
 
-uint64_t event_loop(interface_t* itf);
+int64_t event_loop(interface_t* itf);
 
 /*!
  * fetch

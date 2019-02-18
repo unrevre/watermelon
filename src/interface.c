@@ -38,7 +38,7 @@ int wmprintw(WINDOW* w, uint64_t clear, char const* fmt, va_list args) {
  * @ wrapper for print functions
  */
 
-void wmprint(interface_t* itf, WINDOW* w, uint64_t clear, char const* fmt,
+void wmprint(interface_t* itf, WINDOW* w, int64_t clear, char const* fmt,
              ...) {
    va_list args;
    va_start(args, fmt);
@@ -46,12 +46,12 @@ void wmprint(interface_t* itf, WINDOW* w, uint64_t clear, char const* fmt,
    va_end(args);
 }
 
-void init_interface(interface_t* itf, uint64_t mode) {
+void init_interface(interface_t* itf, int64_t mode) {
    itf->mode = mode;
    itf->print = mode ? wmprintw : wmprintf;
    itf->x = 1;
    itf->y = 0;
-   itf->index = 0xff;
+   itf->index = -1;
 
    itf->info = malloc(sizeof(debug_t));
    init_debug(itf->info);
@@ -149,16 +149,16 @@ void update_state(interface_t* itf) {
    refresh_state(itf);
 }
 
-uint64_t event_loop(interface_t* itf) {
+int64_t event_loop(interface_t* itf) {
    for (;;) {
       switch (getch()) {
          case 'f':
             fetch(itf);
             break;
          case 'g':
-            if (itf->index != 0xff)
+            if (itf->index != -1)
                fetch(itf);
-            if (itf->index == 0xff)
+            if (itf->index == -1)
                return 1;
             break;
          case 'h': case KEY_LEFT:
@@ -178,19 +178,19 @@ uint64_t event_loop(interface_t* itf) {
             refresh_cursor(itf);
             break;
          case 'n':
-            itf->index = 0xff;
+            itf->index = -1;
             return 1;
          case 'q':
             return 0;
          case 'r':
             redo_history();
             update_state(itf);
-            itf->index = 0xff;
+            itf->index = -1;
             break;
          case 'u':
             undo_history();
             update_state(itf);
-            itf->index = 0xff;
+            itf->index = -1;
             break;
       }
    }
@@ -199,9 +199,9 @@ uint64_t event_loop(interface_t* itf) {
 void fetch(interface_t* itf) {
    int32_t x; int32_t y;
    getyx(itf->win_state, y, x);
-   uint64_t index = (9 - y) * 9 + x / 2;
+   int64_t index = (9 - y) * 9 + x / 2;
 
-   if (itf->index == 0xff) {
+   if (itf->index == -1) {
       if (is_index_movable(index)) {
          wchgat(itf->win_state, 1, A_BOLD, 0, NULL);
          wrefresh(itf->win_state);
@@ -210,13 +210,13 @@ void fetch(interface_t* itf) {
    } else if (itf->index == index) {
       wchgat(itf->win_state, 1, A_NORMAL, 0, NULL);
       wrefresh(itf->win_state);
-      itf->index = 0xff;
+      itf->index = -1;
    } else {
       move_t move = move_for_indices(itf->index, index);
       if (move.bits && is_legal(move)) {
          advance_with_history(move);
          update_state(itf);
-         itf->index = 0xff;
+         itf->index = -1;
       }
    }
 }
