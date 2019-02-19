@@ -719,13 +719,13 @@ move_array_t sort_moves(move_array_t moves) {
       malloc(moves.count * sizeof(move_t)), moves.count, 0
    };
 
-   uint32_t indices[9] = {0};
-   uint32_t* counts = &indices[1];
-   for (uint32_t i = 0; i < moves.count; ++i)
+   int32_t indices[9] = {0};
+   int32_t* counts = &indices[1];
+   for (int64_t i = 0; i != moves.count; ++i)
       ++counts[p(moves.data[i]._.pto)];
-   for (uint32_t i = 1; i < 7; ++i)
+   for (int64_t i = 1; i != 7; ++i)
       counts[i] = counts[i] + counts[i - 1];
-   for (uint32_t i = 0; i < moves.count; ++i)
+   for (int64_t i = 0; i != moves.count; ++i)
       sorted.data[indices[p(moves.data[i]._.pto)]++] = moves.data[i];
    sorted.quiet = indices[7];
 
