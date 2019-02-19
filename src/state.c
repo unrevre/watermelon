@@ -31,7 +31,7 @@ void init_hashes(void) {
 
    for (int64_t i = 0; i != empty; ++i)
       for (__uint128_t p = game.pieces[i]; p; p &= p - 1)
-         state.hash ^= PSHASH[i][bsf(p)];
+         state.hash ^= PSHASH[i][bsf_branchless(p)];
 
    state.hash ^= rand();
    htable[0] = state.hash;
