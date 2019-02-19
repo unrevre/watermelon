@@ -10,13 +10,6 @@ matrix:
       osx_image: xcode9.2
       env: COMPILER=clang
 
-    - os: linux
-      env: COMPILER=gcc-8
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['gcc-8']
-
 script:
   - make CC=$COMPILER tree
   - ./bin/watermelon -d 2 -1

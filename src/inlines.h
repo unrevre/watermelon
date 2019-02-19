@@ -4,56 +4,23 @@
 #include <stdint.h>
 
 /*!
- * bsfq
- * @ assembly instrinsic for bsfq
- */
-
-__inline__ uint32_t bsfq(uint64_t bits) {
-   uint64_t index;
-   asm ("                  \n\
-        bsfq   %1, %0      \n\
-        "
-        : "=r" (index)
-        : "r" (bits)
-        :
-   );
-
-   return index;
-}
-
-/*!
  * bsf_branchless
- * @ returns index of least significant bit set
- * # for __uint128_t (branchless version)
+ * @ returns index of least significant bit of __uint128_t
  */
 
-__inline__ uint32_t bsf_branchless(__uint128_t bits) {
-   uint64_t high = bits >> 64;
-   uint64_t low = bits;
-   uint32_t ret[3] = { bsfq(low), bsfq(high) + 64, 128 };
-   uint32_t index = !low + ((!low) & (!high));
-   return ret[index];
-}
+__inline__ uint64_t bsf_branchless(__uint128_t bits) {
+   uint64_t clobber;
 
-/*!
- * bsf
- * @ returns index of least significant bit set
- * # for __uint128_t
- */
-
-__inline__ uint32_t bsf(__uint128_t bits) {
    uint64_t index;
    asm ("                  \n\
-        bsfq   %1, %0      \n\
-        jnz    1f          \n\
-        bsfq   %2, %0      \n\
-        jnz    2f          \n\
         movq   $64, %0     \n\
-        2:                 \n\
+        bsfq   %3, %1      \n\
+        cmovnz %1, %0      \n\
         addq   $64, %0     \n\
-        1:                 \n\
+        bsfq   %2, %1      \n\
+        cmovnz %1, %0      \n\
         "
-        : "=r" (index)
+        : "=&r" (index), "=&r" (clobber)
         : "r" (bits), "r" (bits >> 64)
         :
    );
@@ -62,56 +29,24 @@ __inline__ uint32_t bsf(__uint128_t bits) {
 }
 
 /*!
- * bsrq
- * @ assembly instrinsic for bsrq
- */
-
-__inline__ uint32_t bsrq(uint64_t bits) {
-   uint64_t index;
-   asm ("                  \n\
-        bsrq   %1, %0      \n\
-        "
-        : "=r" (index)
-        : "r" (bits)
-        :
-   );
-
-   return index;
-}
-
-/*!
  * bsr_branchless
- * @ returns index of most significant bit set
- * # __uint128_t (branchless version)
+ * @ returns index of most significant bit of __uint128_t
  */
 
-__inline__ uint32_t bsr_branchless(__uint128_t bits) {
-   uint64_t high = bits >> 64;
-   uint64_t low = bits;
-   uint32_t ret[3] = { bsrq(high) + 64, bsrq(low), 128 };
-   uint32_t index = !high + ((!low) & (!high));
-   return ret[index];
-}
+__inline__ uint64_t bsr_branchless(__uint128_t bits) {
+   uint64_t clobber;
 
-/*!
- * bsr
- * @ returns index of most significant bit set
- * # __uint128_t
- */
-
-__inline__ uint32_t bsr(__uint128_t bits) {
    uint64_t index;
    asm ("                  \n\
+        movq   $128, %1    \n\
         bsrq   %2, %0      \n\
-        jnz    2f          \n\
-        bsrq   %1, %0      \n\
-        jnz    1f          \n\
-        movq   $64, %0     \n\
-        2:                 \n\
-        addq   $64, %0     \n\
-        1:                 \n\
+        cmovnz %0, %1      \n\
+        xorq   $64, %1     \n\
+        bsrq   %3, %0      \n\
+        cmovz  %1, %0      \n\
+        xorq   $64, %0     \n\
         "
-        : "=r" (index)
+        : "=&r" (index), "=&r" (clobber)
         : "r" (bits), "r" (bits >> 64)
         :
    );
