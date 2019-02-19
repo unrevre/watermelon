@@ -29,9 +29,9 @@ int main(int argc, char const* argv[]) {
 }
 
 int watermelon(option_t** options, char const* fen) {
-   uint32_t depth = atoi(options[opt_depth]->opt_str);
-   uint64_t once = options[opt_once]->active;
-   uint64_t mode = options[opt_curses]->active;
+   int32_t depth = atoi(options[opt_depth]->opt_str);
+   int64_t once = options[opt_once]->active;
+   int64_t mode = options[opt_curses]->active;
 
    free_options(options, nopts);
 

@@ -6,10 +6,10 @@
 
 #include <stdlib.h>
 
-uint64_t perft(uint32_t depth) {
+int64_t perft(int32_t depth) {
    if (!depth) { return 1; }
 
-   uint64_t nmoves = 0;
+   int64_t nmoves = 0;
    move_array_t moves = generate(state.side);
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
@@ -22,10 +22,10 @@ uint64_t perft(uint32_t depth) {
    return nmoves;
 }
 
-uint64_t perft_capture(uint32_t depth) {
+int64_t perft_capture(int32_t depth) {
    if (!depth) { return 1; }
 
-   uint64_t nmoves = 0;
+   int64_t nmoves = 0;
    move_array_t moves = generate_captures(state.side);
    for (uint32_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);

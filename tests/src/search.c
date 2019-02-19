@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
 
    printf("%s\n", info_fen(&info));
 
-   uint32_t depth = atoi(argv[1]);
+   int32_t depth = atoi(argv[1]);
 
    move_t move = iter_dfs(depth);
    printf("%s at depth %i\n", info_move(&info, move), depth);

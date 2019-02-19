@@ -8,6 +8,6 @@
  * @ evaluate position
  */
 
-int32_t eval(uint32_t side);
+int32_t eval(int32_t side);
 
 #endif /* EVAL_H */

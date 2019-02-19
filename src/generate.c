@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 
-move_array_t generate(uint32_t side) {
+move_array_t generate(int32_t side) {
    move_array_t moves = {malloc(111 * sizeof(move_t)), 0, 0};
 
    __uint128_t C3U128 = 0x3;
@@ -148,7 +148,7 @@ move_array_t generate(uint32_t side) {
    return moves;
 }
 
-move_array_t generate_pseudolegal(uint32_t side) {
+move_array_t generate_pseudolegal(int32_t side) {
    move_array_t moves = {malloc(111 * sizeof(move_t)), 0, 0};
    if (!game.pieces[ps(side, 0x0)]) { return moves; }
 
@@ -295,7 +295,7 @@ move_array_t generate_pseudolegal(uint32_t side) {
    return moves;
 }
 
-move_array_t generate_captures(uint32_t side) {
+move_array_t generate_captures(int32_t side) {
    move_array_t moves = {malloc(40 * sizeof(move_t)), 0, 0};
    if (!game.pieces[ps(side, 0x0)]) { return moves; }
 
@@ -437,7 +437,7 @@ move_array_t generate_captures(uint32_t side) {
    return moves;
 }
 
-move_array_t generate_quiet(uint32_t side) {
+move_array_t generate_quiet(int32_t side) {
    move_array_t moves = {malloc(111 * sizeof(move_t)), 0, 0};
    if (!game.pieces[ps(side, 0x0)]) { return moves; }
 
@@ -556,7 +556,7 @@ void add_shiftwise(__uint128_t set, int32_t shift, move_array_t* moves) {
    }
 }
 
-uint32_t in_check(uint32_t side) {
+uint32_t in_check(int32_t side) {
    uint32_t index = bsf_branchless(game.pieces[ps(side, 0x0)]);
 
    __uint128_t jset = game.pieces[po(side, 0x0)] | game.pieces[po(side, 0x1)];
@@ -618,7 +618,7 @@ uint32_t in_check(uint32_t side) {
 }
 
 move_t move_for_indices(uint32_t from, uint32_t to) {
-   uint32_t side = state.side;
+   int32_t side = state.side;
 
    if (is_index_movable(to)) { return (move_t){0}; }
 
@@ -665,7 +665,7 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
    return (move_t){ ._ = { from, to, board[from], board[to] } };
 }
 
-uint32_t is_valid(move_t move, uint32_t side) {
+uint32_t is_valid(move_t move, int32_t side) {
    if (side != s(move._.pfrom)) { return 0; }
 
    uint32_t from = move._.from;
