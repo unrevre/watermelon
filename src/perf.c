@@ -11,7 +11,7 @@ int64_t perft(int32_t depth) {
 
    int64_t nmoves = 0;
    move_array_t moves = generate(state.side);
-   for (uint32_t i = 0; i != moves.count; ++i) {
+   for (int64_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
       if (!in_check(o(state.side)))
          nmoves += perft(depth - 1);
@@ -27,7 +27,7 @@ int64_t perft_capture(int32_t depth) {
 
    int64_t nmoves = 0;
    move_array_t moves = generate_captures(state.side);
-   for (uint32_t i = 0; i != moves.count; ++i) {
+   for (int64_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
       if (!in_check(o(state.side)))
          nmoves += perft_capture(depth - 1);

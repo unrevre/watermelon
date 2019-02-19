@@ -35,8 +35,8 @@ typedef union {
 
 typedef struct {
    move_t* data;
-   uint32_t count;
-   uint32_t quiet;
+   int64_t count;
+   int64_t quiet;
 } move_array_t;
 
 /*!
@@ -84,8 +84,8 @@ typedef struct {
  */
 
 typedef struct {
-   uint32_t state;
-   uint32_t index;
+   int64_t state;
+   int64_t index;
    move_array_t moves;
    move_t move;
 } generator_t;
