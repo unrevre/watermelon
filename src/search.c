@@ -10,25 +10,25 @@
 
 #include <stdlib.h>
 
-move_t iter_dfs(uint32_t depth) {
+move_t iter_dfs(int32_t depth) {
    debug_variable_reset(3, &nodes, &qnodes, &tthits);
 
    ++age;
 
-   for (uint32_t d = 1; d != depth; ++d) {
+   for (int32_t d = 1; d != depth; ++d) {
       tree_root_entry();
       tree_node_entry(-INFINITY, INFINITY);
       int32_t score = negamax(d, -INFINITY, INFINITY, 1);
       tree_node_exit(-INFINITY, INFINITY, score);
       tree_root_exit();
 
-      if (int32t_abs(score) >= INFDELAY - d) { break; }
+      if (abs(score) >= INFDELAY - d) { break; }
    }
 
    return probe_hash_for_entry()._.move;
 }
 
-int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta,
+int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
                 uint32_t principal) {
    debug_variable_increment(1, &nodes);
 

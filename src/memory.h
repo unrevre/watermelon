@@ -26,7 +26,7 @@ void init_tables(void);
  * @ transposition table replacement scheme
  */
 
-void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
+void store_hash(int32_t depth, int32_t alpha, int32_t beta, int32_t score,
                 move_t move);
 
 /*!
@@ -34,7 +34,7 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
  * @ probe transposition table for current position
  */
 
-int32_t probe_hash(uint32_t depth, int32_t* alpha, int32_t* beta,
+int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
                    move_t* move);
 
 /*!

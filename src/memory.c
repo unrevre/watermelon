@@ -5,6 +5,7 @@
 #include "inlines.h"
 #include "state.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 move_t history[STEPLIMIT];
@@ -23,9 +24,9 @@ void init_tables(void) {
    age = 0;
 }
 
-void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
+void store_hash(int32_t depth, int32_t alpha, int32_t beta, int32_t score,
                 move_t move) {
-   uint8_t flags = (int32t_abs(score) > WSCORE - PLYLIMIT) ? FEXACT :
+   uint8_t flags = (abs(score) > WSCORE - PLYLIMIT) ? FEXACT :
       (score <= alpha) ? FUPPER : (score >= beta) ? FLOWER : FEXACT;
 
    score = (score > WSCORE - PLYLIMIT) ? score + state.ply :
@@ -63,7 +64,7 @@ void store_hash(uint32_t depth, int32_t alpha, int32_t beta, int32_t score,
       state.hash >> HASHBITS, depth, flags, score, age, move } };
 }
 
-int32_t probe_hash(uint32_t depth, int32_t* alpha, int32_t* beta,
+int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
                    move_t* move) {
    for (uint32_t t = 0; t < BASKETS; ++t) {
       ttentry_t entry = ttable[(state.hash & HASHMASK) ^ t];

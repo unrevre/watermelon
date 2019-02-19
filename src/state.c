@@ -23,13 +23,13 @@ transient_t state;
 void init_hashes(void) {
    srand(0x91);
 
-   for (int64_t i = 0x0; i != empty; ++i)
+   for (int64_t i = 0; i != empty; ++i)
       for (int64_t j = 0; j != 90; ++j)
          PSHASH[i][j] = rand();
    for (int64_t i = 0; i != 128; ++i)
       PSHASH[empty][i] = 0x0;
 
-   for (int64_t i = 0x0; i != empty; ++i)
+   for (int64_t i = 0; i != empty; ++i)
       for (__uint128_t p = game.pieces[i]; p; p &= p - 1)
          state.hash ^= PSHASH[i][bsf(p)];
 
@@ -97,7 +97,7 @@ void retract(move_t move) {
 }
 
 void advance_with_history(move_t move) {
-   uint32_t step = state.step;
+   int32_t step = state.step;
    move_t future = history[step];
    if (future.bits && move.bits != future.bits)
       while (history[++step].bits)
@@ -134,8 +134,8 @@ uint32_t is_legal(move_t move) {
 
 uint32_t is_repetition() {
    return state.step > 4
-      && (htable[state.step] == htable[state.step - 0x4])
-      && (htable[state.step - 0x1] == htable[state.step - 0x5]);
+      && (htable[state.step] == htable[state.step - 4])
+      && (htable[state.step - 1] == htable[state.step - 5]);
 }
 
 uint32_t is_index_movable(uint32_t index) {

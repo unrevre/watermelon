@@ -10,7 +10,7 @@
  * @ generate all moves
  */
 
-move_array_t generate(uint32_t side);
+move_array_t generate(int32_t side);
 
 /*!
  * generate_pseudolegal
@@ -18,35 +18,35 @@ move_array_t generate(uint32_t side);
  * # including feijiang as literal move
  */
 
-move_array_t generate_pseudolegal(uint32_t side);
+move_array_t generate_pseudolegal(int32_t side);
 
 /*!
  * generate_captures
  * @ generate capture moves
  */
 
-move_array_t generate_captures(uint32_t side);
+move_array_t generate_captures(int32_t side);
 
 /*!
  * generate_quiet
  * @ generate quiet moves
  */
 
-move_array_t generate_quiet(uint32_t side);
+move_array_t generate_quiet(int32_t side);
 
 /*!
  * in_check
  * @ test if side is in check
  */
 
-uint32_t in_check(uint32_t side);
+uint32_t in_check(int32_t side);
 
 /*!
  * is_valid
  * @ test if given move is pseudolegal
  */
 
-uint32_t is_valid(move_t move, uint32_t side);
+uint32_t is_valid(move_t move, int32_t side);
 
 /*!
  * move_for_indices

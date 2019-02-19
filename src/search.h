@@ -10,14 +10,14 @@
  * @ iterative deepening
  */
 
-move_t iter_dfs(uint32_t depth);
+move_t iter_dfs(int32_t depth);
 
 /*!
  * negamax
  * @ negamax search, with alpha-beta pruning (fail-soft)
  */
 
-int32_t negamax(uint32_t depth, int32_t alpha, int32_t beta,
+int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
                 uint32_t principal);
 
 /*!

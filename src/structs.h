@@ -73,9 +73,9 @@ typedef struct {
 
 typedef struct {
    int32_t ply;
-   uint32_t side;
+   int32_t side;
+   int32_t step;
    uint32_t hash;
-   uint32_t step;
 } transient_t;
 
 /*
