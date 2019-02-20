@@ -539,7 +539,7 @@ move_array_t generate_quiet(int64_t side) {
    return moves;
 }
 
-void add_piecewise(__uint128_t set, uint32_t from, move_array_t* moves) {
+void add_piecewise(__uint128_t set, uint8_t from, move_array_t* moves) {
    for (; set; set &= set - 1) {
       uint8_t to = bsf_branchless(set);
       move_t move = { ._ = { from, to, board[from], board[to] } };
@@ -547,7 +547,7 @@ void add_piecewise(__uint128_t set, uint32_t from, move_array_t* moves) {
    }
 }
 
-void add_shiftwise(__uint128_t set, int32_t shift, move_array_t* moves) {
+void add_shiftwise(__uint128_t set, int64_t shift, move_array_t* moves) {
    for (; set; set &= set - 1) {
       uint8_t to = bsf_branchless(set);
       uint8_t from = to - shift;
