@@ -61,7 +61,7 @@ void store_hash(int32_t depth, int32_t alpha, int32_t beta, int32_t score,
    }
 
    ttable[replace] = (ttentry_t) { ._ = {
-      state.hash >> HASHBITS, depth, flags, score, age, move } };
+      state.hash >> HASHBITS, flags, depth, score, age, move } };
 }
 
 int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
