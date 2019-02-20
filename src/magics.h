@@ -36,17 +36,21 @@
 #define BSIDE 0x1
 #define EMPTY 0xe
 
-#define PSBIT BSIDE
+#define PSIDEB 0x1
 #define PSHIFT 1
 
-#define o(s) (s ^ PSBIT)
+#define o(s) (!s)
 
 #define p(p) (p >> 1)
-#define s(p) (p & PSBIT)
+#define s(p) (p & PSIDEB)
 
 #define ps(s, p) ((p << PSHIFT) + s)
 #define po(s, p) ((p << PSHIFT) ^ o(s))
 
+#define red RSIDE
+#define black BSIDE
 #define empty EMPTY
+
+#define pass PSIDEB
 
 #endif /* MAGIC_H */

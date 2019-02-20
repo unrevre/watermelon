@@ -285,10 +285,10 @@ move_array_t generate_pseudolegal(int32_t side) {
       moveset &= JMASK[side] & ~game.occupancy[side];
       add_piecewise(moveset, index, &moves);
 
-      __uint128_t fly = (game.pieces[po(0x0, 0x0)] << 1)
-         - game.pieces[ps(0x0, 0x0)];
+      __uint128_t fly = (game.pieces[ps(black, 0x0)] << 1)
+         - game.pieces[ps(red, 0x0)];
       fly &= FMASK[index] & ~game.pieces[empty];
-      fly ^= game.pieces[ps(0x0, 0x0)] | game.pieces[po(0x0, 0x0)];
+      fly ^= game.pieces[ps(red, 0x0)] | game.pieces[ps(black, 0x0)];
       if (!fly) { add_piecewise(game.pieces[po(side, 0x0)], index, &moves); }
    }
 
@@ -427,10 +427,10 @@ move_array_t generate_captures(int32_t side) {
       moveset &= JMASK[side] & game.occupancy[!side];
       add_piecewise(moveset, index, &moves);
 
-      __uint128_t fly = (game.pieces[po(0x0, 0x0)] << 1)
-         - game.pieces[ps(0x0, 0x0)];
+      __uint128_t fly = (game.pieces[ps(black, 0x0)] << 1)
+         - game.pieces[ps(red, 0x0)];
       fly &= FMASK[index] & ~game.pieces[empty];
-      fly ^= game.pieces[ps(0x0, 0x0)] | game.pieces[po(0x0, 0x0)];
+      fly ^= game.pieces[ps(red, 0x0)] | game.pieces[ps(black, 0x0)];
       if (!fly) { add_piecewise(game.pieces[po(side, 0x0)], index, &moves); }
    }
 
@@ -677,8 +677,8 @@ uint32_t is_valid(move_t move, int32_t side) {
    switch (p(move._.pfrom)) {
       case 0: {
          if (p(move._.pto)) { return 1; }
-         __uint128_t jspan = game.pieces[po(0x0, 0x0)]
-            - (game.pieces[ps(0x0, 0x0)] << 1);
+         __uint128_t jspan = game.pieces[ps(black, 0x0)]
+            - (game.pieces[ps(red, 0x0)] << 1);
          jspan &= FMASK[from] & ~game.pieces[empty];
          return !jspan; }
       case 1: {
