@@ -89,6 +89,6 @@ uint32_t is_repetition();
  * @ test if piece at index is on side to move
  */
 
-uint32_t is_index_movable(uint32_t index);
+uint32_t is_index_movable(int32_t index);
 
 #endif /* STATE_H */
