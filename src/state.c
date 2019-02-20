@@ -51,7 +51,7 @@ void init_state(const char* fen) {
 
 void advance(move_t move) {
    ++state.ply;
-   state.side = o(state.side);
+   state.side = !state.side;
 
    state.hash ^= PSHASH[move._.pfrom][move._.from];
    state.hash ^= PSHASH[move._.pfrom][move._.to];
@@ -74,7 +74,7 @@ void advance(move_t move) {
 
 void retract(move_t move) {
    --state.ply;
-   state.side = o(state.side);
+   state.side = !state.side;
 
    state.hash ^= PSHASH[move._.pfrom][move._.from];
    state.hash ^= PSHASH[move._.pfrom][move._.to];
@@ -126,7 +126,7 @@ uint32_t is_legal(move_t move) {
    if (!is_valid(move, state.side)) { return 0; }
 
    advance(move);
-   uint32_t legal = !in_check(o(state.side));
+   uint32_t legal = !in_check(state.side ^ pass);
    retract(move);
 
    return legal;

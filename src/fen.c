@@ -62,11 +62,11 @@ void init_fen(const char* fen_str) {
    game.occupancy[1] = 0x0;
 
    for (int64_t i = 0; i < 7; ++i) {
-      game.occupancy[0] |= game.pieces[ps(0x0, i)];
-      game.occupancy[1] |= game.pieces[po(0x0, i)];
+      game.occupancy[0] |= game.pieces[ps(red, i)];
+      game.occupancy[1] |= game.pieces[ps(black, i)];
    }
 
    game.pieces[empty] = ~(game.occupancy[0] | game.occupancy[1]);
 
-   state.side = (schar == 'b') ? BSIDE : RSIDE;
+   state.side = (schar == 'b') ? black : red;
 }
