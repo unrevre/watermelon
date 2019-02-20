@@ -60,14 +60,14 @@ move_t move_for_indices(uint32_t from, uint32_t to);
  * @ add moves (for fixed piece)
  */
 
-void add_piecewise(__uint128_t set, uint32_t from, move_array_t* moves);
+void add_piecewise(__uint128_t set, uint8_t from, move_array_t* moves);
 
 /*!
  * add_shiftwise
  * @ add moves (for fixed direction)
  */
 
-void add_shiftwise(__uint128_t set, int32_t shift, move_array_t* moves);
+void add_shiftwise(__uint128_t set, int64_t shift, move_array_t* moves);
 
 /*!
  * sort_moves
