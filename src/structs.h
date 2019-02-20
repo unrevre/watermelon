@@ -48,8 +48,8 @@ typedef union {
    uint64_t bits;
    struct {
       uint8_t hash  : 8;
-      uint8_t depth : 6;
       uint8_t flags : 2;
+      uint8_t depth : 6;
       int16_t score : 14;
       uint8_t age   : 2;
       move_t move;
