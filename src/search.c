@@ -13,8 +13,6 @@
 move_t iter_dfs(int32_t depth) {
    debug_variable_reset(3, &nodes, &qnodes, &tthits);
 
-   ++age;
-
    for (int32_t d = 1; d != depth; ++d) {
       tree_root_entry();
       tree_node_entry(-INFINITY, INFINITY);

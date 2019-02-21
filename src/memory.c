@@ -10,18 +10,13 @@
 
 move_t history[STEPLIMIT];
 uint32_t htable[STEPLIMIT];
-
 ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
-uint32_t age;
-
 killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
 
 void init_tables(void) {
    memset(htable, 0, 8 * sizeof(uint32_t));
    memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
    memset(ktable, 0, PLYLIMIT * 2 * sizeof(killer_t));
-
-   age = 0;
 }
 
 void store_hash(int32_t depth, int32_t alpha, int32_t beta, int32_t score,
@@ -42,7 +37,7 @@ void store_hash(int32_t depth, int32_t alpha, int32_t beta, int32_t score,
       } else if (ttable[entry]._.hash == state.hash >> HASHBITS) {
          replace = entry;
          break;
-      } else if (ttable[entry]._.age != age) {
+      } else if (ttable[entry]._.age != (state.step & 0x3)) {
          replace = entry;
       }
    }
@@ -61,7 +56,7 @@ void store_hash(int32_t depth, int32_t alpha, int32_t beta, int32_t score,
    }
 
    ttable[replace] = (ttentry_t) { ._ = {
-      state.hash >> HASHBITS, flags, depth, score, age, move } };
+      state.hash >> HASHBITS, flags, depth, score, state.step, move } };
 }
 
 int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,

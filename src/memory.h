@@ -8,10 +8,7 @@
 
 extern move_t history[STEPLIMIT];
 extern uint32_t htable[STEPLIMIT];
-
 extern ttentry_t ttable[HASHSIZE];
-extern uint32_t age;
-
 extern killer_t ktable[PLYLIMIT][2];
 
 /*!
