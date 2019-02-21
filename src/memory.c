@@ -63,8 +63,8 @@ int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
                    move_t* move) {
    for (uint32_t t = 0; t < BASKETS; ++t) {
       ttentry_t entry = ttable[(state.hash & HASHMASK) ^ t];
-      if (entry._.hash == state.hash >> HASHBITS && entry._.move.bits) {
-         if (!is_valid(entry._.move, state.side)) { continue; }
+      if (entry._.hash == state.hash >> HASHBITS) {
+         if (!is_valid(entry._.move, state.side)) { break; }
          *move = entry._.move;
 
          if (entry._.depth < depth) { continue; }
