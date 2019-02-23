@@ -64,16 +64,11 @@ int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
          int32_t adjust = score < -LSCORE + PLYLIMIT ? state.ply : 0;
          score += score > WSCORE - PLYLIMIT ? -state.ply : adjust;
 
-         switch (entry._.flags) {
-            case FEXACT:
-               return score;
-            case FLOWER:
-               *alpha = max(*alpha, score);
-               break;
-            case FUPPER:
-               *beta = min(*beta, score);
-               break;
-         }
+         if (entry._.flags == FEXACT) { return score; }
+         if (entry._.flags == FLOWER) {
+            *alpha = max(*alpha, score); }
+         else {
+            *beta = min(*beta, score); }
 
          if (*alpha >= *beta) { return score; }
          break;
