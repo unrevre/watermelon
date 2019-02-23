@@ -41,7 +41,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
 
    int32_t best = -INFSCORE + state.ply;
    if (!principal && (best = probe_hash(depth, &alpha, &beta, &store))
-         != -INFSCORE + state.ply) { return best; }
+         != -INFSCORE) { return best; }
 
    if (!depth) { return quiescence(alpha, beta); }
 
