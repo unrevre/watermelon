@@ -21,11 +21,12 @@ void init_tables(void) {
 
 void store_hash(int32_t depth, int32_t alpha, int32_t beta, int32_t score,
                 move_t move) {
-   uint8_t flags = (abs(score) > WSCORE - PLYLIMIT) ? FEXACT :
-      (score <= alpha) ? FUPPER : (score >= beta) ? FLOWER : FEXACT;
+   int32_t flags = abs(score) > WSCORE - PLYLIMIT ? FEXACT : 0;
+   flags = flags ? flags : score <= alpha ? FUPPER : 0;
+   flags = flags ? flags : score >= beta ? FLOWER : FEXACT;
 
-   score = (score > WSCORE - PLYLIMIT) ? score + state.ply :
-      (score < -LSCORE + PLYLIMIT) ? score - state.ply : score;
+   int32_t adjust = score < -LSCORE + PLYLIMIT ? -state.ply : 0;
+   score += score > WSCORE - PLYLIMIT ? state.ply : adjust;
 
    ttentry_t new = { ._ = {
       state.hash >> HASHBITS, flags, depth, score, state.step, move } };
@@ -60,8 +61,8 @@ int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
          debug_variable_increment(1, &tthits);
 
          int32_t score = entry._.score;
-         score = (score > WSCORE - PLYLIMIT) ? score - state.ply :
-            (score < -LSCORE + PLYLIMIT) ? score + state.ply : score;
+         int32_t adjust = score < -LSCORE + PLYLIMIT ? state.ply : 0;
+         score += score > WSCORE - PLYLIMIT ? -state.ply : adjust;
 
          switch (entry._.flags) {
             case FEXACT:
