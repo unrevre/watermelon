@@ -75,7 +75,7 @@ int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
       }
    }
 
-   return -INFSCORE + state.ply;
+   return -INFSCORE;
 }
 
 ttentry_t probe_hash_for_entry() {
