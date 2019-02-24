@@ -6,6 +6,7 @@
 #include "inlines.h"
 #include "magics.h"
 #include "memory.h"
+#include "position.h"
 #include "state.h"
 
 #include <stdlib.h>
