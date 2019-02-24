@@ -30,8 +30,8 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
                 uint32_t principal) {
    debug_variable_increment(1, &nodes);
 
-   alpha = max(alpha, -LSCORE + state.ply);
-   beta = min(beta, WSCORE - state.ply);
+   alpha = alpha < -LSCORE + state.ply ?  -LSCORE + state.ply : alpha;
+   beta =  beta > WSCORE - state.ply ? WSCORE - state.ply : beta;
    if (alpha >= beta) { return alpha; }
 
    int32_t alpha_parent = alpha;
@@ -55,8 +55,8 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
       tree_node_exit(alpha, beta, score);
       retract(null);
 
-      best = max(best, score);
-      alpha = max(alpha, score);
+      best = score > best ? score : best;
+      alpha = score > alpha ? score : alpha;
       if (alpha >= beta) { return best; }
    }
 
@@ -80,9 +80,8 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
       retract(move);
 
       if (score > best) { store = move; }
-
-      best = max(best, score);
-      alpha = max(alpha, score);
+      best = score > best ? score : best;
+      alpha = score > alpha ? score : alpha;
       if (alpha < beta) { continue; }
 
       switch (engine.state) {
@@ -124,8 +123,7 @@ int32_t quiescence(int32_t alpha, int32_t beta) {
 
    int32_t stand = eval(state.side);
    if (stand >= beta) { return stand; }
-
-   alpha = max(alpha, stand);
+   alpha = stand > alpha ? stand : alpha;
 
    move_array_t moves = sort_moves(generate_captures(state.side));
    for (int64_t i = 0; i != moves.count; ++i) {
@@ -135,7 +133,7 @@ int32_t quiescence(int32_t alpha, int32_t beta) {
       tree_node_exit(alpha, beta, score);
       retract(moves.data[i]);
 
-      alpha = max(alpha, score);
+      alpha = score > alpha ? score : alpha;
       if (alpha >= beta) { break; }
    }
 
