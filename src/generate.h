@@ -60,7 +60,7 @@ move_t move_for_indices(uint32_t from, uint32_t to);
  * @ add moves (for fixed piece)
  */
 
-void add_piecewise(__uint128_t set, uint8_t from, move_array_t* moves);
+void add_piecewise(__uint128_t set, uint64_t from, move_array_t* moves);
 
 /*!
  * add_shiftwise
