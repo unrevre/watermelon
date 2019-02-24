@@ -121,22 +121,3 @@ void undo_history() {
 void redo_history() {
    if (history[state.step].bits) { advance_with_history(history[state.step]); }
 }
-
-uint32_t is_legal(move_t move) {
-   if (!is_valid(move, state.side)) { return 0; }
-
-   advance(move);
-   uint32_t legal = !in_check(state.side ^ pass);
-   retract(move);
-
-   return legal;
-}
-
-uint32_t is_repetition() {
-   return state.step > 4 ? (htable[state.step] == htable[state.step - 4]
-      && htable[state.step - 1] == htable[state.step - 5]) : 0;
-}
-
-uint32_t is_index_movable(int32_t index) {
-   return (board[index] != empty && s(board[index]) == state.side);
-}

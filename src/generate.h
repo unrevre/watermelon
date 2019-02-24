@@ -35,27 +35,6 @@ move_array_t generate_captures(int64_t side);
 move_array_t generate_quiet(int64_t side);
 
 /*!
- * in_check
- * @ test if side is in check
- */
-
-uint32_t in_check(int32_t side);
-
-/*!
- * is_valid
- * @ test if given move is pseudolegal
- */
-
-uint32_t is_valid(move_t move, int32_t side);
-
-/*!
- * move_for_indices
- * @ return move if indices constitute a valid movement
- */
-
-move_t move_for_indices(uint32_t from, uint32_t to);
-
-/*!
  * add_piecewise
  * @ add moves (for fixed piece)
  */

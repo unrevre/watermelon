@@ -1,6 +1,7 @@
 #include "debug.h"
 #include "interface.h"
 #include "options.h"
+#include "position.h"
 #include "search.h"
 #include "state.h"
 

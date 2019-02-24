@@ -2,6 +2,7 @@
 
 #include "generate.h"
 #include "magics.h"
+#include "position.h"
 #include "state.h"
 
 #include <stdlib.h>

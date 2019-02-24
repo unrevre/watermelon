@@ -4,6 +4,7 @@
 #include "generate.h"
 #include "inlines.h"
 #include "magics.h"
+#include "position.h"
 #include "state.h"
 #include "structs.h"
 

@@ -70,25 +70,4 @@ void undo_history();
 
 void redo_history();
 
-/*!
- * is_legal
- * @ test if given move is legal in current position
- */
-
-uint32_t is_legal(move_t move);
-
-/*!
- * is_repetition
- * @ test if current position is in state of repetition
- */
-
-uint32_t is_repetition();
-
-/*!
- * is_index_movable
- * @ test if piece at index is on side to move
- */
-
-uint32_t is_index_movable(int32_t index);
-
 #endif /* STATE_H */
