@@ -64,26 +64,4 @@ __inline__ uint32_t popcnt(__uint128_t bits) {
    return __builtin_popcountll(bits >> 64) + __builtin_popcountll(bits);
 }
 
-/*!
- * max
- * @ implementation for int32_t
- */
-
-__inline__ int32_t max(int32_t a, int32_t b) {
-   int32_t diff = a - b;
-   int32_t dsgn = diff >> 31;
-   return a - (diff & dsgn);
-}
-
-/*!
- * min
- * @ implementation for int32_t
- */
-
-__inline__ int32_t min(int32_t a, int32_t b) {
-   int32_t diff = a - b;
-   int32_t dsgn = diff >> 31;
-   return b + (diff & dsgn);
-}
-
 #endif /* INLINES_H */
