@@ -67,9 +67,9 @@ int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
 
          if (entry._.flags == FEXACT) { return score; }
          if (entry._.flags == FLOWER) {
-            *alpha = max(*alpha, score); }
+            *alpha = score > *alpha ? score : *alpha; }
          else {
-            *beta = min(*beta, score); }
+            *beta = score < *beta ? score : *beta; }
 
          if (*alpha >= *beta) { return score; }
          break;
