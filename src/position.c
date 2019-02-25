@@ -127,8 +127,8 @@ uint32_t is_legal(move_t move) {
 }
 
 uint32_t is_repetition() {
-   return state.step > 4 ? (htable[state.step] == htable[state.step - 4]
-      && htable[state.step - 1] == htable[state.step - 5]) : 0;
+   return state.step > 4 ? *((uint64_t*)(htable + state.step - 1))
+      == *((uint64_t*)(htable + state.step - 5)) : 0;
 }
 
 uint32_t is_index_movable(int32_t index) {
