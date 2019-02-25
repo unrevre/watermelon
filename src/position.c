@@ -136,14 +136,16 @@ uint32_t is_index_movable(int32_t index) {
 }
 
 move_t move_for_indices(uint32_t from, uint32_t to) {
-   int32_t side = state.side;
-
    if (is_index_movable(to)) { return (move_t){0}; }
+
+   int32_t side = state.side;
+   __uint128_t fpmask = PMASK[from];
+   __uint128_t tpmask = PMASK[to];
 
    switch (p(board[from])) {
       case 0:
-         if (!(PMASK[to] & JMASK[side] & (PMASK[from] << 9 | PMASK[from] >> 9
-               | PMASK[from] << 1 | PMASK[from] >> 1)))
+         if (!(tpmask & JMASK[side]
+               & (fpmask << 9 | fpmask >> 9 | fpmask << 1 | fpmask >> 1)))
             return (move_t){0};
          break;
       case 1: case 3:
@@ -151,31 +153,26 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
             return (move_t){0};
          break;
       case 2:
-         if (!(PMASK[to] & BMASK & ((PMASK[from] << 0x11 & FMASKN8)
-               | (PMASK[from] >> 0x11 & FMASKN0)
-               | (PMASK[from] << 0x13 & FMASKN0)
-               | (PMASK[from] >> 0x13 & FMASKN8)
-               | (PMASK[from] << 0x07 & FMASKN78)
-               | (PMASK[from] >> 0x07 & FMASKN01)
-               | (PMASK[from] << 0x0b & FMASKN01)
-               | (PMASK[from] >> 0x0b & FMASKN78))))
+         if (!(tpmask & BMASK
+               & (((fpmask << 0x11 | fpmask >> 0x13) & FMASKN8)
+               | ((fpmask >> 0x11 | fpmask << 0x13) & FMASKN0)
+               | ((fpmask << 0x07 | fpmask >> 0x0b) & FMASKN78)
+               | ((fpmask >> 0x07 | fpmask << 0x0b) & FMASKN01))))
             return (move_t){0};
          break;
       case 4:
-         if (!(PMASK[to] & SMASK[side] & (PMASK[from] << 0x8
-               | PMASK[from] << 0xa | PMASK[from] >> 0x8
-               | PMASK[from] >> 0xa)))
+         if (!(tpmask & SMASK[side]
+               & (fpmask << 8 | fpmask << 10 | fpmask >> 8 | fpmask >> 10)))
             return (move_t){0};
          break;
       case 5:
-         if (!(PMASK[to] & XMASK[side] & (PMASK[from] << 0x10
-               | PMASK[from] << 0x14 | PMASK[from] >> 0x10
-               | PMASK[from] >> 0x14)))
+         if (!(tpmask & XMASK[side]
+               & (fpmask << 16 | fpmask << 20 | fpmask >> 16 | fpmask >> 20)))
             return (move_t){0};
          break;
       case 6:
-         if (!(PMASK[to] & ZMASK[side] & ((PMASK[from] << 9) >> (18 * side)
-               | (PMASK[from] << 1 & FMASKN0) | (PMASK[from] >> 1 & FMASKN8))))
+         if (!(tpmask & ZMASK[side] & ((fpmask << 9) >> (18 * side)
+               | (fpmask << 1 & FMASKN0) | (fpmask >> 1 & FMASKN8))))
             return (move_t){0};
          break;
    }
