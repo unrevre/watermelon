@@ -163,19 +163,19 @@ int64_t event_loop(interface_t* itf) {
                return 1;
             break;
          case 'h': case KEY_LEFT:
-            itf->x = max(1, itf->x - 2);
+            itf->x = itf->x > 1 ? itf->x - 2 : 1;
             refresh_cursor(itf);
             break;
          case 'j': case KEY_DOWN:
-            itf->y = min(9, itf->y + 1);
+            itf->y = itf->y < 9 ? itf->y + 1 : 9;
             refresh_cursor(itf);
             break;
          case 'k': case KEY_UP:
-            itf->y = max(0, itf->y - 1);
+            itf->y = itf->y > 0 ? itf->y - 1 : 0;
             refresh_cursor(itf);
             break;
          case 'l': case KEY_RIGHT:
-            itf->x = min(17, itf->x + 2);
+            itf->x = itf->x < 17 ? itf->x + 2 : 17;
             refresh_cursor(itf);
             break;
          case 'n':
