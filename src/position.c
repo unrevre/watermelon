@@ -81,8 +81,8 @@ uint32_t is_valid(move_t move, int32_t side) {
          jspan &= FMASK[from] & ~game.pieces[empty];
          return !jspan; }
       case 1: {
-         uint32_t high = max(from, to);
-         uint32_t low = min(from, to);
+         uint32_t high = from > to ? from : to;
+         uint32_t low = from > to ? to : from;
 
          __uint128_t jspan = PMASK[high] - (PMASK[low] << 1);
          if (high - low > 8) { jspan &= FMASK[high]; }
@@ -97,8 +97,8 @@ uint32_t is_valid(move_t move, int32_t side) {
             default: { return 0; }
          }
       case 3: {
-         uint32_t high = max(from, to);
-         uint32_t low = min(from, to);
+         uint32_t high = from > to ? from : to;
+         uint32_t low = from > to ? to : from;
 
          __uint128_t pspan = PMASK[high] - (PMASK[low] << 1);
          if (high - low > 8) { pspan &= FMASK[high]; }
