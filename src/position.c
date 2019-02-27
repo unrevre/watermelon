@@ -78,39 +78,34 @@ uint32_t is_valid(move_t move, int32_t side) {
          if (p(move._.pto)) { return 1; }
          __uint128_t jspan = game.pieces[ps(black, 0x0)]
             - (game.pieces[ps(red, 0x0)] << 1);
-         jspan &= FMASK[from] & ~game.pieces[empty];
-         return !jspan; }
+         return !(jspan & FMASK[from] & ~game.pieces[empty]); }
       case 1: {
          uint32_t high = from > to ? from : to;
          uint32_t low = from > to ? to : from;
 
          __uint128_t jspan = PMASK[high] - (PMASK[low] << 1);
-         if (high - low > 8) { jspan &= FMASK[high]; }
-         jspan &= ~game.pieces[empty];
-         return !jspan; }
-      case 2:
-         switch (from - to) {
-            case -19: case -11: { return board[to - 10] == empty; }
-            case -17: case -7: { return board[to - 8] == empty; }
-            case 7: case 17: { return board[to + 8] == empty; }
-            case 11: case 19: { return board[to + 10] == empty; }
-            default: { return 0; }
-         }
+         jspan = high - low > 8 ? jspan & FMASK[high] : jspan;
+         return !(jspan & ~game.pieces[empty]); }
+      case 2: {
+         int64_t diff = from > to ? from - to : to - from;
+         int64_t offset = diff == 7 ? 8 : diff == 17 ? 8 : 10;
+         offset = from > to ? offset : -offset;
+         return board[to + offset] == empty; }
       case 3: {
          uint32_t high = from > to ? from : to;
          uint32_t low = from > to ? to : from;
+         int64_t count = move._.pto == empty ? 0 : 1;
 
          __uint128_t pspan = PMASK[high] - (PMASK[low] << 1);
-         if (high - low > 8) { pspan &= FMASK[high]; }
-         pspan &= ~game.pieces[empty];
-
-         if (move._.pto == empty) { return !pspan; }
-         else { return popcnt(pspan) == 1; } }
+         pspan = high - low > 8 ? pspan & FMASK[high] : pspan;
+         pspan = pspan & ~game.pieces[empty];
+         return popcnt(pspan) == count; }
       case 4: return 1;
       case 5: return board[(from + to) / 2] == empty;
       case 6: return 1;
-      default: return 0;
    }
+
+   __builtin_unreachable();
 }
 
 uint32_t is_legal(move_t move) {
