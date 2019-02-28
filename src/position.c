@@ -15,23 +15,6 @@ uint32_t in_check(int32_t side) {
    __uint128_t emask = game.pieces[empty];
    __uint128_t xmask = pmask | emask;
 
-   __uint128_t jset = game.pieces[po(side, 0x0)] | game.pieces[po(side, 0x1)];
-   __uint128_t jxmask = ~(jset | xmask);
-
-   __uint128_t jrset = jset & RMASK[index];
-   for (; jrset; jrset &= jrset - 1) {
-      __uint128_t range = jrset ^ -jrset ^ UMASK[index];
-      range = range & jxmask & RMASK[index];
-      if (!range) { return 1; }
-   }
-
-   __uint128_t jfset = jset & FMASK[index];
-   for (; jfset; jfset &= jfset - 1) {
-      __uint128_t range = jfset ^ -jfset ^ UMASK[index];
-      range = range & jxmask & FMASK[index];
-      if (!range) { return 1; }
-   }
-
    __uint128_t pset = game.pieces[po(side, 0x3)];
 
    __uint128_t prset = pset & RMASK[index];
@@ -50,6 +33,23 @@ uint32_t in_check(int32_t side) {
       __uint128_t pxmask = ~(lsb | xmask);
       range = range & pxmask & FMASK[index];
       if (popcnt(range) == 1) { return 1; }
+   }
+
+   __uint128_t jset = game.pieces[po(side, 0x0)] | game.pieces[po(side, 0x1)];
+   __uint128_t jxmask = ~(jset | xmask);
+
+   __uint128_t jrset = jset & RMASK[index];
+   for (; jrset; jrset &= jrset - 1) {
+      __uint128_t range = jrset ^ -jrset ^ UMASK[index];
+      range = range & jxmask & RMASK[index];
+      if (!range) { return 1; }
+   }
+
+   __uint128_t jfset = jset & FMASK[index];
+   for (; jfset; jfset &= jfset - 1) {
+      __uint128_t range = jfset ^ -jfset ^ UMASK[index];
+      range = range & jxmask & FMASK[index];
+      if (!range) { return 1; }
    }
 
    __uint128_t mset = ((pmask << 0x11 | pmask << 0x13) & emask << 0x9)
