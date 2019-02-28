@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 
-uint32_t in_check(int32_t side) {
+uint32_t in_check(uint32_t side) {
    uint64_t index = bsf_branchless(game.pieces[ps(side, 0x0)]);
 
    __uint128_t pmask = PMASK[index];
@@ -66,7 +66,7 @@ uint32_t in_check(int32_t side) {
    return 0;
 }
 
-uint32_t is_valid(move_t move, int32_t side) {
+uint32_t is_valid(move_t move, uint32_t side) {
    if (side != s(move._.pfrom)) { return 0; }
 
    uint32_t from = move._.from;
