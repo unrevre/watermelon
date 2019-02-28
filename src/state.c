@@ -19,6 +19,7 @@ uint32_t PSHASH[15][128] __attribute__((aligned(64)));
 uint32_t MVHASH;
 
 transient_t state;
+int64_t age;
 
 void init_hashes(void) {
    srand(0x91);
@@ -42,6 +43,7 @@ void init_hashes(void) {
 void init_state(const char* fen) {
    game = (state_t){ {0}, {0} };
    state = (transient_t){ 0, 0, 0, 0 };
+   age = 0;
 
    init_tables();
    init_masks();
@@ -107,11 +109,13 @@ void advance_with_history(move_t move) {
 
    advance(move);
    state.ply = 0;
+   ++age;
 }
 
 void retract_with_history(move_t move) {
    retract(move);
    state.ply = 0;
+   --age;
 }
 
 void undo_history() {

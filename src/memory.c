@@ -30,7 +30,7 @@ void store_hash(int32_t depth, int32_t alpha, int32_t beta, int32_t score,
    score += score > WSCORE - PLYLIMIT ? state.ply : adjust;
 
    ttentry_t new = { ._ = {
-      state.hash >> HASHBITS, flags, depth, score, state.step, move } };
+      state.hash >> HASHBITS, flags, depth, score, age, move } };
 
    int64_t age_prefer = -1;
    int64_t depth_prefer = state.hash & HASHMASK;

@@ -13,6 +13,7 @@ extern uint32_t PSHASH[15][128];
 extern uint32_t MVHASH;
 
 extern transient_t state;
+extern int64_t age;
 
 /*!
  * init_hashes
