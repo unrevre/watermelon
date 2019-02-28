@@ -6,6 +6,8 @@
 #include "memory.h"
 #include "state.h"
 
+#include <stdlib.h>
+
 uint32_t in_check(int32_t side) {
    uint64_t index = bsf_branchless(game.pieces[ps(side, 0x0)]);
 
@@ -130,41 +132,38 @@ uint32_t is_index_movable(int32_t index) {
 move_t move_for_indices(uint32_t from, uint32_t to) {
    if (is_index_movable(to)) { return (move_t){0}; }
 
-   int32_t side = state.side;
-   __uint128_t fpmask = PMASK[from];
+   int64_t side = state.side;
    __uint128_t tpmask = PMASK[to];
+
+   int32_t fdiff = from % 9 - to % 9;
+   int32_t fdabs = abs(fdiff);
+   int32_t rdiff = from / 9 - to / 9;
+   int32_t rdabs = abs(rdiff);
 
    switch (p(board[from])) {
       case 0:
-         if (!(tpmask & JMASK[side]
-               & (fpmask << 9 | fpmask >> 9 | fpmask << 1 | fpmask >> 1)))
+         if ((fdabs + rdabs != 1) || !(tpmask & JMASK[side]))
             return (move_t){0};
          break;
       case 1: case 3:
-         if ((from % 9 != to % 9) && (from / 9 != to / 9))
+         if (fdabs && rdabs)
             return (move_t){0};
          break;
       case 2:
-         if (!(tpmask & BMASK
-               & (((fpmask << 0x11 | fpmask >> 0x13) & FMASKN8)
-               | ((fpmask >> 0x11 | fpmask << 0x13) & FMASKN0)
-               | ((fpmask << 0x07 | fpmask >> 0x0b) & FMASKN78)
-               | ((fpmask >> 0x07 | fpmask << 0x0b) & FMASKN01))))
+         if (!fdabs || !rdabs || (fdabs + rdabs != 3) || !(tpmask & BMASK))
             return (move_t){0};
          break;
       case 4:
-         if (!(tpmask & SMASK[side]
-               & (fpmask << 8 | fpmask << 10 | fpmask >> 8 | fpmask >> 10)))
+         if (fdabs != 1 || rdabs != 1 || !(tpmask & SMASK[side]))
             return (move_t){0};
          break;
       case 5:
-         if (!(tpmask & XMASK[side]
-               & (fpmask << 16 | fpmask << 20 | fpmask >> 16 | fpmask >> 20)))
+         if (fdabs != 2 || rdabs != 2 || !(tpmask & XMASK[side]))
             return (move_t){0};
          break;
       case 6:
-         if (!(tpmask & ZMASK[side] & ((fpmask << 9) >> (18 * side)
-               | (fpmask << 1 & FMASKN0) | (fpmask >> 1 & FMASKN8))))
+         if ((fdabs + rdabs != 1) || !(tpmask & ZMASK[side])
+               || rdiff != side ? -1 : 1)
             return (move_t){0};
          break;
    }
