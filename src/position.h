@@ -10,14 +10,14 @@
  * @ test if side is in check
  */
 
-uint32_t in_check(int32_t side);
+uint32_t in_check(uint32_t side);
 
 /*!
  * is_valid
  * @ test if given move is pseudolegal
  */
 
-uint32_t is_valid(move_t move, int32_t side);
+uint32_t is_valid(move_t move, uint32_t side);
 
 /*!
  * is_legal
