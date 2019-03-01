@@ -43,15 +43,19 @@ move_array_t generate(int64_t side) {
    for (; mset; mset &= mset - 1) {
       uint64_t index = bsf_branchless(mset);
 
-      __uint128_t moveset;
-      moveset = (game.pieces[empty] << 8
-         & ((PMASK[index] << 17 & FMASKN8) | (PMASK[index] << 7 & FMASKN78)))
-         | (game.pieces[empty] >> 8
-         & ((PMASK[index] >> 17 & FMASKN0) | (PMASK[index] >> 7 & FMASKN01)))
-         | (game.pieces[empty] << 10
-         & ((PMASK[index] << 19 & FMASKN0) | (PMASK[index] << 11 & FMASKN01)))
-         | (game.pieces[empty] >> 10
-         & ((PMASK[index] >> 19 & FMASKN8) | (PMASK[index] >> 11 & FMASKN78)));
+      __uint128_t moveset = 0;
+      __uint128_t lset = PMASK[index] & FMASKN01 & (game.pieces[empty] << 1);
+      moveset = moveset | lset << 7 | lset >> 11;
+      __uint128_t rset = PMASK[index] & FMASKN78 & (game.pieces[empty] >> 1);
+      moveset = moveset | rset << 11 | rset >> 7;
+      __uint128_t flset = PMASK[index] & FMASKN0 & (game.pieces[empty] >> 9);
+      moveset = moveset | flset << 17;
+      __uint128_t frset = PMASK[index] & FMASKN8 & (game.pieces[empty] >> 9);
+      moveset = moveset | frset << 19;
+      __uint128_t blset = PMASK[index] & FMASKN0 & (game.pieces[empty] << 9);
+      moveset = moveset | blset >> 19;
+      __uint128_t brset = PMASK[index] & FMASKN8 & (game.pieces[empty] << 9);
+      moveset = moveset | brset >> 17;
       moveset &= BMASK & ~game.occupancy[side];
 
       add_piecewise(moveset, index, &moves);
@@ -184,15 +188,19 @@ move_array_t generate_pseudolegal(int64_t side) {
    for (; mset; mset &= mset - 1) {
       uint64_t index = bsf_branchless(mset);
 
-      __uint128_t moveset;
-      moveset = (game.pieces[empty] << 8
-         & ((PMASK[index] << 17 & FMASKN8) | (PMASK[index] << 7 & FMASKN78)))
-         | (game.pieces[empty] >> 8
-         & ((PMASK[index] >> 17 & FMASKN0) | (PMASK[index] >> 7 & FMASKN01)))
-         | (game.pieces[empty] << 10
-         & ((PMASK[index] << 19 & FMASKN0) | (PMASK[index] << 11 & FMASKN01)))
-         | (game.pieces[empty] >> 10
-         & ((PMASK[index] >> 19 & FMASKN8) | (PMASK[index] >> 11 & FMASKN78)));
+      __uint128_t moveset = 0;
+      __uint128_t lset = PMASK[index] & FMASKN01 & (game.pieces[empty] << 1);
+      moveset = moveset | lset << 7 | lset >> 11;
+      __uint128_t rset = PMASK[index] & FMASKN78 & (game.pieces[empty] >> 1);
+      moveset = moveset | rset << 11 | rset >> 7;
+      __uint128_t flset = PMASK[index] & FMASKN0 & (game.pieces[empty] >> 9);
+      moveset = moveset | flset << 17;
+      __uint128_t frset = PMASK[index] & FMASKN8 & (game.pieces[empty] >> 9);
+      moveset = moveset | frset << 19;
+      __uint128_t blset = PMASK[index] & FMASKN0 & (game.pieces[empty] << 9);
+      moveset = moveset | blset >> 19;
+      __uint128_t brset = PMASK[index] & FMASKN8 & (game.pieces[empty] << 9);
+      moveset = moveset | brset >> 17;
       moveset &= BMASK & ~game.occupancy[side];
 
       add_piecewise(moveset, index, &moves);
@@ -331,15 +339,19 @@ move_array_t generate_captures(int64_t side) {
    for (; mset; mset &= mset - 1) {
       uint64_t index = bsf_branchless(mset);
 
-      __uint128_t moveset;
-      moveset = (game.pieces[empty] << 8
-         & ((PMASK[index] << 17 & FMASKN8) | (PMASK[index] << 7 & FMASKN78)))
-         | (game.pieces[empty] >> 8
-         & ((PMASK[index] >> 17 & FMASKN0) | (PMASK[index] >> 7 & FMASKN01)))
-         | (game.pieces[empty] << 10
-         & ((PMASK[index] << 19 & FMASKN0) | (PMASK[index] << 11 & FMASKN01)))
-         | (game.pieces[empty] >> 10
-         & ((PMASK[index] >> 19 & FMASKN8) | (PMASK[index] >> 11 & FMASKN78)));
+      __uint128_t moveset = 0;
+      __uint128_t lset = PMASK[index] & FMASKN01 & (game.pieces[empty] << 1);
+      moveset = moveset | lset << 7 | lset >> 11;
+      __uint128_t rset = PMASK[index] & FMASKN78 & (game.pieces[empty] >> 1);
+      moveset = moveset | rset << 11 | rset >> 7;
+      __uint128_t flset = PMASK[index] & FMASKN0 & (game.pieces[empty] >> 9);
+      moveset = moveset | flset << 17;
+      __uint128_t frset = PMASK[index] & FMASKN8 & (game.pieces[empty] >> 9);
+      moveset = moveset | frset << 19;
+      __uint128_t blset = PMASK[index] & FMASKN0 & (game.pieces[empty] << 9);
+      moveset = moveset | blset >> 19;
+      __uint128_t brset = PMASK[index] & FMASKN8 & (game.pieces[empty] << 9);
+      moveset = moveset | brset >> 17;
       moveset &= BMASK & game.occupancy[!side];
 
       add_piecewise(moveset, index, &moves);
@@ -473,15 +485,19 @@ move_array_t generate_quiet(int64_t side) {
    for (; mset; mset &= mset - 1) {
       uint64_t index = bsf_branchless(mset);
 
-      __uint128_t moveset;
-      moveset = (game.pieces[empty] << 8
-         & ((PMASK[index] << 17 & FMASKN8) | (PMASK[index] << 7 & FMASKN78)))
-         | (game.pieces[empty] >> 8
-         & ((PMASK[index] >> 17 & FMASKN0) | (PMASK[index] >> 7 & FMASKN01)))
-         | (game.pieces[empty] << 10
-         & ((PMASK[index] << 19 & FMASKN0) | (PMASK[index] << 11 & FMASKN01)))
-         | (game.pieces[empty] >> 10
-         & ((PMASK[index] >> 19 & FMASKN8) | (PMASK[index] >> 11 & FMASKN78)));
+      __uint128_t moveset = 0;
+      __uint128_t lset = PMASK[index] & FMASKN01 & (game.pieces[empty] << 1);
+      moveset = moveset | lset << 7 | lset >> 11;
+      __uint128_t rset = PMASK[index] & FMASKN78 & (game.pieces[empty] >> 1);
+      moveset = moveset | rset << 11 | rset >> 7;
+      __uint128_t flset = PMASK[index] & FMASKN0 & (game.pieces[empty] >> 9);
+      moveset = moveset | flset << 17;
+      __uint128_t frset = PMASK[index] & FMASKN8 & (game.pieces[empty] >> 9);
+      moveset = moveset | frset << 19;
+      __uint128_t blset = PMASK[index] & FMASKN0 & (game.pieces[empty] << 9);
+      moveset = moveset | blset >> 19;
+      __uint128_t brset = PMASK[index] & FMASKN8 & (game.pieces[empty] << 9);
+      moveset = moveset | brset >> 17;
       moveset &= BMASK & game.pieces[empty];
 
       add_piecewise(moveset, index, &moves);
