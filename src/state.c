@@ -98,30 +98,14 @@ void retract(move_t move) {
    board[move._.to] = move._.pto;
 }
 
-void advance_with_history(move_t move) {
-   int32_t step = state.step;
-   move_t future = history[step];
-   if (future.bits && move.bits != future.bits)
-      while (history[++step].bits)
-         history[step] = (move_t){0};
-
-   history[state.step] = move;
-
+void advance_game(move_t move) {
    advance(move);
    state.ply = 0;
    ++age;
 }
 
-void retract_with_history(move_t move) {
+void retract_game(move_t move) {
    retract(move);
    state.ply = 0;
    --age;
-}
-
-void undo_history() {
-   if (state.step) { retract_with_history(history[state.step - 1]); }
-}
-
-void redo_history() {
-   if (history[state.step].bits) { advance_with_history(history[state.step]); }
 }

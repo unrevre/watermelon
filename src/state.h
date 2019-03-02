@@ -44,31 +44,17 @@ void advance(move_t move);
 void retract(move_t move);
 
 /*!
- * advance_with_history
- * @ advance move with record in history table
+ * advance_game
+ * @ advance move and reset search state
  */
 
-void advance_with_history(move_t move);
+void advance_game(move_t move);
 
 /*!
- * retract_with_history
- * @ retract move with record in history table
+ * retract_game
+ * @ retract move and reset search state
  */
 
-void retract_with_history(move_t move);
-
-/*!
- * undo_history
- * @ undo last move
- */
-
-void undo_history();
-
-/*!
- * redo_history
- * @ redo last undone move, if possible
- */
-
-void redo_history();
+void retract_game(move_t move);
 
 #endif /* STATE_H */
