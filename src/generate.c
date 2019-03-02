@@ -15,8 +15,9 @@ move_array_t generate(int64_t side) {
    __uint128_t C3U128 = 0x3;
 
    __uint128_t jset = game.pieces[ps(side, 0x1)];
-   for (; jset; jset &= jset - 1) {
+   while (jset) {
       uint64_t index = bsf_branchless(jset);
+      jset = jset ^ PMASK[index];
 
       __uint128_t rset, rlow, rcbn;
       __uint128_t fset, flow, fcbn;
@@ -40,8 +41,9 @@ move_array_t generate(int64_t side) {
    }
 
    __uint128_t mset = game.pieces[ps(side, 0x2)];
-   for (; mset; mset &= mset - 1) {
+   while (mset) {
       uint64_t index = bsf_branchless(mset);
+      mset = mset ^ PMASK[index];
 
       __uint128_t moveset = 0;
       __uint128_t lset = PMASK[index] & FMASKN01 & (game.pieces[empty] << 1);
@@ -62,8 +64,9 @@ move_array_t generate(int64_t side) {
    }
 
    __uint128_t pset = game.pieces[ps(side, 0x3)];
-   for (; pset; pset &= pset - 1) {
+   while (pset) {
       uint64_t index = bsf_branchless(pset);
+      pset = pset ^ PMASK[index];
 
       __uint128_t rset, rlow, rcbn;
       __uint128_t fset, flow, fcbn;
@@ -114,8 +117,9 @@ move_array_t generate(int64_t side) {
    add_shiftwise(zset, -1, &moves);
 
    __uint128_t xset = game.pieces[ps(side, 0x5)];
-   for (; xset; xset &= xset - 1) {
+   while (xset) {
       uint64_t index = bsf_branchless(xset);
+      xset = xset ^ PMASK[index];
 
       __uint128_t moveset;
       moveset = (PMASK[index] << 16 & game.pieces[empty] << 8)
@@ -128,8 +132,9 @@ move_array_t generate(int64_t side) {
    }
 
    __uint128_t sset = game.pieces[ps(side, 0x4)];
-   for (; sset; sset &= sset - 1) {
+   while (sset) {
       uint64_t index = bsf_branchless(sset);
+      sset = sset ^ PMASK[index];
 
       __uint128_t moveset;
       moveset = PMASK[index] << 8 | PMASK[index] << 10
@@ -160,8 +165,9 @@ move_array_t generate_pseudolegal(int64_t side) {
    __uint128_t C3U128 = 0x3;
 
    __uint128_t jset = game.pieces[ps(side, 0x1)];
-   for (; jset; jset &= jset - 1) {
+   while (jset) {
       uint64_t index = bsf_branchless(jset);
+      jset = jset ^ PMASK[index];
 
       __uint128_t rset, rlow, rcbn;
       __uint128_t fset, flow, fcbn;
@@ -185,8 +191,9 @@ move_array_t generate_pseudolegal(int64_t side) {
    }
 
    __uint128_t mset = game.pieces[ps(side, 0x2)];
-   for (; mset; mset &= mset - 1) {
+   while (mset) {
       uint64_t index = bsf_branchless(mset);
+      mset = mset ^ PMASK[index];
 
       __uint128_t moveset = 0;
       __uint128_t lset = PMASK[index] & FMASKN01 & (game.pieces[empty] << 1);
@@ -207,8 +214,9 @@ move_array_t generate_pseudolegal(int64_t side) {
    }
 
    __uint128_t pset = game.pieces[ps(side, 0x3)];
-   for (; pset; pset &= pset - 1) {
+   while (pset) {
       uint64_t index = bsf_branchless(pset);
+      pset = pset ^ PMASK[index];
 
       __uint128_t rset, rlow, rcbn;
       __uint128_t fset, flow, fcbn;
@@ -259,8 +267,9 @@ move_array_t generate_pseudolegal(int64_t side) {
    add_shiftwise(zset, -1, &moves);
 
    __uint128_t xset = game.pieces[ps(side, 0x5)];
-   for (; xset; xset &= xset - 1) {
+   while (xset) {
       uint64_t index = bsf_branchless(xset);
+      xset = xset ^ PMASK[index];
 
       __uint128_t moveset;
       moveset = (PMASK[index] << 16 & game.pieces[empty] << 8)
@@ -273,8 +282,9 @@ move_array_t generate_pseudolegal(int64_t side) {
    }
 
    __uint128_t sset = game.pieces[ps(side, 0x4)];
-   for (; sset; sset &= sset - 1) {
+   while (sset) {
       uint64_t index = bsf_branchless(sset);
+      sset = sset ^ PMASK[index];
 
       __uint128_t moveset;
       moveset = PMASK[index] << 8 | PMASK[index] << 10
@@ -311,8 +321,9 @@ move_array_t generate_captures(int64_t side) {
    __uint128_t C3U128 = 0x3;
 
    __uint128_t jset = game.pieces[ps(side, 0x1)];
-   for (; jset; jset &= jset - 1) {
+   while (jset) {
       uint64_t index = bsf_branchless(jset);
+      jset = jset ^ PMASK[index];
 
       __uint128_t rset, rlow, rcbn;
       __uint128_t fset, flow, fcbn;
@@ -336,8 +347,9 @@ move_array_t generate_captures(int64_t side) {
    }
 
    __uint128_t mset = game.pieces[ps(side, 0x2)];
-   for (; mset; mset &= mset - 1) {
+   while (mset) {
       uint64_t index = bsf_branchless(mset);
+      mset = mset ^ PMASK[index];
 
       __uint128_t moveset = 0;
       __uint128_t lset = PMASK[index] & FMASKN01 & (game.pieces[empty] << 1);
@@ -358,8 +370,9 @@ move_array_t generate_captures(int64_t side) {
    }
 
    __uint128_t pset = game.pieces[ps(side, 0x3)];
-   for (; pset; pset &= pset - 1) {
+   while (pset) {
       uint64_t index = bsf_branchless(pset);
+      pset = pset ^ PMASK[index];
 
       __uint128_t rset, rlow, rcbn;
       __uint128_t fset, flow, fcbn;
@@ -405,8 +418,9 @@ move_array_t generate_captures(int64_t side) {
    add_shiftwise(zset, -1, &moves);
 
    __uint128_t xset = game.pieces[ps(side, 0x5)];
-   for (; xset; xset &= xset - 1) {
+   while (xset) {
       uint64_t index = bsf_branchless(xset);
+      xset = xset ^ PMASK[index];
 
       __uint128_t moveset;
       moveset = (PMASK[index] << 16 & game.pieces[empty] << 8)
@@ -419,8 +433,9 @@ move_array_t generate_captures(int64_t side) {
    }
 
    __uint128_t sset = game.pieces[ps(side, 0x4)];
-   for (; sset; sset &= sset - 1) {
+   while (sset) {
       uint64_t index = bsf_branchless(sset);
+      sset = sset ^ PMASK[index];
 
       __uint128_t moveset;
       moveset = PMASK[index] << 8 | PMASK[index] << 10
@@ -457,8 +472,9 @@ move_array_t generate_quiet(int64_t side) {
    __uint128_t C3U128 = 0x3;
 
    __uint128_t jpset = game.pieces[ps(side, 0x1)] | game.pieces[ps(side, 0x3)];
-   for (; jpset; jpset &= jpset - 1) {
+   while (jpset) {
       uint64_t index = bsf_branchless(jpset);
+      jpset = jpset ^ PMASK[index];
 
       __uint128_t rset, rlow, rcbn;
       __uint128_t fset, flow, fcbn;
@@ -482,8 +498,9 @@ move_array_t generate_quiet(int64_t side) {
    }
 
    __uint128_t mset = game.pieces[ps(side, 0x2)];
-   for (; mset; mset &= mset - 1) {
+   while (mset) {
       uint64_t index = bsf_branchless(mset);
+      mset = mset ^ PMASK[index];
 
       __uint128_t moveset = 0;
       __uint128_t lset = PMASK[index] & FMASKN01 & (game.pieces[empty] << 1);
@@ -517,8 +534,9 @@ move_array_t generate_quiet(int64_t side) {
    add_shiftwise(zset, -1, &moves);
 
    __uint128_t xset = game.pieces[ps(side, 0x5)];
-   for (; xset; xset &= xset - 1) {
+   while (xset) {
       uint64_t index = bsf_branchless(xset);
+      xset = xset ^ PMASK[index];
 
       __uint128_t moveset;
       moveset = (PMASK[index] << 16 & game.pieces[empty] << 8)
@@ -531,8 +549,9 @@ move_array_t generate_quiet(int64_t side) {
    }
 
    __uint128_t sset = game.pieces[ps(side, 0x4)];
-   for (; sset; sset &= sset - 1) {
+   while (sset) {
       uint64_t index = bsf_branchless(sset);
+      sset = sset ^ PMASK[index];
 
       __uint128_t moveset;
       moveset = PMASK[index] << 8 | PMASK[index] << 10
