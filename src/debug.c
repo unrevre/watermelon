@@ -1,8 +1,6 @@
 #include "debug.h"
 
 #include "fen.h"
-#include "generate.h"
-#include "inlines.h"
 #include "magics.h"
 #include "memory.h"
 #include "position.h"
