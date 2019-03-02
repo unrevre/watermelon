@@ -89,3 +89,24 @@ ttentry_t probe_hash_for_entry() {
 
    return (ttentry_t){0};
 }
+
+void advance_history(move_t move) {
+   int32_t step = state.step;
+   move_t future = history[step];
+   if (future.bits && move.bits != future.bits)
+      while (history[++step].bits)
+         history[step] = (move_t){0};
+
+   history[state.step] = move;
+}
+
+void undo_history() {
+   if (state.step) { retract_game(history[state.step - 1]); }
+}
+
+void redo_history() {
+   if (history[state.step].bits) {
+      advance_history(history[state.step]);
+      advance_game(history[state.step]);
+   }
+}

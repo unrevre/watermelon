@@ -42,4 +42,25 @@ int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
 
 ttentry_t probe_hash_for_entry();
 
+/*!
+ * advance_history
+ * @ advance move history records
+ */
+
+void advance_history(move_t move);
+
+/*!
+ * undo_history
+ * @ undo last move
+ */
+
+void undo_history();
+
+/*!
+ * redo_history
+ * @ redo last undone move
+ */
+
+void redo_history();
+
 #endif /* MEMORY_H */

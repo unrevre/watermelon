@@ -4,6 +4,7 @@
 #include "generate.h"
 #include "inlines.h"
 #include "magics.h"
+#include "memory.h"
 #include "position.h"
 #include "state.h"
 #include "structs.h"
@@ -215,7 +216,8 @@ void fetch(interface_t* itf) {
    } else {
       move_t move = move_for_indices(itf->index, index);
       if (move.bits && is_legal(move)) {
-         advance_with_history(move);
+         advance_history(move);
+         advance_game(move);
          update_state(itf);
          itf->index = -1;
       }
