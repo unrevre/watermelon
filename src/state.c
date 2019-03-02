@@ -2,7 +2,6 @@
 
 #include "fen.h"
 #include "generate.h"
-#include "inlines.h"
 #include "magics.h"
 #include "masks.h"
 #include "memory.h"

@@ -1,8 +1,6 @@
 #include "memory.h"
 
 #include "debug.h"
-#include "generate.h"
-#include "inlines.h"
 #include "position.h"
 #include "state.h"
 
