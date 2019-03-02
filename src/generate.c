@@ -304,13 +304,14 @@ move_array_t generate_pseudolegal(int64_t side) {
          | game.pieces[ps(side, 0x0)] << 1
          | game.pieces[ps(side, 0x0)] >> 1;
       moveset = moveset & JMASK[side] & ~game.occupancy[side];
-      add_piecewise(moveset, index, &moves);
 
       __uint128_t fly = (game.pieces[ps(black, 0x0)] << 1)
          - game.pieces[ps(red, 0x0)];
       fly = fly & FMASK[index] & ~game.pieces[empty];
       fly ^= game.pieces[ps(red, 0x0)] | game.pieces[ps(black, 0x0)];
-      if (!fly) { add_piecewise(game.pieces[po(side, 0x0)], index, &moves); }
+
+      moveset = moveset | (fly ? 0 : game.pieces[po(side, 0x0)]);
+      add_piecewise(moveset, index, &moves);
    }
 
    return moves;
@@ -455,13 +456,13 @@ move_array_t generate_captures(int64_t side) {
          | game.pieces[ps(side, 0x0)] << 1
          | game.pieces[ps(side, 0x0)] >> 1;
       moveset = moveset & JMASK[side] & game.occupancy[!side];
-      add_piecewise(moveset, index, &moves);
 
       __uint128_t fly = (game.pieces[ps(black, 0x0)] << 1)
          - game.pieces[ps(red, 0x0)];
-      fly &= FMASK[index] & ~game.pieces[empty];
+      fly = fly & FMASK[index] & ~game.pieces[empty];
       fly ^= game.pieces[ps(red, 0x0)] | game.pieces[ps(black, 0x0)];
-      if (!fly) { add_piecewise(game.pieces[po(side, 0x0)], index, &moves); }
+      moveset = moveset | (fly ? 0 : game.pieces[po(side, 0x0)]);
+      add_piecewise(moveset, index, &moves);
    }
 
    return moves;
