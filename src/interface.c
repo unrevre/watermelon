@@ -151,47 +151,67 @@ void update_state(interface_t* itf) {
 
 int64_t event_loop(interface_t* itf) {
    for (;;) {
-      switch (getch()) {
-         case 'f':
-            fetch(itf);
-            break;
-         case 'g':
-            if (itf->index != -1)
+      if (itf->mode) {
+         switch (getch()) {
+            case 'f':
                fetch(itf);
-            if (itf->index == -1)
+               break;
+            case 'g':
+               if (itf->index != -1)
+                  fetch(itf);
+               if (itf->index == -1)
+                  return 1;
+               break;
+            case 'h': case KEY_LEFT:
+               itf->x = itf->x > 1 ? itf->x - 2 : 1;
+               refresh_cursor(itf);
+               break;
+            case 'j': case KEY_DOWN:
+               itf->y = itf->y < 9 ? itf->y + 1 : 9;
+               refresh_cursor(itf);
+               break;
+            case 'k': case KEY_UP:
+               itf->y = itf->y > 0 ? itf->y - 1 : 0;
+               refresh_cursor(itf);
+               break;
+            case 'l': case KEY_RIGHT:
+               itf->x = itf->x < 17 ? itf->x + 2 : 17;
+               refresh_cursor(itf);
+               break;
+            case 'n':
+               itf->index = -1;
                return 1;
-            break;
-         case 'h': case KEY_LEFT:
-            itf->x = itf->x > 1 ? itf->x - 2 : 1;
-            refresh_cursor(itf);
-            break;
-         case 'j': case KEY_DOWN:
-            itf->y = itf->y < 9 ? itf->y + 1 : 9;
-            refresh_cursor(itf);
-            break;
-         case 'k': case KEY_UP:
-            itf->y = itf->y > 0 ? itf->y - 1 : 0;
-            refresh_cursor(itf);
-            break;
-         case 'l': case KEY_RIGHT:
-            itf->x = itf->x < 17 ? itf->x + 2 : 17;
-            refresh_cursor(itf);
-            break;
-         case 'n':
-            itf->index = -1;
-            return 1;
-         case 'q':
-            return 0;
-         case 'r':
-            redo_history();
-            update_state(itf);
-            itf->index = -1;
-            break;
-         case 'u':
-            undo_history();
-            update_state(itf);
-            itf->index = -1;
-            break;
+            case 'q':
+               return 0;
+            case 'r':
+               redo_history();
+               update_state(itf);
+               itf->index = -1;
+               break;
+            case 'u':
+               undo_history();
+               update_state(itf);
+               itf->index = -1;
+               break;
+         }
+      } else {
+         uint32_t from; uint32_t to;
+         int32_t fields = scanf("%d, %d", &from, &to);
+
+         if (fields != 2) { return 0; }
+         if (from == 0 && to == 0) { return 1; }
+
+         if (from < 90 && to < 90) {
+            move_t move = move_for_indices(from, to);
+            if (move.bits && is_legal(move)) {
+               advance_history(move);
+               advance_game(move);
+               update_state(itf);
+               continue;
+            }
+         }
+
+         wmprint_info(itf, " - invalid indices -\n");
       }
    }
 }
