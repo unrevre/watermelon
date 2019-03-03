@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-enum options { opt_depth, opt_once, opt_curses, nopts };
+enum options { opt_depth, opt_once, opt_curses, opt_afk, nopts };
 
 int watermelon(option_t** options, char const* fen);
 
@@ -34,6 +34,9 @@ int watermelon(option_t** options, char const* fen) {
    int32_t depth = atoi(options[opt_depth]->opt_str);
    int64_t once = options[opt_once]->active;
    int64_t mode = options[opt_curses]->active;
+   int64_t afk = options[opt_afk]->active;
+
+   afk = once ? 1 : afk;
 
    free_options(options, nopts);
 
@@ -48,7 +51,7 @@ int watermelon(option_t** options, char const* fen) {
       wmprint_state(itf);
       refresh_all(itf);
 
-      if (!once && !event_loop(itf)) { break; }
+      if (!afk && !event_loop(itf)) { break; }
 
       clock_t cpu_time = clock();
       move = iter_dfs(depth);
@@ -86,6 +89,9 @@ option_t** set_options(int64_t nopts) {
 
    options[opt_curses]->short_opt = "c";
    options[opt_curses]->long_opt = "curses";
+
+   options[opt_afk]->short_opt = "a";
+   options[opt_afk]->long_opt = "afk";
 
    return options;
 }
