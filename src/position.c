@@ -52,10 +52,10 @@ uint32_t in_check(uint32_t side) {
       if (!range) { return 1; }
    }
 
-   __uint128_t mset = ((pmask << 0x11 | pmask << 0x13) & emask << 0x9)
-      | ((pmask >> 0x11 | pmask >> 0x13) & emask >> 0x9)
-      | ((pmask >> 0x07 | pmask << 0x0b) & emask << 0x1)
-      | ((pmask << 0x07 | pmask >> 0x0b) & emask >> 0x1);
+   __uint128_t mset = ((pmask << 17 | pmask << 19) & emask << 9)
+      | ((pmask >> 17 | pmask >> 19) & emask >> 9)
+      | ((pmask >> 7 | pmask << 11) & emask << 1)
+      | ((pmask << 7 | pmask >> 11) & emask >> 1);
    mset = mset & game.pieces[po(side, 0x2)];
    if (mset) { return 1; }
 
