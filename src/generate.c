@@ -595,24 +595,21 @@ void add_shiftwise(__uint128_t set, int64_t shift, move_array_t* moves) {
    }
 }
 
-move_array_t sort_moves(move_array_t moves) {
-   move_array_t sorted = {
-      malloc(moves.count * sizeof(move_t)), moves.count, 0
-   };
+void sort_moves(move_array_t* moves) {
+   move_t* sorted = malloc(moves->count * sizeof(move_t));
 
    int32_t indices[9] = {0};
    int32_t* counts = &indices[1];
-   for (int64_t i = 0; i != moves.count; ++i)
-      ++counts[p(moves.data[i]._.pto)];
+   for (int64_t i = 0; i != moves->count; ++i)
+      ++counts[p(moves->data[i]._.pto)];
    for (int64_t i = 1; i != 7; ++i)
       counts[i] = counts[i] + counts[i - 1];
-   for (int64_t i = 0; i != moves.count; ++i)
-      sorted.data[indices[p(moves.data[i]._.pto)]++] = moves.data[i];
-   sorted.quiet = indices[7];
+   for (int64_t i = 0; i != moves->count; ++i)
+      sorted[indices[p(moves->data[i]._.pto)]++] = moves->data[i];
+   moves->quiet = indices[7];
 
-   free(moves.data);
-
-   return sorted;
+   free(moves->data);
+   moves->data = sorted;
 }
 
 move_t next(generator_t* engine) {
@@ -623,7 +620,8 @@ move_t next(generator_t* engine) {
             return engine->move;
       case 1:
          ++(engine->state);
-         engine->moves = sort_moves(generate_pseudolegal(state.side));
+         engine->moves = generate_pseudolegal(state.side);
+         sort_moves(&(engine->moves));
       case 2:
          if (engine->index < engine->moves.quiet)
             return engine->moves.data[engine->index++];

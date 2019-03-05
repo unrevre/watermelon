@@ -126,7 +126,8 @@ int32_t quiescence(int32_t alpha, int32_t beta) {
    if (stand >= beta) { return stand; }
    alpha = stand > alpha ? stand : alpha;
 
-   move_array_t moves = sort_moves(generate_captures(state.side));
+   move_array_t moves = generate_captures(state.side);
+   sort_moves(&moves);
    for (int64_t i = 0; i != moves.count; ++i) {
       advance(moves.data[i]);
       tree_node_entry(alpha, beta);

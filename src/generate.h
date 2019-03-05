@@ -58,7 +58,7 @@ void add_shiftwise(__uint128_t set, int64_t shift, move_array_t* moves);
  * captures are assumed to be ordered by attacker out of move generation
  */
 
-move_array_t sort_moves(move_array_t moves);
+void sort_moves(move_array_t* moves);
 
 /*!
  * next
