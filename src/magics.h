@@ -30,6 +30,8 @@
 
 #define STEPLIMIT 0x0100
 
+#define AGEMASK 0x3
+
 /* state */
 
 #define RSIDE 0x0
