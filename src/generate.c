@@ -8,6 +8,7 @@
 #include "state.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 move_array_t generate(int64_t side) {
    move_array_t moves = {malloc(111 * sizeof(move_t)), 0, 0};
@@ -596,7 +597,7 @@ void add_shiftwise(__uint128_t set, int64_t shift, move_array_t* moves) {
 }
 
 void sort_moves(move_array_t* moves) {
-   move_t* sorted = malloc(moves->count * sizeof(move_t));
+   move_t sorted[111];
 
    int32_t indices[9] = {0};
    int32_t* counts = &indices[1];
@@ -608,8 +609,7 @@ void sort_moves(move_array_t* moves) {
       sorted[indices[p(moves->data[i]._.pto)]++] = moves->data[i];
    moves->quiet = indices[7];
 
-   free(moves->data);
-   moves->data = sorted;
+   memcpy(moves->data, sorted, moves->count * sizeof(move_t));
 }
 
 move_t next(generator_t* engine) {
