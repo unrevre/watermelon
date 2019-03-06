@@ -163,7 +163,7 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
          break;
       case 6:
          if ((fdabs + rdabs != 1) || !(tpmask & ZMASK[side])
-               || rdiff != side ? -1 : 1)
+               || rdiff != (side ? -1 : 1))
             return (move_t){0};
          break;
    }
