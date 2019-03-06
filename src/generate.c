@@ -605,9 +605,9 @@ void sort_moves(move_array_t* moves) {
       ++counts[p(moves->data[i]._.pto)];
    for (int64_t i = 1; i != 7; ++i)
       counts[i] = counts[i] + counts[i - 1];
+   moves->quiet = indices[7];
    for (int64_t i = 0; i != moves->count; ++i)
       sorted[indices[p(moves->data[i]._.pto)]++] = moves->data[i];
-   moves->quiet = indices[7];
 
    memcpy(moves->data, sorted, moves->count * sizeof(move_t));
 }
