@@ -10,12 +10,12 @@
 move_t history[STEPLIMIT];
 uint32_t htable[STEPLIMIT];
 ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
-killer_t ktable[PLYLIMIT][2] __attribute__((aligned(64)));
+killer_t ktable[PLYLIMIT] __attribute__((aligned(64)));
 
 void init_tables(void) {
    memset(htable, 0, 8 * sizeof(uint32_t));
    memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
-   memset(ktable, 0, PLYLIMIT * 2 * sizeof(killer_t));
+   memset(ktable, 0, PLYLIMIT * sizeof(killer_t));
 }
 
 void store_hash(int32_t depth, int32_t alpha, int32_t beta, int32_t score,

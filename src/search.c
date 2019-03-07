@@ -87,25 +87,23 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
 
       switch (engine.state) {
          case 4:
-            ktable[state.ply][0].count++;
+            ktable[state.ply].lead++;
             break;
          case 5:
-            ktable[state.ply][1].count++;
-            if (ktable[state.ply][1].count > ktable[state.ply][0].count) {
-               ktable[state.ply][0] = ktable[state.ply][1];
-               ktable[state.ply][1] = (killer_t){ {0}, 0 };
+            ktable[state.ply].count++;
+            if (ktable[state.ply].count > ktable[state.ply].lead) {
+               ktable[state.ply].first = ktable[state.ply].second;
+               ktable[state.ply].lead = ktable[state.ply].count;
+               ktable[state.ply].second = (move_t){0};
+               ktable[state.ply].count = 0;
             }
             break;
          case 6:
-            if (!ktable[state.ply][0].move.bits) {
-               ktable[state.ply][0].move = move;
+            if (!ktable[state.ply].count) {
+               ktable[state.ply].second = move;
+               ktable[state.ply].count++;
             } else {
-               if (!ktable[state.ply][1].count) {
-                  ktable[state.ply][1].move = move;
-                  ktable[state.ply][1].count++;
-               } else {
-                  ktable[state.ply][1].count--;
-               }
+               ktable[state.ply].count--;
             }
             break;
       }
