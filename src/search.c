@@ -88,21 +88,20 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
       killer_t* killers = &ktable[state.ply];
       switch (engine.state) {
          case 4:
-            killers->lead++;
+            killers->count++;
             break;
          case 5:
-            killers->count++;
-            if (killers->count > killers->lead) {
+            killers->count--;
+            if (killers->count < 1) {
                killers->first = killers->second;
-               killers->lead = killers->count;
                killers->second = (move_t){0};
                killers->count = 0;
             }
             break;
          case 6:
-            if (!killers->count) { killers->second = move; }
-            killers->count = killers->count ?
-               killers->count - 1 : killers->count + 1;
+            if (killers->count < 1) { killers->second = move; }
+            killers->count = killers->count > 0 ?
+               killers->count - 1 : 1;
             break;
       }
 

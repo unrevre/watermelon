@@ -64,8 +64,7 @@ typedef union {
 typedef struct {
    move_t first;
    move_t second;
-   uint32_t lead;
-   uint32_t count;
+   int64_t count;
 } killer_t;
 
 /*!
