@@ -85,26 +85,24 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
       alpha = score > alpha ? score : alpha;
       if (alpha < beta) { continue; }
 
+      killer_t* killers = &ktable[state.ply];
       switch (engine.state) {
          case 4:
-            ktable[state.ply].lead++;
+            killers->lead++;
             break;
          case 5:
-            ktable[state.ply].count++;
-            if (ktable[state.ply].count > ktable[state.ply].lead) {
-               ktable[state.ply].first = ktable[state.ply].second;
-               ktable[state.ply].lead = ktable[state.ply].count;
-               ktable[state.ply].second = (move_t){0};
-               ktable[state.ply].count = 0;
+            killers->count++;
+            if (killers->count > killers->lead) {
+               killers->first = killers->second;
+               killers->lead = killers->count;
+               killers->second = (move_t){0};
+               killers->count = 0;
             }
             break;
          case 6:
-            if (!ktable[state.ply].count) {
-               ktable[state.ply].second = move;
-               ktable[state.ply].count++;
-            } else {
-               ktable[state.ply].count--;
-            }
+            if (!killers->count) { killers->second = move; }
+            killers->count = killers->count ?
+               killers->count - 1 : killers->count + 1;
             break;
       }
 
