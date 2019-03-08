@@ -99,9 +99,8 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
             }
             break;
          case 6:
-            if (killers->count < 1) { killers->second = move; }
-            killers->count = killers->count > 0 ?
-               killers->count - 1 : 1;
+            killers->second = move;
+            killers->count = 0;
             break;
       }
 
