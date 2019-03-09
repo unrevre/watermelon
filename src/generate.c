@@ -628,14 +628,14 @@ move_t next(generator_t* engine) {
       case 3:
          ++(engine->state);
          ++(engine->state);
-         move_t killer = ktable[state.ply].first;
-         if (killer.bits && is_valid(killer, state.side))
-            return killer;
+         move_t first = ktable[state.ply].first;
+         if (first.bits && is_valid(first, state.side))
+            return first;
       case 4:
          ++(engine->state);
-         killer = ktable[state.ply].second;
-         if (killer.bits && is_valid(killer, state.side))
-            return killer;
+         move_t second = ktable[state.ply].second;
+         if (second.bits && is_valid(second, state.side))
+            return second;
       case 5:
          ++(engine->state);
       case 6:
