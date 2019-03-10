@@ -597,6 +597,8 @@ void add_shiftwise(__uint128_t set, int64_t shift, move_array_t* moves) {
 }
 
 void sort_moves(move_array_t* moves) {
+   if (!moves->count) { return; }
+
    move_t sorted[111];
 
    int64_t indices[9] = {0};
@@ -605,7 +607,7 @@ void sort_moves(move_array_t* moves) {
       ++counts[p(moves->data[i]._.pto)];
    for (int64_t i = 1; i != 7; ++i)
       counts[i] = counts[i] + counts[i - 1];
-   moves->quiet = indices[7];
+   moves->quiet = counts[6];
    for (int64_t i = 0; i != moves->count; ++i)
       sorted[indices[p(moves->data[i]._.pto)]++] = moves->data[i];
 
