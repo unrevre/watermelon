@@ -19,9 +19,10 @@ BLDDIR = ./build
 SRCDIR = ./src
 TSTDIR = ./tests
 
-BIN = watermelon
+MAIN = watermelon
+BIN ?= $(MAIN)
 
-SRCS = $(filter-out $(SRCDIR)/$(BIN).c,$(wildcard $(SRCDIR)/*.c))
+SRCS = $(filter-out $(SRCDIR)/$(MAIN).c,$(wildcard $(SRCDIR)/*.c))
 ASML = $(patsubst $(SRCDIR)/%.c,$(ASMDIR)/%.S,$(SRCS))
 DEPS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.d,$(SRCS))
 OBJS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.o,$(SRCS))
@@ -36,7 +37,7 @@ tree: binary
 
 binary: mkdir $(BINDIR)/$(BIN)
 
-$(BINDIR)/$(BIN): $(SRCDIR)/$(BIN).c $(OBJS)
+$(BINDIR)/$(BIN): $(SRCDIR)/$(MAIN).c $(OBJS)
 	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
 
 $(BLDDIR)/%.o: $(SRCDIR)/%.c
