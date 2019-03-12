@@ -26,16 +26,18 @@ TEST = $(patsubst $(SRCDIR)/%.c,$(BINDIR)/%,$(SRCS))
 MAIN = $(filter-out ../$(SRCDIR)/$(BIN).c,$(wildcard ../$(SRCDIR)/*.c))
 OBJS = $(patsubst ../$(SRCDIR)/%.c,../$(BLDDIR)/%.o,$(MAIN))
 
-tests: $(TEST)
+tests: mkdir $(TEST)
 
 $(BINDIR)/%: $(SRCDIR)/%.c $(OBJS)
-	@mkdir -p $(BINDIR)
-	@mkdir -p $(BLDDIR)
 	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
 
-clean:
-	@$(RM) $(TEST) $(DEPS)
+mkdir:
+	@mkdir -p $(BINDIR)
+	@mkdir -p $(BLDDIR)
 
-.PHONY: tests clean
+clean:
+	$(RM) $(BINDIR)/* $(BLDDIR)/*
+
+.PHONY: tests mkdir clean
 
 -include $(DEPS)
