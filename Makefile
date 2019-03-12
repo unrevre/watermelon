@@ -11,6 +11,8 @@ endif
 
 LIBS += -lncurses
 
+MAKE = make
+
 ASMDIR = ./asm
 BINDIR = ./bin
 BLDDIR = ./build
@@ -39,33 +41,21 @@ $(BLDDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(BLDDIR)
 	$(CC) $(CFLAGS) -MMD -c $< -o $@
 
-TESTDIR = ./tests
-
-TSRCDIR = $(TESTDIR)/$(SRCDIR)
-TBLDDIR = $(TESTDIR)/$(BLDDIR)
-TBINDIR = $(TESTDIR)/$(BINDIR)
-
-TSRCS = $(wildcard $(TSRCDIR)/*.c)
-TDEPS = $(patsubst $(TSRCDIR)/%.c,$(TBLDDIR)/%.d,$(TSRCS))
-TESTS = $(patsubst $(TSRCDIR)/%.c,$(TBINDIR)/%,$(TSRCS))
-
-tests: $(TESTS)
-
-$(TBINDIR)/%: $(TSRCDIR)/%.c $(OBJS)
-	@mkdir -p $(TBINDIR)
-	@mkdir -p $(TBLDDIR)
-	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
-
 asm: $(ASML)
 
 $(ASMDIR)/%.S: $(SRCDIR)/%.c
 	@mkdir -p $(ASMDIR)
 	$(CC) $(CFLAGS) -S $< -o $@
 
+TSTDIR = ./tests
+
+tests: $(BINDIR)/$(BIN)
+	$(MAKE) -C $(TSTDIR)
+
 .PHONY: all debug tree tests asm clean
 
 clean:
 	@$(RM) $(BINDIR)/$(BIN) $(OBJS) $(DEPS)
-	@$(RM) $(TESTS) $(TDEPS)
+	$(MAKE) -C $(TSTDIR) clean
 
 -include $(DEPS) $(TDEPS)
