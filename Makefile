@@ -17,6 +17,7 @@ ASMDIR = ./asm
 BINDIR = ./bin
 BLDDIR = ./build
 SRCDIR = ./src
+TSTDIR = ./tests
 
 BIN = watermelon
 
@@ -25,37 +26,39 @@ ASML = $(patsubst $(SRCDIR)/%.c,$(ASMDIR)/%.S,$(SRCS))
 DEPS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.d,$(SRCS))
 OBJS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.o,$(SRCS))
 
-all: $(BINDIR)/$(BIN) tests
+all: binary tests
 
 debug: CFLAGS += -DDEBUG
-debug: $(BINDIR)/$(BIN)
+debug: binary
 
 tree: CFLAGS += -DDEBUG -DTREE
-tree: $(BINDIR)/$(BIN)
+tree: binary
+
+binary: mkdir $(BINDIR)/$(BIN)
 
 $(BINDIR)/$(BIN): $(SRCDIR)/$(BIN).c $(OBJS)
-	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
 
 $(BLDDIR)/%.o: $(SRCDIR)/%.c
-	@mkdir -p $(BLDDIR)
 	$(CC) $(CFLAGS) -MMD -c $< -o $@
 
-asm: $(ASML)
+asm: mkdir $(ASML)
 
 $(ASMDIR)/%.S: $(SRCDIR)/%.c
-	@mkdir -p $(ASMDIR)
 	$(CC) $(CFLAGS) -S $< -o $@
 
-TSTDIR = ./tests
-
-tests: $(BINDIR)/$(BIN)
+tests: $(OBJS)
 	$(MAKE) -C $(TSTDIR)
 
-.PHONY: all debug tree tests asm clean
+mkdir:
+	@mkdir -p $(BINDIR)
+	@mkdir -p $(BLDDIR)
+	@mkdir -p $(ASMDIR)
 
 clean:
-	@$(RM) $(BINDIR)/$(BIN) $(OBJS) $(DEPS)
+	$(RM) $(BINDIR)/* $(BLDDIR)/* $(ASMDIR)/*
 	$(MAKE) -C $(TSTDIR) clean
+
+.PHONY: all debug tree binary asm tests mkdir clean
 
 -include $(DEPS) $(TDEPS)
