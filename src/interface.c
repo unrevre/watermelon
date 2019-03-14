@@ -44,6 +44,8 @@ void wmprint(interface_t* itf, WINDOW* w, int64_t clear, char const* fmt,
    va_start(args, fmt);
    itf->print(w, clear, fmt, args);
    va_end(args);
+
+   fflush(stdout);
 }
 
 void init_interface(interface_t* itf, int64_t mode, int64_t quiet) {
