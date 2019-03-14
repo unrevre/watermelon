@@ -18,6 +18,7 @@ typedef struct {
    int32_t x;
    int32_t y;
    int64_t index;
+   int64_t quiet;
 
    debug_t* info;
 
@@ -32,7 +33,7 @@ typedef struct {
  * @ initialise ncurses interface
  */
 
-void init_interface(interface_t* itf, int64_t mode);
+void init_interface(interface_t* itf, int64_t mode, int64_t quiet);
 
 /*!
  * close_interface

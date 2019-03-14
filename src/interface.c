@@ -46,12 +46,13 @@ void wmprint(interface_t* itf, WINDOW* w, int64_t clear, char const* fmt,
    va_end(args);
 }
 
-void init_interface(interface_t* itf, int64_t mode) {
+void init_interface(interface_t* itf, int64_t mode, int64_t quiet) {
    itf->mode = mode;
    itf->print = mode ? wmprintw : wmprintf;
    itf->x = 1;
    itf->y = 0;
    itf->index = -1;
+   itf->quiet = quiet;
 
    itf->info = malloc(sizeof(debug_t));
    init_debug(itf->info);
@@ -128,16 +129,22 @@ void refresh_info(interface_t* itf) {
 }
 
 void wmprint_state(interface_t* itf) {
+   if (itf->quiet) { return; }
+
    wmprint(itf, stdscr, 1, "%s\n", info_fen(itf->info));
    wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));
 }
 
 void wmprint_search(interface_t* itf, move_t move) {
    wmprint(itf, itf->win_info, 0, "%s\n\n", info_move(itf->info, move));
+   if (itf->quiet) { return; }
+
    wmprint(itf, itf->win_info, 0, "%s\n", info_principal_variation(itf->info));
 }
 
 void wmprint_info(interface_t* itf, char const* fmt, ...) {
+   if (itf->quiet) { return; }
+
    va_list args;
    va_start(args, fmt);
    itf->print(itf->win_info, 0, fmt, args);

@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-enum options { opt_depth, opt_once, opt_curses, opt_afk, nopts };
+enum options { opt_depth, opt_once, opt_curses, opt_afk, opt_quiet, nopts };
 
 int watermelon(option_t** options, char const* fen);
 
@@ -35,15 +35,17 @@ int watermelon(option_t** options, char const* fen) {
    int64_t once = options[opt_once]->active;
    int64_t mode = options[opt_curses]->active;
    int64_t afk = options[opt_afk]->active;
+   int64_t quiet = options[opt_quiet]->active;
 
    afk = once ? 1 : afk;
+   quiet = mode ? 0 : quiet;
 
    free_options(options, nopts);
 
    init_state(fen);
 
    interface_t* itf = malloc(sizeof(interface_t));;
-   init_interface(itf, mode);
+   init_interface(itf, mode, quiet);
 
    move_t move;
 
@@ -92,6 +94,9 @@ option_t** set_options(int64_t nopts) {
 
    options[opt_afk]->short_opt = "a";
    options[opt_afk]->long_opt = "afk";
+
+   options[opt_quiet]->short_opt = "q";
+   options[opt_quiet]->long_opt = "quiet";
 
    return options;
 }
