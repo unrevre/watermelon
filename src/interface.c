@@ -204,8 +204,10 @@ int64_t event_loop(interface_t* itf) {
                break;
          }
       } else {
+         char* buffer = fgets(itf->info->buffer, 128, stdin);
+
          uint32_t from; uint32_t to;
-         int32_t fields = scanf("%d, %d", &from, &to);
+         int32_t fields = sscanf(buffer, "%d, %d", &from, &to);
 
          if (fields != 2) { return 0; }
          if (from == 0 && to == 0) { return 1; }
