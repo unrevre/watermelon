@@ -6,10 +6,12 @@
 #include "position.h"
 #include "state.h"
 #include "structs.h"
+#include "utilities.h"
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*!
  * wmprintf
@@ -205,24 +207,33 @@ int64_t event_loop(interface_t* itf) {
          }
       } else {
          char* buffer = fgets(itf->info->buffer, 128, stdin);
+         char** tokens = slice(buffer);
 
-         uint32_t from; uint32_t to;
-         int32_t fields = sscanf(buffer, "%d, %d", &from, &to);
+         if (!strcmp(tokens[0], "move")) {
+            int32_t from = atoi(tokens[1]);
+            int32_t to = atoi(tokens[2]);
 
-         if (fields != 2) { return 0; }
-         if (from == 0 && to == 0) { return 1; }
-
-         if (from < 90 && to < 90) {
-            move_t move = move_for_indices(from, to);
-            if (move.bits && is_legal(move)) {
-               advance_history(move);
-               advance_game(move);
-               update_state(itf);
-               continue;
+            if (from < 0 || to < 0 || from > 89 || to > 89) {
+               wmprint_info(itf, " - invalid indices -\n");
+            } else {
+               move_t move = move_for_indices(from, to);
+               if (move.bits && is_legal(move)) {
+                  advance_history(move);
+                  advance_game(move);
+                  update_state(itf);
+               }
             }
+         } else if (!strcmp(tokens[0], "next")) {
+            clean(tokens);
+            return 1;
+         } else if (!strcmp(tokens[0], "quit")) {
+            clean(tokens);
+            return 0;
+         } else {
+            wmprint_info(itf, " - unknown command: %s\n", tokens[0]);
          }
 
-         wmprint_info(itf, " - invalid indices -\n");
+         clean(tokens);
       }
    }
 }
