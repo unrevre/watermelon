@@ -7,7 +7,7 @@
 
 char** slice(char* string) {
    int64_t size = 8;
-   char** slices = malloc(size * sizeof(char*));
+   char** slices = calloc(size, sizeof(char*));
 
    char* marker;
    int64_t state = 0;
@@ -36,12 +36,18 @@ char** slice(char* string) {
             slices[count++] = buffer;
 
             if (count == size) {
+               slices = realloc(slices, size * 2);
+               memset(slices + count, 0, size);
                size = size * 2;
-               slices = realloc(slices, size);
             }
          }
       }
    }
 
    return slices;
+}
+
+void clean(char** slices) {
+   for (char** t = slices; *t != 0; ++t) { free(*t); }
+   free(slices);
 }
