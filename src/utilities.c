@@ -13,7 +13,7 @@ char** slice(char* string) {
    int64_t state = 0;
    int64_t count = 0;
 
-   for (char* p = string; *p != '\0'; ++p) {
+   for (char* p = string; ; ++p) {
       if (state == 0) {
          if (isspace(*p)) {
             continue; }
@@ -26,7 +26,8 @@ char** slice(char* string) {
             marker = p;
          }
       } else {
-         if ((state == 1 && *p == '"') || (state == 2 && isspace(*p))) {
+         if (*p == '\0' || (state == 1 && *p == '"')
+               || (state == 2 && isspace(*p))) {
             int64_t len = p - marker;
             char* buffer = malloc(len + 1);
             memcpy(buffer, marker, len);
@@ -42,6 +43,9 @@ char** slice(char* string) {
             }
          }
       }
+
+      if (*p == '\0') {
+         break; }
    }
 
    return slices;
