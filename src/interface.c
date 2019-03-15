@@ -208,6 +208,11 @@ int64_t event_loop(interface_t* itf) {
          char* buffer = fgets(itf->info->buffer, 128, stdin);
          char** tokens = slice(buffer);
 
+         if (!tokens[0]) {
+            free(tokens);
+            continue;
+         }
+
          if (!strcmp(tokens[0], "move")) {
             int32_t from = atoi(tokens[1]);
             int32_t to = atoi(tokens[2]);
@@ -220,6 +225,8 @@ int64_t event_loop(interface_t* itf) {
                   advance_history(move);
                   advance_game(move);
                   update_state(itf);
+               } else {
+                  wmprint_info(itf, " - invalid move -\n");
                }
             }
          } else if (!strcmp(tokens[0], "next")) {
