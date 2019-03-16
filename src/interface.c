@@ -241,6 +241,9 @@ int64_t event_loop(interface_t* itf) {
          } else if (!strcmp(tokens[0], "redo")) {
             redo_history();
             update_state(itf);
+         } else if (!strcmp(tokens[0], "reset")) {
+            reset_state(tokens[1]);
+            update_state(itf);
          } else {
             wmprint_info(itf, " - unknown command: %s\n", tokens[0]);
          }
