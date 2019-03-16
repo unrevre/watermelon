@@ -12,7 +12,7 @@
 char fen_side[2] = { 'r', 'b' };
 char fen_char[16] = "KkRrNnCcAaBbPp ";
 
-void init_fen(const char* fen_str) {
+void reset_fen(const char* fen_str) {
    char schar;
    char lines[10][10] = {{0}};
    char fstr_cat[91] = {0};

@@ -12,11 +12,11 @@ extern ttentry_t ttable[HASHSIZE];
 extern killer_t ktable[PLYLIMIT];
 
 /*!
- * init_tables
- * @ initialise tranposition/killer move tables
+ * reset_tables
+ * @ reset tranposition/killer move tables
  */
 
-void init_tables(void);
+void reset_tables(void);
 
 /*!
  * store_hash
