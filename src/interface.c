@@ -230,16 +230,16 @@ int64_t event_loop(interface_t* itf) {
                }
             }
          } else if (!strcmp(tokens[0], "next")) {
-            clean(tokens);
+            free(tokens);
             return 1;
          } else if (!strcmp(tokens[0], "quit")) {
-            clean(tokens);
+            free(tokens);
             return 0;
          } else {
             wmprint_info(itf, " - unknown command: %s\n", tokens[0]);
          }
 
-         clean(tokens);
+         free(tokens);
       }
    }
 }
