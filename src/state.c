@@ -15,6 +15,7 @@ state_t game __attribute__((aligned(64)));
 uint32_t board[128] __attribute__((aligned(64)));
 
 uint32_t PSHASH[15][128] __attribute__((aligned(64)));
+uint32_t STHASH;
 uint32_t MVHASH;
 
 transient_t state;
@@ -29,25 +30,34 @@ void init_hashes(void) {
    for (int64_t i = 0; i != 128; ++i)
       PSHASH[empty][i] = 0x0;
 
+   STHASH = rand();
+   MVHASH = rand();
+}
+
+void reset_hashes() {
    for (int64_t i = 0; i != 90; ++i)
       if (board[i] != empty)
          state.hash ^= PSHASH[board[i]][i];
 
-   state.hash ^= rand();
+   state.hash ^= STHASH;
    htable[0] = state.hash;
-
-   MVHASH = rand();
 }
 
 void init_state(const char* fen) {
+   init_hashes();
+   init_masks();
+
+   reset_state(fen);
+}
+
+void reset_state(const char* fen) {
    game = (state_t){ {0}, {0} };
    state = (transient_t){ 0, 0, 0, 0 };
    age = 0;
 
-   init_tables();
-   init_masks();
-   init_fen(fen);
-   init_hashes();
+   reset_tables();
+   reset_fen(fen);
+   reset_hashes();
 }
 
 void advance(move_t move) {

@@ -23,11 +23,25 @@ extern int64_t age;
 void init_hashes(void);
 
 /*!
+ * reset_hashes
+ * @ reset zobrist hash
+ */
+
+void reset_hashes(void);
+
+/*!
  * init_state
  * @ initialise global state variables
  */
 
 void init_state(const char* fen);
+
+/*!
+ * reset_state
+ * @ (re)set global state variables
+ */
+
+void reset_state(const char* fen);
 
 /*!
  * advance
