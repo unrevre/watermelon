@@ -13,6 +13,7 @@ ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
 killer_t ktable[PLYLIMIT] __attribute__((aligned(64)));
 
 void reset_tables(void) {
+   memset(history, 0, STEPLIMIT * sizeof(move_t));
    memset(htable, 0, STEPLIMIT * sizeof(uint32_t));
    memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
    memset(ktable, 0, PLYLIMIT * sizeof(killer_t));
