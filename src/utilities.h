@@ -8,4 +8,11 @@
 
 char** slice(char* string);
 
+/*!
+ * append
+ * @ append string to token list
+ */
+
+char** append(char** slices, char* string);
+
 #endif /* UTILITIES_H */
