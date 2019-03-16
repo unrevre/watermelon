@@ -43,3 +43,14 @@ char** slice(char* string) {
 
    return slices;
 }
+
+char** append(char** slices, char* string) {
+   int64_t count = 1;
+   for (char** t = slices; *t != 0; ++t, ++count);
+
+   slices = realloc(slices, count + 1);
+   slices[count++] = string;
+   slices[count] = 0;
+
+   return slices;
+}
