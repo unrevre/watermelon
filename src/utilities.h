@@ -8,11 +8,4 @@
 
 char** slice(char* string);
 
-/*!
- * clean
- * @ free memory allocated to sliced string
- */
-
-void clean(char** slices);
-
 #endif /* UTILITIES_H */
