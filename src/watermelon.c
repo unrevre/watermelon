@@ -20,8 +20,7 @@ int main(int argc, char const* argv[]) {
 
    switch (argc) {
       case 1:
-         return watermelon(options,
-            "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR r");
+         return watermelon(options, 0);
       case 2:
          return watermelon(options, argv[1]);
       default:

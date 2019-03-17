@@ -12,10 +12,15 @@
 char fen_side[2] = { 'r', 'b' };
 char fen_char[16] = "KkRrNnCcAaBbPp ";
 
+char fen_default[62] = "rnbakabnr/9/1c5c1/p1p1p1p1p/9/"
+                       "9/P1P1P1P1P/1C5C1/9/RNBAKABNR r";
+
 void reset_fen(const char* fen_str) {
    char schar;
    char lines[10][10] = {{0}};
    char fstr_cat[91] = {0};
+
+   if (!fen_str) { fen_str = fen_default; }
 
    sscanf(fen_str,
       "%[A-Za-z0-9]/%[A-Za-z0-9]/%[A-Za-z0-9]/"
