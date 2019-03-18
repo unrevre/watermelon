@@ -154,9 +154,45 @@ void wmprint_info(interface_t* itf, char const* fmt, ...) {
    va_end(args);
 }
 
+/*!
+ * update_state
+ * @ helper function to print state information and refresh window
+ */
+
 void update_state(interface_t* itf) {
    wmprint_state(itf);
    refresh_state(itf);
+}
+
+/*!
+ * fetch
+ * @ fetch board information
+ */
+
+void fetch(interface_t* itf) {
+   int32_t x; int32_t y;
+   getyx(itf->win_state, y, x);
+   int64_t index = (9 - y) * 9 + x / 2;
+
+   if (itf->index == -1) {
+      if (is_index_movable(index)) {
+         wchgat(itf->win_state, 1, A_BOLD, 0, NULL);
+         wrefresh(itf->win_state);
+         itf->index = index;
+      }
+   } else if (itf->index == index) {
+      wchgat(itf->win_state, 1, A_NORMAL, 0, NULL);
+      wrefresh(itf->win_state);
+      itf->index = -1;
+   } else {
+      move_t move = move_for_indices(itf->index, index);
+      if (move.bits && is_legal(move)) {
+         advance_history(move);
+         advance_game(move);
+         update_state(itf);
+         itf->index = -1;
+      }
+   }
 }
 
 int64_t event_loop(interface_t* itf) {
@@ -249,32 +285,6 @@ int64_t event_loop(interface_t* itf) {
          }
 
          free(tokens);
-      }
-   }
-}
-
-void fetch(interface_t* itf) {
-   int32_t x; int32_t y;
-   getyx(itf->win_state, y, x);
-   int64_t index = (9 - y) * 9 + x / 2;
-
-   if (itf->index == -1) {
-      if (is_index_movable(index)) {
-         wchgat(itf->win_state, 1, A_BOLD, 0, NULL);
-         wrefresh(itf->win_state);
-         itf->index = index;
-      }
-   } else if (itf->index == index) {
-      wchgat(itf->win_state, 1, A_NORMAL, 0, NULL);
-      wrefresh(itf->win_state);
-      itf->index = -1;
-   } else {
-      move_t move = move_for_indices(itf->index, index);
-      if (move.bits && is_legal(move)) {
-         advance_history(move);
-         advance_game(move);
-         update_state(itf);
-         itf->index = -1;
       }
    }
 }
