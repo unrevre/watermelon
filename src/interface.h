@@ -99,11 +99,4 @@ void wmprint_info(interface_t* itf, char const* fmt, ...);
 
 int64_t event_loop(interface_t* itf);
 
-/*!
- * fetch
- * @ fetch board information
- */
-
-void fetch(interface_t* itf);
-
 #endif /* INTERFACE_H */
