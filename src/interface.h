@@ -51,27 +51,6 @@ void close_interface(interface_t* itf);
 void refresh_all(interface_t* itf);
 
 /*!
- * refresh_state
- * @ refresh default and game state window contents
- */
-
-void refresh_state(interface_t* itf);
-
-/*!
- * refresh_cursor
- * @ refresh cursor position (refreshes game state window contents)
- */
-
-void refresh_cursor(interface_t* itf);
-
-/*!
- * refresh_info
- * @ refresh info window contents
- */
-
-void refresh_info(interface_t* itf);
-
-/*!
  * wmprint_state
  * @ helper function - print game state info
  */
