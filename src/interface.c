@@ -143,16 +143,6 @@ void wmprint_info(interface_t* itf, char const* fmt, ...) {
 }
 
 /*!
- * update_state
- * @ helper function to print state information and refresh window
- */
-
-void update_state(interface_t* itf) {
-   wmprint_state(itf);
-   refresh_windows(itf, 2, stdscr, itf->win_state);
-}
-
-/*!
  * fetch
  * @ fetch board information
  */
@@ -177,7 +167,8 @@ void fetch(interface_t* itf) {
       if (move.bits && is_legal(move)) {
          advance_history(move);
          advance_game(move);
-         update_state(itf);
+         wmprint_state(itf);
+         refresh_windows(itf, 2, stdscr, itf->win_state);
          itf->index = -1;
       }
    }
@@ -219,12 +210,14 @@ int64_t event_loop(interface_t* itf) {
                return 0;
             case 'r':
                redo_history();
-               update_state(itf);
+               wmprint_state(itf);
+               refresh_windows(itf, 2, stdscr, itf->win_state);
                itf->index = -1;
                break;
             case 'u':
                undo_history();
-               update_state(itf);
+               wmprint_state(itf);
+               refresh_windows(itf, 2, stdscr, itf->win_state);
                itf->index = -1;
                break;
          }
@@ -248,7 +241,7 @@ int64_t event_loop(interface_t* itf) {
                if (move.bits && is_legal(move)) {
                   advance_history(move);
                   advance_game(move);
-                  update_state(itf);
+                  wmprint_state(itf);
                } else {
                   wmprint_info(itf, " - invalid move -\n");
                }
@@ -261,13 +254,13 @@ int64_t event_loop(interface_t* itf) {
             return 0;
          } else if (!strcmp(tokens[0], "undo")) {
             undo_history();
-            update_state(itf);
+            wmprint_state(itf);
          } else if (!strcmp(tokens[0], "redo")) {
             redo_history();
-            update_state(itf);
+            wmprint_state(itf);
          } else if (!strcmp(tokens[0], "reset")) {
             reset_state(tokens[1]);
-            update_state(itf);
+            wmprint_state(itf);
          } else {
             wmprint_info(itf, " - unknown command: %s\n", tokens[0]);
          }
