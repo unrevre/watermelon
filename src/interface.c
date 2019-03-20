@@ -49,7 +49,24 @@ void wmprint(interface_t* itf, WINDOW* w, int64_t clear, char const* fmt,
    fflush(stdout);
 }
 
-void refresh_windows(interface_t* itf, int64_t cursor, int64_t count, ...);
+/*!
+ * refresh_windows
+ * @ refresh window contents
+ */
+
+void refresh_windows(interface_t* itf, int64_t count, ...) {
+   if (itf->mode) {
+      wmove(itf->win_state, itf->y, itf->x);
+
+      va_list args;
+      va_start(args, count);
+      for (int64_t i = 0; i < count; ++i) {
+         wnoutrefresh(va_arg(args, WINDOW*)); }
+      va_end(args);
+
+      doupdate();
+   }
+}
 
 void init_interface(interface_t* itf, int64_t mode, int64_t quiet) {
    itf->mode = mode;
@@ -87,7 +104,7 @@ void init_interface(interface_t* itf, int64_t mode, int64_t quiet) {
 
 void close_interface(interface_t* itf) {
    wmprint_info(itf, " - exit -\n");
-   refresh_windows(itf, 0, 1, itf->win_info);
+   refresh_windows(itf, 1, itf->win_info);
 
    if (itf->mode) {
       getch();
@@ -98,27 +115,8 @@ void close_interface(interface_t* itf) {
    free(itf);
 }
 
-/*!
- * refresh_windows
- * @ refresh window contents
- */
-
-void refresh_windows(interface_t* itf, int64_t cursor, int64_t count, ...) {
-   if (itf->mode) {
-      if (cursor) { wmove(itf->win_state, itf->y, itf->x); }
-
-      va_list args;
-      va_start(args, count);
-      for (int64_t i = 0; i < count; ++i) {
-         wnoutrefresh(va_arg(args, WINDOW*)); }
-      va_end(args);
-
-      doupdate();
-   }
-}
-
 void refresh_all(interface_t* itf) {
-   refresh_windows(itf, 1, 3, stdscr, itf->win_info, itf->win_state);
+   refresh_windows(itf, 3, stdscr, itf->win_info, itf->win_state);
 }
 
 void wmprint_state(interface_t* itf) {
@@ -151,7 +149,7 @@ void wmprint_info(interface_t* itf, char const* fmt, ...) {
 
 void update_state(interface_t* itf) {
    wmprint_state(itf);
-   refresh_windows(itf, 1, 2, stdscr, itf->win_state);
+   refresh_windows(itf, 2, stdscr, itf->win_state);
 }
 
 /*!
@@ -200,19 +198,19 @@ int64_t event_loop(interface_t* itf) {
                break;
             case 'h': case KEY_LEFT:
                itf->x = itf->x > 1 ? itf->x - 2 : 1;
-               refresh_windows(itf, 1, 1, itf->win_state);
+               refresh_windows(itf, 1, itf->win_state);
                break;
             case 'j': case KEY_DOWN:
                itf->y = itf->y < 9 ? itf->y + 1 : 9;
-               refresh_windows(itf, 1, 1, itf->win_state);
+               refresh_windows(itf, 1, itf->win_state);
                break;
             case 'k': case KEY_UP:
                itf->y = itf->y > 0 ? itf->y - 1 : 0;
-               refresh_windows(itf, 1, 1, itf->win_state);
+               refresh_windows(itf, 1, itf->win_state);
                break;
             case 'l': case KEY_RIGHT:
                itf->x = itf->x < 17 ? itf->x + 2 : 17;
-               refresh_windows(itf, 1, 1, itf->win_state);
+               refresh_windows(itf, 1, itf->win_state);
                break;
             case 'n':
                itf->index = -1;
