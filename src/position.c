@@ -130,6 +130,8 @@ uint32_t is_index_movable(int32_t index) {
 }
 
 move_t move_for_indices(uint32_t from, uint32_t to) {
+   if (from > 89 || to > 89) { return (move_t){0}; }
+
    if (is_index_movable(to)) { return (move_t){0}; }
 
    int64_t side = state.side;
