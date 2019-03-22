@@ -220,6 +220,12 @@ int64_t event_loop(interface_t* itf) {
                refresh_windows(itf, 2, stdscr, itf->win_state);
                itf->index = -1;
                break;
+            case '-':
+               reset_state(0);
+               wmprint_state(itf);
+               refresh_windows(itf, 2, stdscr, itf->win_state);
+               itf->index = -1;
+               break;
          }
       } else {
          char* buffer = fgets(itf->info->buffer, 128, stdin);
