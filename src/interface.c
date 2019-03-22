@@ -237,20 +237,13 @@ int64_t event_loop(interface_t* itf) {
          }
 
          if (!strcmp(tokens[0], "move")) {
-            int32_t from = atoi(tokens[1]);
-            int32_t to = atoi(tokens[2]);
-
-            if (from < 0 || to < 0 || from > 89 || to > 89) {
-               wmprint_info(itf, " - invalid indices -\n");
+            move_t move = move_for_indices(atoi(tokens[1]), atoi(tokens[2]));
+            if (move.bits && is_legal(move)) {
+               advance_history(move);
+               advance_game(move);
+               wmprint_state(itf);
             } else {
-               move_t move = move_for_indices(from, to);
-               if (move.bits && is_legal(move)) {
-                  advance_history(move);
-                  advance_game(move);
-                  wmprint_state(itf);
-               } else {
-                  wmprint_info(itf, " - invalid move -\n");
-               }
+               wmprint_info(itf, " - invalid move -\n");
             }
          } else if (!strcmp(tokens[0], "next")) {
             free(tokens);
