@@ -229,7 +229,7 @@ int64_t event_loop(interface_t* itf) {
                refresh_windows(itf, 2, stdscr, itf->win_state);
                itf->index = -1;
                break;
-            case '-':
+            case '~':
                reset_state(0);
                wmprint_state(itf);
                refresh_windows(itf, 2, stdscr, itf->win_state);
