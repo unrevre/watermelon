@@ -174,6 +174,15 @@ void fetch(interface_t* itf) {
    }
 }
 
+enum {
+   cmd_move, cmd_next, cmd_quit, cmd_undo, cmd_redo, cmd_reset,
+   ncmds
+};
+
+static char const* commands[ncmds] = {
+   "move", "next", "quit", "undo", "redo", "reset"
+};
+
 int64_t event_loop(interface_t* itf) {
    for (;;) {
       if (itf->mode) {
@@ -236,35 +245,50 @@ int64_t event_loop(interface_t* itf) {
             continue;
          }
 
-         if (!strcmp(tokens[0], "move")) {
-            move_t move = move_for_indices(atoi(tokens[1]), atoi(tokens[2]));
-            if (move.bits && is_legal(move)) {
-               advance_history(move);
-               advance_game(move);
+         int64_t cmd = -1;
+         for (int64_t i = 0; i < ncmds; ++i) {
+            if (!strcmp(tokens[0], commands[i])) {
+               cmd = i; } }
+
+         int64_t retval = -1;
+         switch (cmd) {
+            case cmd_move: ;
+               move_t move = move_for_indices(atoi(tokens[1]), atoi(tokens[2]));
+               if (move.bits && is_legal(move)) {
+                  advance_history(move);
+                  advance_game(move);
+                  wmprint_state(itf);
+               } else {
+                  wmprint_info(itf, " - invalid move -\n");
+               }
+               break;
+            case cmd_next:
+               retval = 1;
+               break;
+            case cmd_quit:
+               retval = 0;
+               break;
+            case cmd_undo:
+               undo_history();
                wmprint_state(itf);
-            } else {
-               wmprint_info(itf, " - invalid move -\n");
-            }
-         } else if (!strcmp(tokens[0], "next")) {
-            free(tokens);
-            return 1;
-         } else if (!strcmp(tokens[0], "quit")) {
-            free(tokens);
-            return 0;
-         } else if (!strcmp(tokens[0], "undo")) {
-            undo_history();
-            wmprint_state(itf);
-         } else if (!strcmp(tokens[0], "redo")) {
-            redo_history();
-            wmprint_state(itf);
-         } else if (!strcmp(tokens[0], "reset")) {
-            reset_state(tokens[1]);
-            wmprint_state(itf);
-         } else {
-            wmprint_info(itf, " - unknown command: %s\n", tokens[0]);
+               break;
+            case cmd_redo:
+               redo_history();
+               wmprint_state(itf);
+               break;
+            case cmd_reset:
+               reset_state(tokens[1]);
+               wmprint_state(itf);
+               break;
+            default:
+               wmprint_info(itf, " - unknown command: %s\n", tokens[0]);
+               break;
          }
 
          free(tokens);
+
+         if (retval != -1) {
+            return retval; }
       }
    }
 }
