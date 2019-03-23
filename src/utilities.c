@@ -45,10 +45,10 @@ char** slice(char* string) {
 }
 
 char** append(char** slices, char* string) {
-   int64_t count = 1;
+   int64_t count = 0;
    for (char** t = slices; *t != 0; ++t, ++count);
 
-   slices = realloc(slices, count + 1);
+   slices = realloc(slices, count + 2);
    slices[count++] = string;
    slices[count] = 0;
 
