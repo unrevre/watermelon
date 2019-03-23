@@ -174,14 +174,15 @@ void fetch(interface_t* itf) {
    }
 }
 
-enum {
-   cmd_move, cmd_next, cmd_quit, cmd_undo, cmd_redo, cmd_reset,
-   ncmds
-};
+#define cmds(macro)                       \
+   macro(move), macro(next), macro(quit), \
+   macro(redo), macro(undo), macro(reset)
 
-static char const* commands[ncmds] = {
-   "move", "next", "quit", "undo", "redo", "reset"
-};
+#define list(command)   cmd_##command
+#define string(command) #command
+
+enum { cmds(list), ncmds };
+static char const* commands[ncmds] = { cmds(string) };
 
 int64_t event_loop(interface_t* itf) {
    for (;;) {
@@ -268,12 +269,12 @@ int64_t event_loop(interface_t* itf) {
             case cmd_quit:
                retval = 0;
                break;
-            case cmd_undo:
-               undo_history();
-               wmprint_state(itf);
-               break;
             case cmd_redo:
                redo_history();
+               wmprint_state(itf);
+               break;
+            case cmd_undo:
+               undo_history();
                wmprint_state(itf);
                break;
             case cmd_reset:
