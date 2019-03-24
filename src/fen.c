@@ -4,9 +4,8 @@
 #include "masks.h"
 #include "state.h"
 
-#include <stdlib.h>
-#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 char fen_side[2] = { 'r', 'b' };
@@ -74,4 +73,12 @@ void reset_fen(const char* fen_str) {
    game.pieces[empty] = ~(game.occupancy[0] | game.occupancy[1]);
 
    state.side = (schar == 'b') ? black : red;
+}
+
+int64_t side_from(char const* fen_str) {
+   if (!fen_str) { fen_str = fen_default; }
+
+   char schar;
+   sscanf(fen_str, "%*s %c", &schar);
+   return schar == 'b';
 }
