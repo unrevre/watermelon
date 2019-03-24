@@ -15,13 +15,14 @@ void taste(int64_t side, char* buffer);
 void serve(char* args[], int64_t side);
 
 int main(int argc, char* argv[]) {
-   if (argc != 4) {
+   if (argc != 3 && argc != 4) {
       printf("usage: %s [red] [black] [fen]\n", argv[0]);
       return 1;
    }
 
-   serve(append(slice(argv[1]), argv[3]), red);
-   serve(append(slice(argv[2]), argv[3]), black);
+   char* fen = (argc == 3) ? 0 : argv[3];
+   serve(append(slice(argv[1]), fen), red);
+   serve(append(slice(argv[2]), fen), black);
 
    printf("served!\n");
    printf("  pids: %i, %i\n\n", childpid[0], childpid[1]);
