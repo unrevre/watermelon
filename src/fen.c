@@ -46,7 +46,6 @@ void reset_fen(const char* fen_str) {
 
       if (piece != -1) {
          int64_t side = (*fstr_p > 'Z');
-         game.pieces[ps(side, piece)] |= PMASK[i];
          board[i] = ps(side, piece);
       }
    }
@@ -54,9 +53,11 @@ void reset_fen(const char* fen_str) {
    game.occupancy[0] = 0x0;
    game.occupancy[1] = 0x0;
 
-   for (int64_t i = 0; i < 7; ++i) {
-      game.occupancy[0] |= game.pieces[ps(red, i)];
-      game.occupancy[1] |= game.pieces[ps(black, i)];
+   for (int64_t i = 0; i < 90; ++i) {
+      uint32_t piece = board[i];
+      game.pieces[piece] |= PMASK[i];
+      if (piece != empty) {
+         game.occupancy[s(piece)] |= PMASK[i]; }
    }
 
    game.pieces[empty] = ~(game.occupancy[0] | game.occupancy[1]);
