@@ -27,20 +27,24 @@ void free_debug(debug_t* info) {
 }
 
 void impl_fen(char* buffer) {
+   memset(buffer, '0', 91);
+
+   int64_t a = 81;
    int64_t f = 0;
    for (int64_t i = 0; i < 10; ++i) {
-      int64_t s = 0;
-      for (int64_t j = 0; j < 9; ++j) {
-         if (board[(9 - i) * 9 + j] == empty) {
-            ++s;
+      int64_t g = f;
+      for (int64_t j = 0; j < 9; ++a, ++j) {
+         if (board[a] == empty) {
+            buffer[g]++;
          } else {
-            if (s) { buffer[f++] = '0' + s; s = 0; }
-            buffer[f++] = fen_char[board[(9 - i) * 9 + j]];
+            if (buffer[g] == '0') { f = g; }
+            buffer[f++] = fen_char[board[a]];
+            g = f;
          }
       }
 
-      if (s) { buffer[f++] = '0' + s; }
       buffer[f++] = '/';
+      a = a - 18;
    }
 
    buffer[--f] = ' ';
@@ -55,21 +59,18 @@ char* info_fen(debug_t* info) {
 }
 
 void impl_game_state(char* buffer) {
-   char b[90] = {0};
-   for (int64_t i = 0; i != 90; ++i)
-      b[i] = board[i] != empty ? fen_char[board[i]] : 0;
-
+   int64_t a = 81;
    int64_t g = 0;
-   for (int64_t i = 10; i > 0; --i) {
+   for (int64_t i = 0; i < 10; ++i) {
       char filler = (i == 5 || i == 6) ? '-' : ' ';
-      for (int64_t j = 0; j < 9; ++j) {
+      for (int64_t j = 0; j < 9; ++a, ++j) {
          buffer[g++] = filler;
-         buffer[g++] = (b[9 * (i - 1) + j]) ?
-            b[9 * (i - 1) + j] : filler;
+         buffer[g++] = (board[a] == empty) ? filler : fen_char[board[a]];
       }
 
       buffer[g++] = filler;
       buffer[g++] = '\n';
+      a = a - 18;
    }
 
    buffer[g++] = '\0';
