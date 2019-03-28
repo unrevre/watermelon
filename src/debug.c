@@ -62,7 +62,7 @@ void impl_game_state(char* buffer) {
    int64_t a = 81;
    int64_t g = 0;
    for (int64_t i = 0; i < 10; ++i) {
-      char filler = (i == 5 || i == 6) ? '-' : ' ';
+      char filler = (i == 4 || i == 5) ? '-' : ' ';
       for (int64_t j = 0; j < 9; ++a, ++j) {
          buffer[g++] = filler;
          buffer[g++] = (board[a] == empty) ? filler : fen_char[board[a]];
