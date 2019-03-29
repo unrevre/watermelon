@@ -30,9 +30,22 @@ int main(int argc, char* argv[]) {
    char buffer[256];
    sprintf(buffer, "\n");
 
-   for (int64_t side = side_from(argv[3]); ; side = o(side)) {
+   int64_t side = side_from(argv[3]);
+   for (int64_t i = 0; i < STEPLIMIT; ++i, side = o(side)) {
       taste(side, buffer);
       printf("[%c] %s", fen_side[side], buffer);
+   }
+
+   sprintf(buffer, "eval\n");
+   taste(red, buffer);
+
+   char** tokens = slice(buffer);
+   int64_t norm = (tokens[1][0] == 'r') * atoi(tokens[2]);
+   int64_t advantage = (norm > 0) - (0 > norm);
+   switch (advantage) {
+      case -1: printf("r adv\n"); break;
+      case 0: printf("even\n"); break;
+      case 1: printf("b adv\n"); break;
    }
 
    return 0;
@@ -59,11 +72,15 @@ void taste(int64_t side, char* buffer) {
    }
 
    char** tokens = slice(buffer);
-   if (tokens[0] && tokens[0][0] != '\0' && tokens[0][1] == ':') {
-      int32_t from = atoi(tokens[1]);
-      int32_t to = atoi(tokens[3]);
+   if (tokens[0]) {
+      if (strlen(tokens[0]) == 2 && tokens[0][1] == ':') {
+         int32_t from = atoi(tokens[1]);
+         int32_t to = atoi(tokens[3]);
 
-      sprintf(buffer, "move %i %i\n", from , to);
+         sprintf(buffer, "move %i %i\n", from , to);
+      } else if (!strcmp(tokens[0], "eval:")) {
+         sprintf(buffer, "eval %c %i\n", tokens[1][1], atoi(tokens[2]));
+      }
    } else {
       printf("fatal: invalid read\n");
       exit(1);
