@@ -45,6 +45,8 @@ int main(int argc, char* argv[]) {
          printf("fatal: invalid read\n");
          exit(1);
       }
+
+      free(tokens);
    }
 
    sprintf(buffer, "eval\n");
@@ -59,6 +61,8 @@ int main(int argc, char* argv[]) {
          case 1: printf("b adv\n"); break;
       }
    }
+
+   free(tokens);
 
    return 0;
 }
