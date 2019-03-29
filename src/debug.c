@@ -34,6 +34,7 @@ void impl_fen(char* buffer) {
    for (int64_t i = 0; i < 10; ++i) {
       int64_t g = f;
       for (int64_t j = 0; j < 9; ++a, ++j) {
+         if (f == g) { ++f; }
          if (board[a] == empty) {
             buffer[g]++;
          } else {
