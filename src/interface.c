@@ -176,7 +176,7 @@ void fetch(interface_t* itf) {
 
 #define cmds(macro)                       \
    macro(move), macro(next), macro(quit), \
-   macro(redo), macro(undo), macro(reset)
+   macro(redo), macro(undo), macro(zero)
 
 #define list(command)   cmd_##command
 #define string(command) #command
@@ -277,7 +277,7 @@ int64_t event_loop(interface_t* itf) {
                undo_history();
                wmprint_state(itf);
                break;
-            case cmd_reset:
+            case cmd_zero:
                reset_state(tokens[1]);
                wmprint_state(itf);
                break;
