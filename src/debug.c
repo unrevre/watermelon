@@ -116,7 +116,7 @@ void trace_principal_variation(char** buffer) {
       if (is_legal(next)) {
          advance(next);
 
-         (*(buffer + 1))[0] = '\0';
+         **(buffer + 1) = '\0';
          impl_transposition_table_entry(*buffer, entry);
          if (is_repetition()) {
             strcat(*buffer, " %\n");
@@ -138,7 +138,7 @@ char* info_principal_variation(debug_t* info) {
    trace_principal_variation(info->buffers);
 
    info->buffer[0] = '\0';
-   for (int64_t i = 0; i < PLYLIMIT && info->buffers[i][0]; i++)
+   for (int64_t i = 0; i < PLYLIMIT && info->buffers[i][0]; ++i)
       strcat(info->buffer, info->buffers[i]);
 
    return info->buffer;
@@ -194,7 +194,6 @@ void debug_printf(char const* fmt, ...) {
    vprintf(fmt, args);
    va_end(args);
 }
-#endif /* DEBUG */
 
 #ifdef TREE
 void tree_root_entry(void) {
@@ -219,3 +218,4 @@ void tree_node_exit(int32_t alpha, int32_t beta, int32_t score) {
    printf("└╸%5i [%5i, %5i]\n", -score, -beta, -alpha);
 }
 #endif /* TREE */
+#endif /* DEBUG */
