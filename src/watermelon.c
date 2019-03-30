@@ -43,7 +43,7 @@ int watermelon(option_t** options, char const* fen) {
 
    init_state(fen);
 
-   interface_t* itf = malloc(sizeof(interface_t));;
+   interface_t* itf = malloc(sizeof(interface_t));
    init_interface(itf, mode, quiet);
 
    move_t move;
