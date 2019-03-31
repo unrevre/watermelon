@@ -20,6 +20,13 @@ void init_debug(debug_t* info);
 void free_debug(debug_t* info);
 
 /*!
+ * info_eval
+ * @ return internal evaluation of current game state
+ */
+
+char* info_eval(debug_t* info, int64_t side);
+
+/*!
  * info_fen
  * @ return fen string of current game state
  */
