@@ -1,5 +1,6 @@
 #include "debug.h"
 
+#include "eval.h"
 #include "fen.h"
 #include "magics.h"
 #include "memory.h"
@@ -26,6 +27,16 @@ void free_debug(debug_t* info) {
 
    free(info->buffer);
    free(info->buffers);
+}
+
+void impl_eval(char* buffer, int64_t side) {
+   sprintf(buffer, "eval: [%c] %i", fen_char[side], eval(side));
+}
+
+char* info_eval(debug_t* info, int64_t side) {
+   impl_eval(info->buffer, side);
+
+   return info->buffer;
 }
 
 void impl_fen(char* buffer) {

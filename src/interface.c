@@ -1,7 +1,6 @@
 #include "interface.h"
 
 #include "debug.h"
-#include "eval.h"
 #include "generate.h"
 #include "memory.h"
 #include "position.h"
@@ -191,7 +190,8 @@ int64_t event_loop(interface_t* itf) {
       if (itf->mode) {
          switch (getch()) {
             case 'e':
-               wmprint(itf, itf->win_info, 0, "eval: [r] %i\n", eval(red));
+               wmprint(itf, itf->win_info, 0, "%s\n",
+                       info_eval(itf->info, red));
                refresh_windows(itf, 1, itf->win_info);
                break;
             case 'f':
@@ -260,7 +260,8 @@ int64_t event_loop(interface_t* itf) {
          int64_t retval = -1;
          switch (cmd) {
             case cmd_eval:
-               wmprint(itf, itf->win_info, 0, "eval: [r] %i\n", eval(red));
+               wmprint(itf, itf->win_info, 0, "%s\n",
+                       info_eval(itf->info, red));
                break;
             case cmd_move: ;
                move_t move = move_for_indices(atoi(tokens[1]), atoi(tokens[2]));
