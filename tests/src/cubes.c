@@ -35,9 +35,9 @@ int main(int argc, char* argv[]) {
       taste(side, buffer);
 
       char** tokens = slice(buffer);
-      if (tokens[0] && strlen(tokens[0]) == 2 && tokens[0][1] == ':') {
+      if (tokens[0] && !strcmp(tokens[0], "move")) {
          int32_t from = atoi(tokens[1]);
-         int32_t to = atoi(tokens[3]);
+         int32_t to = atoi(tokens[2]);
 
          sprintf(buffer, "move %i %i\n", from , to);
          printf("[%c] %s", fen_side[side], buffer);
@@ -53,8 +53,8 @@ int main(int argc, char* argv[]) {
    taste(red, buffer);
 
    char** tokens = slice(buffer);
-   if (!strcmp(tokens[0], "eval:")) {
-      int64_t adv = atoi(tokens[2]);
+   if (!strcmp(tokens[0], "eval")) {
+      int64_t adv = atoi(tokens[1]);
       switch ((adv > 0) - (0 > adv)) {
          case 1: printf("r adv\n"); break;
          case 0: printf("even\n"); break;

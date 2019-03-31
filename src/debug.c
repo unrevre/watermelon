@@ -44,6 +44,12 @@ char* info_eval(debug_t* info, int64_t side) {
    return info->buffer;
 }
 
+char* resp_eval(debug_t* info) {
+   sprintf(info->buffer, "eval %i", eval(red));
+
+   return info->buffer;
+}
+
 /*!
  * impl_fen
  * @ internal implementation for 'info_fen'
@@ -123,6 +129,12 @@ void impl_move(char* buffer, move_t move) {
 
 char* info_move(debug_t* info, move_t move) {
    impl_move(info->buffer, move);
+
+   return info->buffer;
+}
+
+char* resp_move(debug_t* info, move_t move) {
+   sprintf(info->buffer, "move %i %i", move._.from, move._.to);
 
    return info->buffer;
 }

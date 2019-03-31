@@ -27,6 +27,13 @@ void free_debug(debug_t* info);
 char* info_eval(debug_t* info, int64_t side);
 
 /*!
+ * resp_eval
+ * @ return internal evaluation of current game state, formatted as response
+ */
+
+char* resp_eval(debug_t* info);
+
+/*!
  * info_fen
  * @ return fen string of current game state
  */
@@ -46,6 +53,13 @@ char* info_game_state(debug_t* info);
  */
 
 char* info_move(debug_t* info, move_t move);
+
+/*!
+ * resp_move
+ * @ return string of move details, formatted as response
+ */
+
+char* resp_move(debug_t* info, move_t move);
 
 /*!
  * info_transposition_table_entry
