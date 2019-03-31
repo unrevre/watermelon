@@ -35,31 +35,27 @@ int main(int argc, char* argv[]) {
       taste(side, buffer);
 
       char** tokens = slice(buffer);
-      if (tokens[0] && !strcmp(tokens[0], "move")) {
-         int32_t from = atoi(tokens[1]);
-         int32_t to = atoi(tokens[2]);
+      if (!tokens[0] || strcmp(tokens[0], "move")) {
+         printf("fatal: invalid read\n"); exit(1); }
 
-         sprintf(buffer, "move %i %i\n", from , to);
-         printf("[%c] %s", fen_side[side], buffer);
-      } else {
-         printf("fatal: invalid read\n");
-         exit(1);
-      }
-
+      sprintf(buffer, "move %s %s\n", tokens[1] , tokens[2]);
       free(tokens);
+
+      printf("[%c] %s", fen_side[side], buffer);
    }
 
    sprintf(buffer, "eval\n");
    taste(red, buffer);
 
    char** tokens = slice(buffer);
-   if (!strcmp(tokens[0], "eval")) {
-      int64_t adv = atoi(tokens[1]);
-      switch ((adv > 0) - (0 > adv)) {
-         case 1: printf("r adv\n"); break;
-         case 0: printf("even\n"); break;
-         case -1: printf("b adv\n"); break;
-      }
+   if (!tokens[0] || strcmp(tokens[0], "eval")) {
+      printf("fatal: invalid read\n"); exit(1); }
+
+   int64_t adv = atoi(tokens[1]);
+   switch ((adv > 0) - (0 > adv)) {
+      case 1: printf("r adv\n"); break;
+      case 0: printf("even\n"); break;
+      case -1: printf("b adv\n"); break;
    }
 
    free(tokens);
