@@ -127,7 +127,7 @@ void wmprint_state(interface_t* itf) {
 }
 
 void wmprint_search(interface_t* itf, move_t move) {
-   wmprint(itf, itf->win_info, 0, "%s\n\n", info_move(itf->info, move));
+   wmprint(itf, itf->win_info, 0, "%s\n\n", resp_move(itf->info, move));
    if (itf->quiet) { return; }
 
    wmprint(itf, itf->win_info, 0, "%s\n", info_principal_variation(itf->info));
@@ -190,8 +190,7 @@ int64_t event_loop(interface_t* itf) {
       if (itf->mode) {
          switch (getch()) {
             case 'e':
-               wmprint(itf, itf->win_info, 0, "%s\n",
-                       info_eval(itf->info, red));
+               wmprint(itf, itf->win_info, 0, "%s\n", resp_eval(itf->info));
                refresh_windows(itf, 1, itf->win_info);
                break;
             case 'f':
@@ -260,8 +259,7 @@ int64_t event_loop(interface_t* itf) {
          int64_t retval = -1;
          switch (cmd) {
             case cmd_eval:
-               wmprint(itf, itf->win_info, 0, "%s\n",
-                       info_eval(itf->info, red));
+               wmprint(itf, itf->win_info, 0, "%s\n", resp_eval(itf->info));
                break;
             case cmd_move: ;
                move_t move = move_for_indices(atoi(tokens[1]), atoi(tokens[2]));
