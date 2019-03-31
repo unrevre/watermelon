@@ -29,6 +29,11 @@ void free_debug(debug_t* info) {
    free(info->buffers);
 }
 
+/*!
+ * impl_eval
+ * @ internal implementation for 'info_eval'
+ */
+
 void impl_eval(char* buffer, int64_t side) {
    sprintf(buffer, "eval: [%c] %i", fen_char[side], eval(side));
 }
@@ -38,6 +43,11 @@ char* info_eval(debug_t* info, int64_t side) {
 
    return info->buffer;
 }
+
+/*!
+ * impl_fen
+ * @ internal implementation for 'info_fen'
+ */
 
 void impl_fen(char* buffer) {
    memset(buffer, '0', 91);
@@ -72,6 +82,11 @@ char* info_fen(debug_t* info) {
    return info->buffer;
 }
 
+/*!
+ * impl_game_state
+ * @ internal implementation for 'info_game_state'
+ */
+
 void impl_game_state(char* buffer) {
    int64_t a = 81;
    int64_t g = 0;
@@ -96,6 +111,11 @@ char* info_game_state(debug_t* info) {
    return info->buffer;
 }
 
+/*!
+ * impl_move
+ * @ internal implementation for 'info_move'
+ */
+
 void impl_move(char* buffer, move_t move) {
    sprintf(buffer, "%c: %2i - %2i [%c]",
       fen_char[move._.pfrom], move._.from, move._.to, fen_char[move._.pto]);
@@ -106,6 +126,11 @@ char* info_move(debug_t* info, move_t move) {
 
    return info->buffer;
 }
+
+/*!
+ * impl_transposition_table_entry
+ * @ internal implementation for 'info_transposition_table_entry'
+ */
 
 void impl_transposition_table_entry(char* buffer, ttentry_t entry) {
    impl_move(buffer, entry._.move);
