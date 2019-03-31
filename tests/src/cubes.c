@@ -54,11 +54,11 @@ int main(int argc, char* argv[]) {
 
    char** tokens = slice(buffer);
    if (!strcmp(tokens[0], "eval:")) {
-      int64_t norm = (tokens[1][1] == 'r') * atoi(tokens[2]);
-      switch ((norm > 0) - (0 > norm)) {
-         case -1: printf("r adv\n"); break;
+      int64_t adv = atoi(tokens[2]);
+      switch ((adv > 0) - (0 > adv)) {
+         case 1: printf("r adv\n"); break;
          case 0: printf("even\n"); break;
-         case 1: printf("b adv\n"); break;
+         case -1: printf("b adv\n"); break;
       }
    }
 
