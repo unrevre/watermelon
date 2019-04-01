@@ -7,6 +7,7 @@
 #include "state.h"
 
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 enum options {
@@ -15,6 +16,7 @@ enum options {
    opt_depth,
    opt_once,
    opt_quiet,
+   opt_side,
    nopts
 };
 
@@ -42,8 +44,13 @@ int watermelon(option_t** options, char const* fen) {
    int32_t depth = atoi(options[opt_depth]->opt_str);
    int64_t once = options[opt_once]->active;
    int64_t quiet = options[opt_quiet]->active;
+   char const* side = options[opt_side]->opt_str;
 
-   afk = once ? 1 : afk;
+   int64_t idle[2] = {0, 0};
+   if (afk || once) { idle[0] = 1; idle[1] = 1; }
+   static char const* sides[2] = { "red", "black" };
+   if (!strcmp(side, sides[0])) { idle[0] = 1; }
+   if (!strcmp(side, sides[1])) { idle[1] = 1; }
    quiet = curses ? 0 : quiet;
 
    free_options(options, nopts);
@@ -59,7 +66,7 @@ int watermelon(option_t** options, char const* fen) {
       wmprint_state(itf);
       refresh_all(itf);
 
-      if (!afk && !event_loop(itf)) { break; }
+      if (!idle[state.side] && !event_loop(itf)) { break; }
 
       clock_t cpu_time = clock();
       move = iter_dfs(depth);
@@ -102,6 +109,11 @@ option_t** set_options(int64_t nopts) {
 
    options[opt_quiet]->short_opt = "q";
    options[opt_quiet]->long_opt = "quiet";
+
+   options[opt_side]->short_opt = "s";
+   options[opt_side]->long_opt = "side";
+   options[opt_side]->opt_str = "none";
+   options[opt_side]->flags = 0x1;
 
    return options;
 }
