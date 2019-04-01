@@ -175,7 +175,7 @@ void fetch(interface_t* itf) {
 }
 
 #define cmds(macro)                       \
-   macro(eval),                           \
+   macro(eval), macro(leap),              \
    macro(move), macro(next), macro(quit), \
    macro(redo), macro(undo), macro(zero)
 
@@ -261,15 +261,20 @@ int64_t event_loop(interface_t* itf) {
             case cmd_eval:
                wmprint(itf, itf->win_info, 0, "%s\n", resp_eval(itf->info));
                break;
-            case cmd_move: ;
-               move_t move = move_for_indices(atoi(tokens[1]), atoi(tokens[2]));
-               if (move.bits && is_legal(move)) {
-                  advance_history(move);
-                  advance_game(move);
-                  wmprint_state(itf);
-               } else {
-                  wmprint_info(itf, " - invalid move -\n");
+            case cmd_leap:
+               retval = 1;
+            case cmd_move:
+               if (tokens[0] && tokens[1]) {
+                  move_t move = move_for_indices(atoi(tokens[1]),
+                                                 atoi(tokens[2]));
+                  if (move.bits && is_legal(move)) {
+                     advance_history(move);
+                     advance_game(move);
+                     wmprint_state(itf);
+                     break;
+                  }
                }
+               wmprint_info(itf, " - invalid move -\n");
                break;
             case cmd_next:
                retval = 1;
