@@ -9,7 +9,14 @@
 #include <stdlib.h>
 #include <time.h>
 
-enum options { opt_depth, opt_once, opt_curses, opt_afk, opt_quiet, nopts };
+enum options {
+   opt_afk,
+   opt_curses,
+   opt_depth,
+   opt_once,
+   opt_quiet,
+   nopts
+};
 
 int watermelon(option_t** options, char const* fen);
 
@@ -30,21 +37,21 @@ int main(int argc, char const* argv[]) {
 }
 
 int watermelon(option_t** options, char const* fen) {
+   int64_t afk = options[opt_afk]->active;
+   int64_t curses = options[opt_curses]->active;
    int32_t depth = atoi(options[opt_depth]->opt_str);
    int64_t once = options[opt_once]->active;
-   int64_t mode = options[opt_curses]->active;
-   int64_t afk = options[opt_afk]->active;
    int64_t quiet = options[opt_quiet]->active;
 
    afk = once ? 1 : afk;
-   quiet = mode ? 0 : quiet;
+   quiet = curses ? 0 : quiet;
 
    free_options(options, nopts);
 
    init_state(fen);
 
    interface_t* itf = malloc(sizeof(interface_t));
-   init_interface(itf, mode, quiet);
+   init_interface(itf, curses, quiet);
 
    move_t move;
 
@@ -76,9 +83,14 @@ int watermelon(option_t** options, char const* fen) {
 
 option_t** set_options(int64_t nopts) {
    option_t** options = malloc(nopts * sizeof(option_t*));
-
    for (int64_t i = 0; i < nopts; ++i)
       options[i] = calloc(1, sizeof(option_t));
+
+   options[opt_afk]->short_opt = "a";
+   options[opt_afk]->long_opt = "afk";
+
+   options[opt_curses]->short_opt = "c";
+   options[opt_curses]->long_opt = "curses";
 
    options[opt_depth]->short_opt = "d";
    options[opt_depth]->long_opt = "depth";
@@ -87,12 +99,6 @@ option_t** set_options(int64_t nopts) {
 
    options[opt_once]->short_opt = "1";
    options[opt_once]->long_opt = "once";
-
-   options[opt_curses]->short_opt = "c";
-   options[opt_curses]->long_opt = "curses";
-
-   options[opt_afk]->short_opt = "a";
-   options[opt_afk]->long_opt = "afk";
 
    options[opt_quiet]->short_opt = "q";
    options[opt_quiet]->long_opt = "quiet";
