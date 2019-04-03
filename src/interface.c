@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define flag(itf, flag) (itf->flags & (flag))
+
 /*!
  * wmprintf
  * @ wrapper for printf, discarding extra argument
@@ -55,7 +57,7 @@ void wmprint(interface_t* itf, WINDOW* w, int64_t clear, char const* fmt,
  */
 
 void refresh_windows(interface_t* itf, int64_t count, ...) {
-   if (itf->mode) {
+   if (flag(itf, ITF_CURSES)) {
       wmove(itf->win_state, itf->y, itf->x);
 
       va_list args;
@@ -68,18 +70,17 @@ void refresh_windows(interface_t* itf, int64_t count, ...) {
    }
 }
 
-void init_interface(interface_t* itf, int64_t mode, int64_t quiet) {
-   itf->mode = mode;
-   itf->print = mode ? wmprintw : wmprintf;
+void init_interface(interface_t* itf, uint64_t flags) {
+   itf->flags = flags;
+   itf->print = flag(itf, ITF_CURSES) ? wmprintw : wmprintf;
    itf->x = 1;
    itf->y = 0;
    itf->index = -1;
-   itf->quiet = quiet;
 
    itf->info = malloc(sizeof(debug_t));
    init_debug(itf->info);
 
-   if (itf->mode) {
+   if (flag(itf, ITF_CURSES)) {
       initscr();
       cbreak();
       noecho();
@@ -106,7 +107,7 @@ void close_interface(interface_t* itf) {
    wmprint_info(itf, " - exit -\n");
    refresh_windows(itf, 1, itf->win_info);
 
-   if (itf->mode) {
+   if (flag(itf, ITF_CURSES)) {
       getch();
       endwin();
    }
@@ -120,7 +121,7 @@ void refresh_all(interface_t* itf) {
 }
 
 void wmprint_state(interface_t* itf) {
-   if (itf->quiet) { return; }
+   if (flag(itf, ITF_QUIET)) { return; }
 
    wmprint(itf, stdscr, 1, "%s\n", info_fen(itf->info));
    wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));
@@ -128,13 +129,13 @@ void wmprint_state(interface_t* itf) {
 
 void wmprint_search(interface_t* itf, move_t move) {
    wmprint(itf, itf->win_info, 0, "%s\n\n", resp_move(itf->info, move));
-   if (itf->quiet) { return; }
+   if (flag(itf, ITF_QUIET)) { return; }
 
    wmprint(itf, itf->win_info, 0, "%s\n", info_principal_variation(itf->info));
 }
 
 void wmprint_info(interface_t* itf, char const* fmt, ...) {
-   if (itf->quiet) { return; }
+   if (flag(itf, ITF_QUIET)) { return; }
 
    va_list args;
    va_start(args, fmt);
@@ -187,7 +188,7 @@ static char const* commands[ncmds] = { cmds(string) };
 
 int64_t event_loop(interface_t* itf) {
    for (;;) {
-      if (itf->mode) {
+      if (flag(itf, ITF_CURSES)) {
          switch (getch()) {
             case 'e':
                wmprint(itf, itf->win_info, 0, "%s\n", resp_eval(itf->info));
