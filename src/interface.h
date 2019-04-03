@@ -8,18 +8,20 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#define ITF_CURSES   0x1
+#define ITF_QUIET    0x1 << 1
+
 /*!
  * interface_t
  * @ interface struct
  */
 
 typedef struct {
-   int64_t mode;
+   uint64_t flags;
    int (*print) (WINDOW*, uint64_t, char const*, va_list);
    int32_t x;
    int32_t y;
    int64_t index;
-   int64_t quiet;
 
    debug_t* info;
 
@@ -29,12 +31,14 @@ typedef struct {
    WINDOW* border_info;
 } interface_t;
 
+#define set_interface(flag, condition) ((condition) ? (flag) : 0)
+
 /*!
  * init_interface
  * @ initialise ncurses interface
  */
 
-void init_interface(interface_t* itf, int64_t mode, int64_t quiet);
+void init_interface(interface_t* itf, uint64_t flags);
 
 /*!
  * close_interface
