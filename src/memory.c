@@ -21,9 +21,9 @@ void reset_tables(void) {
 
 void store_hash(int32_t depth, int32_t alpha, int32_t beta, int32_t score,
                 move_t move) {
-   int32_t flags = abs(score) > WSCORE - PLYLIMIT ? FEXACT : 0;
-   flags = flags ? flags : score <= alpha ? FUPPER : 0;
-   flags = flags ? flags : score >= beta ? FLOWER : FEXACT;
+   int32_t flags = abs(score) > WSCORE - PLYLIMIT ? exact : 0;
+   flags = flags ? flags : score <= alpha ? upper : 0;
+   flags = flags ? flags : score >= beta ? lower : exact;
 
    int32_t adjust = score < -LSCORE + PLYLIMIT ? -state.ply : 0;
    score += score > WSCORE - PLYLIMIT ? state.ply : adjust;
@@ -64,8 +64,8 @@ int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
          int32_t adjust = score < -LSCORE + PLYLIMIT ? state.ply : 0;
          score += score > WSCORE - PLYLIMIT ? -state.ply : adjust;
 
-         if (entry._.flags == FEXACT) { return score; }
-         if (entry._.flags == FLOWER) {
+         if (entry._.flags == exact) { return score; }
+         if (entry._.flags == lower) {
             *alpha = score > *alpha ? score : *alpha; }
          else {
             *beta = score < *beta ? score : *beta; }
@@ -82,7 +82,7 @@ ttentry_t probe_hash_for_entry() {
    for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t index = (state.hash & HASHMASK) ^ t;
       if (ttable[index]._.hash == state.hash >> HASHBITS
-            && ttable[index]._.flags == FEXACT) {
+            && ttable[index]._.flags == exact) {
          return ttable[index]; }
    }
 
