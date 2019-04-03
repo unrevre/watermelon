@@ -6,6 +6,18 @@
 
 #include <stdint.h>
 
+#define HASHBITS 24
+#define HASHSIZE (0x1 << HASHBITS)
+#define HASHMASK (HASHSIZE - 0x1)
+
+#define BASKETS 4
+
+#define exact 0x1
+#define lower 0x2
+#define upper 0x3
+
+#define AGEMASK 0x3
+
 extern move_t history[STEPLIMIT];
 extern uint32_t htable[STEPLIMIT];
 extern ttentry_t ttable[HASHSIZE];
