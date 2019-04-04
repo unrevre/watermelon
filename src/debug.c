@@ -162,6 +162,7 @@ char* info_transposition_table_entry(debug_t* info, ttentry_t entry) {
  */
 
 void trace_principal_variation(char** buffer) {
+   **buffer = '\0';
    ttentry_t entry = probe_hash_for_entry();
 
    move_t next = entry._.move;
@@ -169,12 +170,12 @@ void trace_principal_variation(char** buffer) {
       if (is_legal(next)) {
          advance(next);
 
-         **(buffer + 1) = '\0';
          impl_transposition_table_entry(*buffer, entry);
+         strcat(*buffer, "  \n");
          if (is_repetition()) {
-            strcat(*buffer, " %\n");
+            (*buffer)[entry_length - 2] = '%';
+            **++buffer = '\0';
          } else {
-            strcat(*buffer, "  \n");
             trace_principal_variation(++buffer);
          }
 
@@ -187,7 +188,6 @@ void trace_principal_variation(char** buffer) {
 }
 
 char** info_principal_variation(debug_t* info) {
-   info->buffers[0][0] = '\0';
    trace_principal_variation(info->buffers);
 
    return info->buffers;
