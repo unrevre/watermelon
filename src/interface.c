@@ -91,7 +91,6 @@ void init_interface(interface_t* itf, uint64_t flags) {
       itf->border_state = newwin(14, 23, 2, 1);
       itf->win_state = newwin(10, 20, 4, 3);
 
-      keypad(stdscr, TRUE);
       scrollok(itf->win_info, TRUE);
       box(itf->border_state, 0, 0);
       box(itf->border_info, 0, 0);
@@ -206,19 +205,19 @@ int64_t event_loop(interface_t* itf) {
                if (itf->index == -1)
                   return 1;
                break;
-            case 'h': case KEY_LEFT:
+            case 'h':
                itf->x = itf->x > 1 ? itf->x - 2 : 1;
                refresh_windows(itf, 1, itf->win_state);
                break;
-            case 'j': case KEY_DOWN:
+            case 'j':
                itf->y = itf->y < 9 ? itf->y + 1 : 9;
                refresh_windows(itf, 1, itf->win_state);
                break;
-            case 'k': case KEY_UP:
+            case 'k':
                itf->y = itf->y > 0 ? itf->y - 1 : 0;
                refresh_windows(itf, 1, itf->win_state);
                break;
-            case 'l': case KEY_RIGHT:
+            case 'l':
                itf->x = itf->x < 17 ? itf->x + 2 : 17;
                refresh_windows(itf, 1, itf->win_state);
                break;
