@@ -11,14 +11,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define size 40
+#define entry_length 40
 
 void init_debug(debug_t* info) {
-   info->buffer = calloc(PLYLIMIT * size + 1, sizeof(char));
+   info->buffer = calloc(256, sizeof(char));
    info->buffers = calloc(PLYLIMIT, sizeof(char*));
 
    for (int64_t i = 0; i < PLYLIMIT; ++i)
-      info->buffers[i] = calloc(size + 1, sizeof(char));
+      info->buffers[i] = calloc(entry_length + 1, sizeof(char));
 }
 
 void free_debug(debug_t* info) {
@@ -181,7 +181,7 @@ void trace_principal_variation(char** buffer) {
          retract(next);
       } else if (state.ply) {
          --buffer;
-         (*buffer)[size - 2] = '#';
+         (*buffer)[entry_length - 2] = '#';
       }
    }
 }
