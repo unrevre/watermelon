@@ -51,7 +51,6 @@ int watermelon(option_t** options, char const* fen) {
    static char const* sides[2] = { "red", "black" };
    if (!strcmp(side, sides[0])) { idle[0] = 1; }
    if (!strcmp(side, sides[1])) { idle[1] = 1; }
-   quiet = curses ? 0 : quiet;
 
    free_options(options, nopts);
 
