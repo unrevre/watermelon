@@ -85,6 +85,7 @@ void init_interface(interface_t* itf, uint64_t flags) {
       cbreak();
       noecho();
 
+      itf->win_fen = newwin(1, 79, 0, 0);
       itf->border_info = newwin(20, 48, 17, 1);
       itf->win_info = newwin(18, 44, 18, 3);
       itf->border_state = newwin(14, 23, 2, 1);
@@ -96,6 +97,7 @@ void init_interface(interface_t* itf, uint64_t flags) {
       box(itf->border_info, 0, 0);
 
       wnoutrefresh(stdscr);
+      wnoutrefresh(itf->win_fen);
       wnoutrefresh(itf->border_info);
       wnoutrefresh(itf->border_state);
 
@@ -117,13 +119,13 @@ void close_interface(interface_t* itf) {
 }
 
 void refresh_all(interface_t* itf) {
-   refresh_windows(itf, 3, stdscr, itf->win_info, itf->win_state);
+   refresh_windows(itf, 3, itf->win_fen, itf->win_info, itf->win_state);
 }
 
 void wmprint_state(interface_t* itf) {
    if (flag(itf, ITF_QUIET) && !flag(itf, ITF_CURSES)) { return; }
 
-   wmprint(itf, stdscr, 1, "%s\n", info_fen(itf->info));
+   wmprint(itf, itf->win_fen, 1, "%s\n", info_fen(itf->info));
    wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));
 }
 
@@ -170,7 +172,7 @@ void fetch(interface_t* itf) {
          advance_history(move);
          advance_game(move);
          wmprint_state(itf);
-         refresh_windows(itf, 2, stdscr, itf->win_state);
+         refresh_windows(itf, 2, itf->win_fen, itf->win_state);
          itf->index = -1;
       }
    }
@@ -228,19 +230,19 @@ int64_t event_loop(interface_t* itf) {
             case 'r':
                redo_history();
                wmprint_state(itf);
-               refresh_windows(itf, 2, stdscr, itf->win_state);
+               refresh_windows(itf, 2, itf->win_fen, itf->win_state);
                itf->index = -1;
                break;
             case 'u':
                undo_history();
                wmprint_state(itf);
-               refresh_windows(itf, 2, stdscr, itf->win_state);
+               refresh_windows(itf, 2, itf->win_fen, itf->win_state);
                itf->index = -1;
                break;
             case '~':
                reset_state(0);
                wmprint_state(itf);
-               refresh_windows(itf, 2, stdscr, itf->win_state);
+               refresh_windows(itf, 2, itf->win_fen, itf->win_state);
                itf->index = -1;
                break;
          }
