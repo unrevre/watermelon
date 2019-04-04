@@ -132,8 +132,11 @@ void wmprint_search(interface_t* itf, move_t move) {
    wmprint(itf, itf->win_info, 0, "%s\n", resp_move(itf->info, move));
    if (flag(itf, ITF_QUIET)) { return; }
 
-   wmprint(itf, itf->win_info, 0, "\n%s\n",
-           info_principal_variation(itf->info));
+   wmprint(itf, itf->win_info, 0, "\n");
+   char** pv = info_principal_variation(itf->info);
+   for (int64_t i = 0; i < PLYLIMIT && pv[i][0]; ++i)
+      wmprint(itf, itf->win_info, 0, "%s", pv[i]);
+   wmprint(itf, itf->win_info, 0, "\n");
 }
 
 void wmprint_info(interface_t* itf, char const* fmt, ...) {
