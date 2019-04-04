@@ -121,17 +121,18 @@ void refresh_all(interface_t* itf) {
 }
 
 void wmprint_state(interface_t* itf) {
-   if (flag(itf, ITF_QUIET)) { return; }
+   if (flag(itf, ITF_QUIET) && !flag(itf, ITF_CURSES)) { return; }
 
    wmprint(itf, stdscr, 1, "%s\n", info_fen(itf->info));
    wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));
 }
 
 void wmprint_search(interface_t* itf, move_t move) {
-   wmprint(itf, itf->win_info, 0, "%s\n\n", resp_move(itf->info, move));
+   wmprint(itf, itf->win_info, 0, "%s\n", resp_move(itf->info, move));
    if (flag(itf, ITF_QUIET)) { return; }
 
-   wmprint(itf, itf->win_info, 0, "%s\n", info_principal_variation(itf->info));
+   wmprint(itf, itf->win_info, 0, "\n%s\n",
+           info_principal_variation(itf->info));
 }
 
 void wmprint_info(interface_t* itf, char const* fmt, ...) {
