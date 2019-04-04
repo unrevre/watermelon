@@ -70,10 +70,10 @@ char* info_transposition_table_entry(debug_t* info, ttentry_t entry);
 
 /*!
  * info_principal_variation
- * @ trace and return string of principal variation
+ * @ trace and return array of strings of principal variation
  */
 
-char* info_principal_variation(debug_t* info);
+char** info_principal_variation(debug_t* info);
 
 #ifdef DEBUG
 extern uint64_t nodes;

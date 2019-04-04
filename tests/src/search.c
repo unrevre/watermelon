@@ -1,4 +1,5 @@
 #include "../../src/debug.h"
+#include "../../src/magics.h"
 #include "../../src/search.h"
 #include "../../src/state.h"
 
@@ -22,7 +23,11 @@ int main(int argc, char* argv[]) {
    int32_t depth = atoi(argv[1]);
    move_t move = iter_dfs(depth);
    printf("%s at depth %i\n", info_move(info, move), depth);
-   printf("%s\n", info_principal_variation(info));
+   printf("\n");
+   char** pv = info_principal_variation(info);
+   for (int64_t i = 0; i < PLYLIMIT && pv[i][0]; ++i)
+      printf("%s", pv[i]);
+   printf("\n");
 
    free_debug(info);
 

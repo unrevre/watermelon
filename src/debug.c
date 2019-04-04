@@ -156,6 +156,11 @@ char* info_transposition_table_entry(debug_t* info, ttentry_t entry) {
    return info->buffer;
 }
 
+/*!
+ * trace_principal_variation
+ * @ recursively trace principal variation line
+ */
+
 void trace_principal_variation(char** buffer) {
    ttentry_t entry = probe_hash_for_entry();
 
@@ -181,15 +186,11 @@ void trace_principal_variation(char** buffer) {
    }
 }
 
-char* info_principal_variation(debug_t* info) {
+char** info_principal_variation(debug_t* info) {
    info->buffers[0][0] = '\0';
    trace_principal_variation(info->buffers);
 
-   info->buffer[0] = '\0';
-   for (int64_t i = 0; i < PLYLIMIT && info->buffers[i][0]; ++i)
-      strcat(info->buffer, info->buffers[i]);
-
-   return info->buffer;
+   return info->buffers;
 }
 
 #ifdef DEBUG
