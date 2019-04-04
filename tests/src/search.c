@@ -13,20 +13,18 @@ int main(int argc, char* argv[]) {
       return 1;
    }
 
+   debug_t* info = malloc(sizeof(debug_t));
+   init_debug(info);
+
    init_state(argv[2]);
-
-   debug_t info;
-   init_debug(&info);
-
-   printf("%s\n", info_fen(&info));
+   printf("%s\n", info_fen(info));
 
    int32_t depth = atoi(argv[1]);
-
    move_t move = iter_dfs(depth);
-   printf("%s at depth %i\n", info_move(&info, move), depth);
-   printf("%s\n", info_principal_variation(&info));
+   printf("%s at depth %i\n", info_move(info, move), depth);
+   printf("%s\n", info_principal_variation(info));
 
-   free_debug(&info);
+   free_debug(info);
 
    return 0;
 }
