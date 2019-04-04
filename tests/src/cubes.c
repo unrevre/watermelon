@@ -11,6 +11,7 @@
 pid_t childpid[2] = {0};
 int fd[2][2] = {{0, 1}};
 
+void vet(char* token, char const* tag);
 void taste(int64_t side, char* buffer);
 void serve(char* args[], int64_t side);
 
@@ -35,8 +36,7 @@ int main(int argc, char* argv[]) {
       taste(side, buffer);
 
       char** tokens = slice(buffer);
-      if (!tokens[0] || strcmp(tokens[0], "move")) {
-         printf("fatal: invalid read\n"); exit(1); }
+      vet(tokens[0], "move");
 
       sprintf(buffer, "move %s %s\n", tokens[1] , tokens[2]);
       free(tokens);
@@ -48,8 +48,7 @@ int main(int argc, char* argv[]) {
    taste(red, buffer);
 
    char** tokens = slice(buffer);
-   if (!tokens[0] || strcmp(tokens[0], "eval")) {
-      printf("fatal: invalid read\n"); exit(1); }
+   vet(tokens[0], "eval");
 
    int64_t adv = atoi(tokens[1]);
    switch ((adv > 0) - (0 > adv)) {
@@ -61,6 +60,11 @@ int main(int argc, char* argv[]) {
    free(tokens);
 
    return 0;
+}
+
+void vet(char* token, char const* tag) {
+   if (!token || strcmp(token, tag)) {
+      printf("fatal: invalid read\n"); exit(1); }
 }
 
 void taste(int64_t side, char* buffer) {
