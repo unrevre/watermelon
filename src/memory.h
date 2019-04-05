@@ -55,7 +55,7 @@ int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
  * entry
  */
 
-ttentry_t probe_hash_for_entry();
+ttentry_t probe_hash_for_entry(void);
 
 /*!
  * advance_history
@@ -69,13 +69,13 @@ void advance_history(move_t move);
  * @ undo last move
  */
 
-void undo_history();
+void undo_history(void);
 
 /*!
  * redo_history
  * @ redo last undone move
  */
 
-void redo_history();
+void redo_history(void);
 
 #endif /* MEMORY_H */

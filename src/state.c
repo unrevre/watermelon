@@ -34,7 +34,7 @@ void init_hashes(void) {
    MVHASH = rand();
 }
 
-void reset_hashes() {
+void reset_hashes(void) {
    for (int64_t i = 0; i != 90; ++i)
       if (board[i] != empty)
          state.hash ^= PSHASH[board[i]][i];
@@ -43,12 +43,12 @@ void reset_hashes() {
    htable[0] = state.hash;
 }
 
-void init_search() {
+void init_search(void) {
    search.clock = malloc(sizeof(timer_t));
    search.clock->limit = 144.;
 }
 
-void reset_search() {
+void reset_search(void) {
    search.nodes = 0;
    search.qnodes = 0;
    search.tthits = 0;

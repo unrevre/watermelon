@@ -31,7 +31,7 @@ uint32_t is_legal(move_t move);
  * @ test if current position is in state of repetition
  */
 
-uint32_t is_repetition();
+uint32_t is_repetition(void);
 
 /*!
  * is_index_movable

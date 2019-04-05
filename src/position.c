@@ -120,7 +120,7 @@ uint32_t is_legal(move_t move) {
    return legal;
 }
 
-uint32_t is_repetition() {
+uint32_t is_repetition(void) {
    return state.step > 4 ? *((uint64_t*)(htable + state.step - 1))
       == *((uint64_t*)(htable + state.step - 5)) : 0;
 }
