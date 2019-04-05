@@ -1,5 +1,5 @@
 #include "../../src/debug.h"
-#include "../../src/magics.h"
+#include "../../src/memory.h"
 #include "../../src/search.h"
 #include "../../src/state.h"
 

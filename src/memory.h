@@ -6,6 +6,9 @@
 
 #include <stdint.h>
 
+#define STEPLIMIT 0x0100
+#define PLYLIMIT  32
+
 #define HASHBITS 24
 #define HASHSIZE (0x1 << HASHBITS)
 #define HASHMASK (HASHSIZE - 0x1)
