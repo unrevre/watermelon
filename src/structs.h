@@ -112,4 +112,16 @@ typedef struct {
    time_t ref;
 } timer_t;
 
+/*!
+ * search_t
+ * @ search status information
+ */
+
+typedef struct {
+   timer_t* clock;
+   uint64_t nodes;
+   uint64_t qnodes;
+   uint64_t tthits;
+} search_t;
+
 #endif /* STRUCTS_H */

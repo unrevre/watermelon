@@ -198,11 +198,6 @@ char** info_principal_variation(debug_t* info) {
 #include <inttypes.h>
 #include <stdarg.h>
 
-uint64_t nodes;
-uint64_t qnodes;
-
-uint64_t tthits;
-
 void debug_variable_reset(int64_t count, ...) {
    va_list args;
    va_start(args, count);

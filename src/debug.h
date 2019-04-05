@@ -76,11 +76,6 @@ char* info_transposition_table_entry(debug_t* info, ttentry_t entry);
 char** info_principal_variation(debug_t* info);
 
 #ifdef DEBUG
-extern uint64_t nodes;
-extern uint64_t qnodes;
-
-extern uint64_t tthits;
-
 /*!
  * debug_variable_reset
  * @ reset debug variable(s)

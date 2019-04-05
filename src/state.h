@@ -6,12 +6,12 @@
 #include <stdint.h>
 
 extern state_t game;
-
 extern uint32_t board[128];
 
 extern uint32_t PSHASH[15][128];
 extern uint32_t MVHASH;
 
+extern search_t search;
 extern transient_t state;
 extern int64_t age;
 
@@ -28,6 +28,20 @@ void init_hashes(void);
  */
 
 void reset_hashes(void);
+
+/*!
+ * init_search
+ * @ initialise search parameters
+ */
+
+void init_search(void);
+
+/*!
+ * reset_search
+ * @ reset search parameters
+ */
+
+void reset_search(void);
 
 /*!
  * init_state

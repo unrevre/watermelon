@@ -12,7 +12,7 @@
 #include <stdlib.h>
 
 move_t iter_dfs(int32_t depth) {
-   debug_variable_reset(3, &nodes, &qnodes, &tthits);
+   debug_variable_reset(3, &search.nodes, &search.qnodes, &search.tthits);
 
    for (int32_t d = 1; d != depth; ++d) {
       tree_root_entry();
@@ -29,7 +29,7 @@ move_t iter_dfs(int32_t depth) {
 
 int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
                 uint32_t principal) {
-   debug_variable_increment(1, &nodes);
+   debug_variable_increment(1, &search.nodes);
 
    alpha = alpha < -LSCORE + state.ply ?  -LSCORE + state.ply : alpha;
    beta =  beta > WSCORE - state.ply ? WSCORE - state.ply : beta;
@@ -114,7 +114,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
 }
 
 int32_t quiescence(int32_t alpha, int32_t beta) {
-   debug_variable_increment(1, &qnodes);
+   debug_variable_increment(1, &search.qnodes);
 
    int32_t stand = eval(state.side);
    if (stand >= beta) { return stand; }
