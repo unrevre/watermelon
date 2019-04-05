@@ -1,6 +1,7 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+#include <time.h>
 #include <stdint.h>
 
 /*!
@@ -100,5 +101,15 @@ typedef struct {
    char* buffer;
    char** buffers;
 } debug_t;
+
+/*!
+ * timer_t
+ * @ struct for time management
+ */
+
+typedef struct {
+   double limit;
+   time_t ref;
+} timer_t;
 
 #endif /* STRUCTS_H */
