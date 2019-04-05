@@ -12,7 +12,7 @@ uint32_t htable[STEPLIMIT];
 ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
 killer_t ktable[PLYLIMIT] __attribute__((aligned(64)));
 
-void reset_tables() {
+void reset_tables(void) {
    memset(history, 0, STEPLIMIT * sizeof(move_t));
    memset(htable, 0, STEPLIMIT * sizeof(uint32_t));
    memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
@@ -77,7 +77,7 @@ int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
    return -INFSCORE;
 }
 
-ttentry_t probe_hash_for_entry() {
+ttentry_t probe_hash_for_entry(void) {
    for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t index = (state.hash & HASHMASK) ^ t;
       if (ttable[index]._.hash == state.hash >> HASHBITS
@@ -98,11 +98,11 @@ void advance_history(move_t move) {
    history[state.step] = move;
 }
 
-void undo_history() {
+void undo_history(void) {
    if (state.step) { retract_game(history[state.step - 1]); }
 }
 
-void redo_history() {
+void redo_history(void) {
    if (history[state.step].bits) {
       advance_history(history[state.step]);
       advance_game(history[state.step]);

@@ -240,11 +240,11 @@ void debug_printf(char const* fmt, ...) {
 }
 
 #ifdef TREE
-void tree_root_entry() {
+void tree_root_entry(void) {
    printf("╻\n");
 }
 
-void tree_root_exit() {
+void tree_root_exit(void) {
    printf("╹\n");
 }
 
