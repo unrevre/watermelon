@@ -8,10 +8,12 @@
 #include "memory.h"
 #include "position.h"
 #include "state.h"
+#include "timer.h"
 
 #include <stdlib.h>
 
 move_t iter_dfs(int32_t depth) {
+   tick(search.clock);
    debug_variable_reset(3, &search.nodes, &search.qnodes, &search.tthits);
 
    for (int32_t d = 1; d != depth; ++d) {
@@ -22,6 +24,7 @@ move_t iter_dfs(int32_t depth) {
       tree_root_exit();
 
       if (abs(score) >= INFDELAY - d) { break; }
+      if (drop(search.clock)) { break; }
    }
 
    return probe_hash_for_entry()._.move;
