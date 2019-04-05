@@ -5,18 +5,19 @@
 #include "magics.h"
 #include "masks.h"
 #include "memory.h"
+#include "search.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 state_t game __attribute__((aligned(64)));
-
 uint32_t board[128] __attribute__((aligned(64)));
 
 uint32_t PSHASH[15][128] __attribute__((aligned(64)));
 uint32_t STHASH;
 uint32_t MVHASH;
 
+search_t search;
 transient_t state;
 int64_t age;
 
@@ -42,9 +43,21 @@ void reset_hashes() {
    htable[0] = state.hash;
 }
 
+void init_search() {
+   search.clock = malloc(sizeof(timer_t));
+   search.clock->limit = 144.;
+}
+
+void reset_search() {
+   search.nodes = 0;
+   search.qnodes = 0;
+   search.tthits = 0;
+}
+
 void init_state(const char* fen) {
    init_hashes();
    init_masks();
+   init_search();
 
    reset_state(fen);
 }
@@ -54,9 +67,10 @@ void reset_state(const char* fen) {
    state = (transient_t){ 0, 0, 0, 0 };
    age = 0;
 
-   reset_tables();
    reset_fen(fen);
    reset_hashes();
+   reset_search();
+   reset_tables();
 }
 
 void advance(move_t move) {

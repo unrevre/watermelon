@@ -58,7 +58,7 @@ int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
          *move = entry._.move;
 
          if (entry._.depth < depth) { break; }
-         debug_variable_increment(1, &tthits);
+         debug_variable_increment(1, &search.tthits);
 
          int32_t score = entry._.score;
          int32_t adjust = score < -LSCORE + PLYLIMIT ? state.ply : 0;
