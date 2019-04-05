@@ -1,7 +1,7 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-#include "debug.h"
+#include "structs.h"
 
 #include <ncurses.h>
 

@@ -5,7 +5,6 @@
 #include "magics.h"
 #include "masks.h"
 #include "memory.h"
-#include "structs.h"
 
 #include <stdlib.h>
 #include <string.h>
