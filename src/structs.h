@@ -80,7 +80,7 @@ typedef struct {
    uint32_t hash;
 } transient_t;
 
-/*
+/*!
  * generator_t
  * @ move ordering controller
  */
@@ -92,7 +92,7 @@ typedef struct {
    move_t move;
 } generator_t;
 
-/*
+/*!
  * debug_t
  * @ string buffers for informative/debugging purposes
  */
