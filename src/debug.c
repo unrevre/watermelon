@@ -34,12 +34,12 @@ void free_debug(debug_t* info) {
  * @ internal implementation for 'info_eval'
  */
 
-void impl_eval(char* buffer, int64_t side) {
-   sprintf(buffer, "eval: [%c] %i", fen_char[side], eval(side));
+void impl_eval(char* buffer) {
+   sprintf(buffer, "eval: [r] %i", eval(red));
 }
 
-char* info_eval(debug_t* info, int64_t side) {
-   impl_eval(info->buffer, side);
+char* info_eval(debug_t* info) {
+   impl_eval(info->buffer);
 
    return info->buffer;
 }

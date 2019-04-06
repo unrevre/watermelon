@@ -24,7 +24,7 @@ void free_debug(debug_t* info);
  * @ return internal evaluation of current game state
  */
 
-char* info_eval(debug_t* info, int64_t side);
+char* info_eval(debug_t* info);
 
 /*!
  * resp_eval
