@@ -44,6 +44,13 @@ void init_search(void);
 void reset_search(void);
 
 /*!
+ * set_timer
+ * @ set move time limit
+ */
+
+void set_timer(double time);
+
+/*!
  * init_state
  * @ initialise global state variables
  */
