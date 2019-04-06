@@ -45,13 +45,17 @@ void reset_hashes(void) {
 
 void init_search(void) {
    search.clock = malloc(sizeof(timer_t));
-   search.clock->limit = 144.;
+   search.clock->limit = -1.;
 }
 
 void reset_search(void) {
    search.nodes = 0;
    search.qnodes = 0;
    search.tthits = 0;
+}
+
+void set_timer(double time) {
+   search.clock->limit = time;
 }
 
 void init_state(const char* fen) {

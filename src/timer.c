@@ -5,5 +5,6 @@ void tick(timer_t* clock) {
 }
 
 int64_t drop(timer_t* clock) {
-    return difftime(time(NULL), clock->ref) > clock->limit;
+    return (clock->limit < 0) ? 0 :
+        difftime(time(NULL), clock->ref) > clock->limit;
 }

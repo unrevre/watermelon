@@ -17,6 +17,7 @@ enum options {
    opt_once,
    opt_quiet,
    opt_side,
+   opt_time,
    nopts
 };
 
@@ -45,6 +46,7 @@ int watermelon(option_t** options, char const* fen) {
    int64_t once = options[opt_once]->active;
    int64_t quiet = options[opt_quiet]->active;
    char const* side = options[opt_side]->opt_str;
+   double time = atof(options[opt_time]->opt_str);
 
    int64_t idle[2] = {0, 0};
    if (afk || once) { idle[0] = 1; idle[1] = 1; }
@@ -55,6 +57,7 @@ int watermelon(option_t** options, char const* fen) {
    free_options(options, nopts);
 
    init_state(fen);
+   set_timer(time);
 
    interface_t* itf = malloc(sizeof(interface_t));
    init_interface(itf, set_interface(ITF_CURSES, curses)
@@ -114,6 +117,11 @@ option_t** set_options(int64_t nopts) {
    options[opt_side]->long_opt = "side";
    options[opt_side]->opt_str = "none";
    options[opt_side]->flags = 0x1;
+
+   options[opt_time]->short_opt = "t";
+   options[opt_time]->long_opt = "time";
+   options[opt_time]->opt_str = "144";
+   options[opt_time]->flags = 0x1;
 
    return options;
 }
