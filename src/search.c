@@ -13,8 +13,8 @@
 #include <stdlib.h>
 
 move_t iter_dfs(int32_t depth) {
-   tick(search.clock);
-   debug_variable_reset(3, &search.nodes, &search.qnodes, &search.tthits);
+   reset_search();
+   start(search.clock);
 
    for (int32_t d = 1; d != depth; ++d) {
       tree_root_entry();
@@ -24,7 +24,7 @@ move_t iter_dfs(int32_t depth) {
       tree_root_exit();
 
       if (abs(score) >= INFDELAY - d) { break; }
-      if (drop(search.clock)) { break; }
+      if (tick(search.clock)) { break; }
    }
 
    return probe_hash_for_entry()._.move;
@@ -111,7 +111,9 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
    }
 
    if (engine.state > 1) { free(engine.moves.data); }
-   store_hash(depth, alpha_parent, beta, best, store);
+
+   if (!search.clock->status) {
+      store_hash(depth, alpha_parent, beta, best, store); }
 
    return best;
 }

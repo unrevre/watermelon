@@ -1,10 +1,16 @@
 #include "timer.h"
 
-void tick(timer_t* clock) {
+void start(timer_t* clock) {
     clock->ref = time(NULL);
 }
 
-int64_t drop(timer_t* clock) {
-    return (clock->limit < 0) ? 0 :
-        difftime(time(NULL), clock->ref) > clock->limit;
+int64_t tick(timer_t* clock) {
+    if (clock->limit < 0) { return 0; }
+
+    clock->status = difftime(time(NULL), clock->ref) > clock->limit;
+    return clock->status;
+}
+
+void drop(timer_t* clock) {
+    clock->status = 1;
 }

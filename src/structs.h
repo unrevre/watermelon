@@ -108,6 +108,7 @@ typedef struct {
  */
 
 typedef struct {
+   uint64_t status;
    double limit;
    time_t ref;
 } timer_t;
