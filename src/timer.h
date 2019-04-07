@@ -6,17 +6,24 @@
 #include <stdint.h>
 
 /*!
- * tick
+ * start
  * @ start timer
  */
 
-void tick(timer_t* clock);
+void start(timer_t* clock);
 
 /*!
- * drop
+ * tick
  * @ check elapsed (real) time against limit
  */
 
-int64_t drop(timer_t* clock);
+int64_t tick(timer_t* clock);
+
+/*!
+ * drop
+ * @ force stop timer
+ */
+
+void drop(timer_t* clock);
 
 #endif /* TIMER_H */

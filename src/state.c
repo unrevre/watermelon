@@ -45,10 +45,13 @@ void reset_hashes(void) {
 
 void init_search(void) {
    search.clock = malloc(sizeof(timer_t));
+   search.clock->status = 1;
    search.clock->limit = -1.;
 }
 
 void reset_search(void) {
+   search.clock->status = 0;
+
    search.nodes = 0;
    search.qnodes = 0;
    search.tthits = 0;
