@@ -5,6 +5,8 @@
 
 #include <stdint.h>
 
+#define TIME_RES  0xFFF
+
 /*!
  * start
  * @ start timer

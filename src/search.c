@@ -32,7 +32,10 @@ move_t iter_dfs(int32_t depth) {
 
 int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
                 uint32_t principal) {
-   debug_variable_increment(1, &search.nodes);
+   ++search.nodes;
+
+   if (!(search.nodes & TIME_RES)) { tick(search.clock); }
+   if (search.clock->status) { return 0; }
 
    alpha = alpha < -LSCORE + state.ply ?  -LSCORE + state.ply : alpha;
    beta =  beta > WSCORE - state.ply ? WSCORE - state.ply : beta;
