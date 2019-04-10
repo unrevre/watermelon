@@ -7,6 +7,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define BASKETS   4
+
+#define AGEMASK   0x3
+
+#define exact     0x1
+#define lower     0x2
+#define upper     0x3
+
 move_t history[STEPLIMIT];
 uint32_t htable[STEPLIMIT];
 ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
