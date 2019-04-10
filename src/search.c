@@ -12,6 +12,9 @@
 
 #include <stdlib.h>
 
+#define FDEPTH    3
+#define FMARGIN   16
+
 move_t iter_dfs(int32_t depth) {
    reset_search();
    start(search.clock);
@@ -51,6 +54,11 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
          != -INFSCORE) { return best; }
 
    if (!depth) { return quiescence(alpha, beta); }
+
+   int32_t stand = eval(state.side);
+   if (!principal && depth < FDEPTH && stand - FMARGIN >= beta
+         && stand < WSCORE) {
+      return stand; }
 
    if (state.ply > 1 && depth > 4 && !principal && !in_check(state.side)) {
       move_t null = { ._ = { 0x7f, 0x7f, empty, empty } };
