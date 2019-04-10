@@ -49,9 +49,10 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
 
    if (is_repetition()) { return WSCORE - state.ply; }
 
-   int32_t best = -INFSCORE + state.ply;
-   if (!principal && (best = probe_hash(depth, &alpha, &beta, &store))
-         != -INFSCORE) { return best; }
+   int32_t hash_score;
+   if (!principal && (hash_score = probe_hash(depth, &alpha, &beta, &store))
+         != -INFSCORE) {
+      return hash_score; }
 
    if (!depth) { return quiescence(alpha, beta); }
 
@@ -73,6 +74,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
       if (score >= beta) { return score; }
    }
 
+   int32_t best = -INFSCORE + state.ply;
    generator_t engine = { 0, 0, { 0, 0, 0 }, store };
 
    move_t move;
