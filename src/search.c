@@ -44,10 +44,10 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
    beta =  beta > WSCORE - state.ply ? WSCORE - state.ply : beta;
    if (alpha >= beta) { return alpha; }
 
+   if (is_repetition()) { return WSCORE - state.ply; }
+
    int32_t alpha_parent = alpha;
    move_t store = (move_t){0};
-
-   if (is_repetition()) { return WSCORE - state.ply; }
 
    int32_t hash_score;
    if (!principal && (hash_score = probe_hash(depth, &alpha, &beta, &store))
@@ -61,7 +61,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
          && stand < WSCORE) {
       return stand; }
 
-   if (state.ply > 1 && depth > 4 && !principal && !in_check(state.side)) {
+   if (!principal && state.ply > 1 && depth > 4 && !in_check(state.side)) {
       move_t null = { ._ = { 0x7f, 0x7f, empty, empty } };
 
       advance(null);
