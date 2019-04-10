@@ -70,9 +70,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
       tree_node_exit(alpha, beta, score);
       retract(null);
 
-      best = score > best ? score : best;
-      alpha = score > alpha ? score : alpha;
-      if (alpha >= beta) { return best; }
+      if (score >= beta) { return score; }
    }
 
    generator_t engine = { 0, 0, { 0, 0, 0 }, store };
