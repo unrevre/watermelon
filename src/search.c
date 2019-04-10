@@ -44,7 +44,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
    beta =  beta > WSCORE - state.ply ? WSCORE - state.ply : beta;
    if (alpha >= beta) { return alpha; }
 
-   if (is_repetition()) { return WSCORE - state.ply; }
+   if (is_repetition()) { return RSCORE; }
 
    int32_t alpha_parent = alpha;
    move_t store = (move_t){0};

@@ -13,6 +13,7 @@
 
 #define WSCORE (INFSCORE - 1)
 #define LSCORE (INFSCORE)
+#define RSCORE (WSCORE - PLYLIMIT)
 
 /* state */
 
