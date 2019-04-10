@@ -6,20 +6,11 @@
 
 #include <stdint.h>
 
-#define STEPLIMIT 0x0100
-#define PLYLIMIT  32
+#define STEPLIMIT 0x100
 
 #define HASHBITS 24
 #define HASHSIZE (0x1 << HASHBITS)
-#define HASHMASK (HASHSIZE - 0x1)
-
-#define BASKETS 4
-
-#define exact 0x1
-#define lower 0x2
-#define upper 0x3
-
-#define AGEMASK 0x3
+#define HASHMASK  (HASHSIZE - 0x1)
 
 extern move_t history[STEPLIMIT];
 extern uint32_t htable[STEPLIMIT];
