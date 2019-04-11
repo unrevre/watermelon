@@ -141,6 +141,13 @@ void tree_root_exit(void);
 void tree_node_entry(int32_t alpha, int32_t beta);
 
 /*!
+ * tree_node_message
+ * @ print message at node in tree format
+ */
+
+void tree_node_message(char const* fmt, ...);
+
+/*!
  * tree_node_exit
  * @ print node status (on exit) in tree format
  */
@@ -150,6 +157,7 @@ void tree_node_exit(int32_t alpha, int32_t beta, int32_t score);
 #define tree_root_entry(...)
 #define tree_root_exit(...)
 #define tree_node_entry(...)
+#define tree_node_message(...)
 #define tree_node_exit(...)
 #endif /* TREE */
 
