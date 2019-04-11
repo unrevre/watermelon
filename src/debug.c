@@ -255,6 +255,11 @@ void tree_node_entry(int32_t alpha, int32_t beta) {
    printf("├╸      [%5i, %5i]\n", alpha, beta);
 }
 
+void tree_node_message(char const* fmt, ...) {
+   for (int32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
+   printf("├╸"); va_list args; va_start(args, fmt); vprintf(fmt, args);
+}
+
 void tree_node_exit(int32_t alpha, int32_t beta, int32_t score) {
    for (int32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
    char buffer[102]; impl_fen(buffer); printf("├╸%s\n", buffer);
