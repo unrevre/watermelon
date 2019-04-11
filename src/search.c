@@ -58,7 +58,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
 
    int32_t stand = eval(state.side);
    if (!principal && depth < FDEPTH && stand - FMARGIN >= beta
-         && stand < WSCORE) {
+         && stand < WSCORE && !in_check(state.side)) {
       return stand; }
 
    if (!principal && state.ply > 1 && depth > 4 && !in_check(state.side)) {
