@@ -40,8 +40,8 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
    if (!(search.nodes & TIME_RES)) { tick(search.clock); }
    if (search.clock->status) { return 0; }
 
-   alpha = alpha < -LSCORE + state.ply ?  -LSCORE + state.ply : alpha;
-   beta =  beta > WSCORE - state.ply ? WSCORE - state.ply : beta;
+   alpha = alpha < -LSCORE + state.ply ? -LSCORE + state.ply : alpha;
+   beta = beta > WSCORE - state.ply ? WSCORE - state.ply : beta;
    if (alpha >= beta) { return alpha; }
 
    if (is_repetition()) { return RSCORE; }
@@ -88,8 +88,8 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
          score = -negamax(depth - 1, -beta, -alpha, principal);
       } else {
          score = -negamax(depth - 1, -alpha - 1, -alpha, 0);
-         if (score > alpha && score < beta)
-            score = -negamax(depth - 1, -beta, -alpha, 1);
+         if (score > alpha && score < beta) {
+            score = -negamax(depth - 1, -beta, -alpha, 1); }
       }
       tree_node_exit(alpha, beta, score);
       retract(move);
