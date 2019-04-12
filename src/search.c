@@ -21,12 +21,12 @@ move_t iter_dfs(int32_t depth) {
 
    for (int32_t d = 1; d != depth; ++d) {
       tree_root_entry();
-      tree_node_entry(-INFINITY, INFINITY);
-      int32_t score = negamax(d, -INFINITY, INFINITY, 1);
-      tree_node_exit(-INFINITY, INFINITY, score);
+      tree_node_entry(-INFINITY, INFINITY - 1);
+      int32_t score = negamax(d, -INFINITY, INFINITY - 1, 1);
+      tree_node_exit(-INFINITY, INFINITY - 1, score);
       tree_root_exit();
 
-      if (abs(score) >= WSCORE - d) { break; }
+      if (abs(score) > INFINITY - d) { break; }
       if (tick(search.clock)) { break; }
    }
 
@@ -40,8 +40,8 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
    if (!(search.nodes & TIME_RES)) { tick(search.clock); }
    if (search.clock->status) { return 0; }
 
-   alpha = alpha < -LSCORE + state.ply ? -LSCORE + state.ply : alpha;
-   beta = beta > WSCORE - state.ply ? WSCORE - state.ply : beta;
+   alpha = alpha < -INFINITY + state.ply ? -INFINITY + state.ply : alpha;
+   beta = beta > INFINITY - 1 - state.ply ? INFINITY - 1 - state.ply : beta;
    if (alpha >= beta) { return alpha; }
 
    if (is_repetition()) { return RSCORE; }
@@ -50,7 +50,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
    move_t store = (move_t){0};
 
    int32_t hash_score = probe_hash(depth, &alpha, &beta, &store);
-   if (!principal && hash_score != -INFSCORE) {
+   if (!principal && hash_score != -INFINITY) {
       return hash_score; }
 
    if (!depth && in_check(state.side)) { ++depth; }
@@ -58,7 +58,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
 
    int32_t stand = eval(state.side);
    if (!principal && depth < FDEPTH && stand - FMARGIN >= beta
-         && stand < WSCORE && !in_check(state.side)) {
+         && stand < RSCORE && !in_check(state.side)) {
       return stand; }
 
    if (!principal && state.ply > 1 && depth > 4 && !in_check(state.side)) {
@@ -74,9 +74,10 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
       if (score >= beta) { return score; }
    }
 
-   int32_t best = -INFSCORE;
+   int32_t base = -INFINITY + state.ply;
    generator_t engine = { 0, 0, { 0, 0, 0 }, store };
 
+   int32_t best = base;
    move_t move;
 
    while ((move = next(&engine)).bits != 0) {
@@ -84,7 +85,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
       __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
       tree_node_entry(alpha, beta);
       int32_t score;
-      if (best == -INFSCORE) {
+      if (best == base) {
          score = -negamax(depth - 1, -beta, -alpha, principal);
       } else {
          score = -negamax(depth - 1, -alpha - 1, -alpha, 0);
