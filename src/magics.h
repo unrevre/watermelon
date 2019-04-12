@@ -3,12 +3,11 @@
 
 /* search */
 
-#define PLYSTART 0
-#define PLYDELAY 2
+#define PLYSTART 1
 #define PLYLIMIT 32
 
 #define INFINITY 2048
-#define INFSCORE (INFINITY + PLYSTART)
+#define INFSCORE (INFINITY - PLYSTART)
 
 #define WSCORE (INFSCORE - 1)
 #define LSCORE (INFSCORE)
