@@ -53,6 +53,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
    if (!principal && hash_score != -INFSCORE) {
       return hash_score; }
 
+   if (!depth && in_check(state.side)) { ++depth; }
    if (!depth) { return quiescence(alpha, beta); }
 
    int32_t stand = eval(state.side);
