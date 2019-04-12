@@ -49,9 +49,8 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
    int32_t alpha_parent = alpha;
    move_t store = (move_t){0};
 
-   int32_t hash_score;
-   if (!principal && (hash_score = probe_hash(depth, &alpha, &beta, &store))
-         != -INFSCORE) {
+   int32_t hash_score = probe_hash(depth, &alpha, &beta, &store);
+   if (!principal && hash_score != -INFSCORE) {
       return hash_score; }
 
    if (!depth) { return quiescence(alpha, beta); }
