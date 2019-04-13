@@ -29,12 +29,12 @@ void reset_tables(void) {
 
 void store_hash(int32_t depth, int32_t alpha, int32_t beta, int32_t score,
                 move_t move) {
-   int32_t flags = abs(score) > RSCORE ? exact : 0;
+   int32_t flags = abs(score) > INFLIMIT ? exact : 0;
    flags = flags ? flags : score <= alpha ? upper : 0;
    flags = flags ? flags : score >= beta ? lower : exact;
 
-   int32_t adjust = score < -RSCORE ? -state.ply : 0;
-   score += score > RSCORE ? state.ply : adjust;
+   int32_t adjust = score < -INFLIMIT ? -state.ply : 0;
+   score += score > INFLIMIT ? state.ply : adjust;
 
    ttentry_t new = { ._ = {
       state.hash >> HASHBITS, flags, depth, score, age, move } };
@@ -69,8 +69,8 @@ int32_t probe_hash(int32_t depth, int32_t* alpha, int32_t* beta,
          debug_variable_increment(1, &search.tthits);
 
          int32_t score = entry._.score;
-         int32_t adjust = score < -RSCORE ? state.ply : 0;
-         score += score > RSCORE ? -state.ply : adjust;
+         int32_t adjust = score < -INFLIMIT ? state.ply : 0;
+         score += score > INFLIMIT ? -state.ply : adjust;
 
          if (entry._.flags == exact) { return score; }
          if (entry._.flags == lower) {
