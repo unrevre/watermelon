@@ -3,15 +3,12 @@
 
 /* search */
 
-#define PLYSTART 1
-#define PLYLIMIT 32
+#define PLYLIMIT    32
 
-#define INFINITY 2048
-#define INFSCORE (INFINITY - PLYSTART)
-
-#define WSCORE (INFSCORE - 1)
-#define LSCORE (INFSCORE)
-#define RSCORE (WSCORE - PLYLIMIT)
+#define INFINITY    2048
+#define INFPLUS     (INFINITY - 1)
+#define INFMINUS    (-INFINITY)
+#define INFLIMIT    (INFPLUS - PLYLIMIT)
 
 /* state */
 

@@ -21,9 +21,9 @@ move_t iter_dfs(int32_t depth) {
 
    for (int32_t d = 1; d != depth; ++d) {
       tree_root_entry();
-      tree_node_entry(-INFINITY, INFINITY - 1);
-      int32_t score = negamax(d, -INFINITY, INFINITY - 1, 1);
-      tree_node_exit(-INFINITY, INFINITY - 1, score);
+      tree_node_entry(INFMINUS, INFPLUS);
+      int32_t score = negamax(d, INFMINUS, INFPLUS, 1);
+      tree_node_exit(INFMINUS, INFPLUS, score);
       tree_root_exit();
 
       if (abs(score) > INFINITY - d) { break; }
@@ -40,11 +40,11 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
    if (!(search.nodes & TIME_RES)) { tick(search.clock); }
    if (search.clock->status) { return 0; }
 
-   alpha = alpha < -INFINITY + state.ply ? -INFINITY + state.ply : alpha;
-   beta = beta > INFINITY - 1 - state.ply ? INFINITY - 1 - state.ply : beta;
+   alpha = alpha < INFMINUS + state.ply ? INFMINUS + state.ply : alpha;
+   beta = beta > INFPLUS - state.ply ? INFPLUS - state.ply : beta;
    if (alpha >= beta) { return alpha; }
 
-   if (is_repetition()) { return RSCORE; }
+   if (is_repetition()) { return INFLIMIT; }
 
    int32_t alpha_parent = alpha;
    move_t store = (move_t){0};
@@ -58,7 +58,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
 
    int32_t stand = eval(state.side);
    if (!principal && depth < FDEPTH && stand - FMARGIN >= beta
-         && stand < RSCORE && !in_check(state.side)) {
+         && stand < INFLIMIT && !in_check(state.side)) {
       return stand; }
 
    if (!principal && state.ply > 1 && depth > 4 && !in_check(state.side)) {
@@ -74,7 +74,7 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
       if (score >= beta) { return score; }
    }
 
-   int32_t base = -INFINITY + state.ply;
+   int32_t base = INFMINUS + state.ply;
    generator_t engine = { 0, 0, { 0, 0, 0 }, store };
 
    int32_t best = base;
