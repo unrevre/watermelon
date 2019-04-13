@@ -67,6 +67,8 @@ uint32_t in_check(uint32_t side) {
 }
 
 uint32_t is_valid(move_t move, uint32_t side) {
+   if (!game.pieces[ps(side, 0x0)]) { return 0; }
+
    if (side != s(move._.pfrom)) { return 0; }
 
    uint32_t from = move._.from;
