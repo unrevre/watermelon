@@ -26,7 +26,7 @@ move_t iter_dfs(int32_t depth) {
       tree_node_exit(INFMINUS, INFPLUS, score);
       tree_root_exit();
 
-      if (abs(score) > INFINITY - d) { break; }
+      if (abs(score) >= INFINITY - d) { break; }
       if (tick(search.clock)) { break; }
    }
 
