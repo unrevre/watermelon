@@ -23,5 +23,5 @@ script:
     tests/logs/perft-movegen-7.log
   - diff <(./tests/scripts/unit.sh tests/bin/perft 6 tests/data/canju.dat)
     tests/logs/perft-canju-6.log
-  - diff <(./tests/scripts/unit.sh tests/bin/search 16 tests/data/canju.dat)
+  - diff <(./tests/scripts/unit.sh tests/bin/search 24 tests/data/canju.dat)
     tests/logs/search-canju.log
