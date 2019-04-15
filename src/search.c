@@ -80,18 +80,30 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
    int32_t best = base;
    move_t move;
 
+   int32_t reduced = depth;
+
    while ((move = next(&engine)).bits != 0) {
       advance(move);
       __builtin_prefetch(&ttable[state.hash & (HASHMASK ^ 0x3)], 1, 3);
       tree_node_entry(alpha, beta);
+
+      if (depth > 3 && !in_check(state.side) && engine.state > 3
+            && reduced == depth && engine.index > 3) {
+         --reduced; }
+
       int32_t score;
       if (best == base) {
          score = -negamax(depth - 1, -beta, -alpha, principal);
       } else {
-         score = -negamax(depth - 1, -alpha - 1, -alpha, 0);
+         score = -negamax(reduced - 1, -alpha - 1, -alpha, 0);
+
+         if (score > alpha && reduced != depth) {
+            score = -negamax(depth - 1, -alpha - 1, -alpha, 0); }
+
          if (score > alpha && score < beta) {
             score = -negamax(depth - 1, -beta, -alpha, 1); }
       }
+
       tree_node_exit(alpha, beta, score);
       retract(move);
 
