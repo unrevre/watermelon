@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define entry_length 40
+#define entry_length 27
 
 void init_debug(debug_t* info) {
    info->buffer = calloc(256, sizeof(char));
@@ -146,8 +146,7 @@ char* resp_move(debug_t* info, move_t move) {
 
 void impl_transposition_table_entry(char* buffer, ttentry_t entry) {
    impl_move(buffer, entry._.move);
-   sprintf(buffer + strlen(buffer), "  %5i (%2u) [0x%x, 0x%x]",
-      entry._.score, entry._.depth, entry._.flags, entry._.age);
+   sprintf(buffer + strlen(buffer), " %5i (%x)", entry._.score, entry._.flags);
 }
 
 char* info_transposition_table_entry(debug_t* info, ttentry_t entry) {
