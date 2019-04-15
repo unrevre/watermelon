@@ -91,6 +91,10 @@ int32_t negamax(int32_t depth, int32_t alpha, int32_t beta,
             && reduced == depth && engine.index > 3) {
          --reduced; }
 
+      if (depth > 3 && !in_check(state.side) && engine.state > 3
+            && reduced == depth - 1 && engine.index > 24) {
+         --reduced; }
+
       int32_t score;
       if (best == base) {
          score = -negamax(depth - 1, -beta, -alpha, principal);
