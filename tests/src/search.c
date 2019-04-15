@@ -22,8 +22,8 @@ int main(int argc, char* argv[]) {
 
    int32_t depth = atoi(argv[1]);
    move_t move = iter_dfs(depth);
-   printf("%s at depth %i\n", info_move(info, move), depth);
-   printf("\n");
+   printf("%s\n\n", info_move(info, move));
+
    char** pv = info_principal_variation(info);
    for (int64_t i = 0; i < PLYLIMIT && pv[i][0]; ++i)
       printf("%s", pv[i]);
