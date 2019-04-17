@@ -20,7 +20,6 @@ uint32_t MVHASH;
 
 search_t search;
 trunk_t trunk;
-int64_t age;
 
 void init_hashes(void) {
    srand(0x91);
@@ -65,8 +64,6 @@ void reset_search(transient_t* state) {
 
    init_transients(state);
    set_debug_state(state);
-
-   ++age;
 }
 
 void set_timer(double time) {
@@ -84,7 +81,6 @@ void init_state(const char* fen) {
 void reset_state(const char* fen) {
    game = (state_t){ {0}, {0} };
    trunk = (trunk_t){ 0, 0, 0 };
-   age = 0;
 
    reset_fen(fen);
    reset_hashes();

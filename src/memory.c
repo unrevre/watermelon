@@ -36,8 +36,16 @@ void store_hash(transient_t* state, int32_t depth, int32_t alpha, int32_t beta,
    int32_t adjust = score < -INFLIMIT ? -state->ply : 0;
    score += score > INFLIMIT ? state->ply : adjust;
 
-   ttentry_t new = { ._ = {
-      state->hash >> HASHBITS, flags, depth, score, age, move } };
+   ttentry_t new = {
+      ._ = {
+         state->hash >> HASHBITS,
+         flags,
+         depth,
+         score,
+         trunk.step & AGEMASK,
+         move
+      }
+   };
 
    int64_t age_prefer = -1;
    int64_t depth_prefer = state->hash & HASHMASK;

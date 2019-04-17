@@ -13,7 +13,6 @@ extern uint32_t MVHASH;
 
 extern search_t search;
 extern trunk_t trunk;
-extern int64_t age;
 
 /*!
  * init_hashes
