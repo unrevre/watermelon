@@ -128,7 +128,7 @@ uint32_t is_repetition(void) {
 }
 
 uint32_t is_index_movable(int32_t index) {
-   return (board[index] != empty && s(board[index]) == state.side);
+   return (board[index] != empty && s(board[index]) == trunk.side);
 }
 
 move_t move_for_indices(uint32_t from, uint32_t to) {
@@ -136,7 +136,7 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
 
    if (is_index_movable(to)) { return (move_t){0}; }
 
-   int64_t side = state.side;
+   int64_t side = trunk.side;
    __uint128_t tpmask = PMASK[to];
 
    int32_t fdiff = from % 9 - to % 9;

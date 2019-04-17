@@ -19,6 +19,7 @@ uint32_t MVHASH;
 
 search_t search;
 transient_t state;
+trunk_t trunk;
 int64_t age;
 
 void init_hashes(void) {
@@ -37,10 +38,10 @@ void init_hashes(void) {
 void reset_hashes(void) {
    for (int64_t i = 0; i != 90; ++i)
       if (board[i] != empty)
-         state.hash ^= PSHASH[board[i]][i];
+         trunk.hash ^= PSHASH[board[i]][i];
 
-   state.hash ^= STHASH;
-   htable[0] = state.hash;
+   trunk.hash ^= STHASH;
+   htable[0] = trunk.hash;
 }
 
 void init_search(void) {
@@ -55,6 +56,13 @@ void reset_search(void) {
    search.nodes = 0;
    search.qnodes = 0;
    search.tthits = 0;
+
+   state.hash = trunk.hash;
+   state.ply = 0;
+   state.side = trunk.side;
+   state.step = trunk.step;
+
+   ++age;
 }
 
 void set_timer(double time) {
@@ -71,7 +79,8 @@ void init_state(const char* fen) {
 
 void reset_state(const char* fen) {
    game = (state_t){ {0}, {0} };
-   state = (transient_t){ 0, 0, 0, 0 };
+   trunk = (trunk_t){ 0, 0, 0 };
+   state = (transient_t) { 0, 0, 0, 0 };
    age = 0;
 
    reset_fen(fen);
@@ -128,13 +137,27 @@ void retract(move_t move) {
 }
 
 void advance_game(move_t move) {
+   trunk.side = !trunk.side;
+
+   trunk.hash ^= PSHASH[move._.pfrom][move._.from];
+   trunk.hash ^= PSHASH[move._.pfrom][move._.to];
+   trunk.hash ^= PSHASH[move._.pto][move._.to];
+   trunk.hash ^= MVHASH;
+
+   htable[++trunk.step] = trunk.hash;
+
    advance(move);
-   state.ply = 0;
-   ++age;
 }
 
 void retract_game(move_t move) {
+   trunk.side = !trunk.side;
+
+   trunk.hash ^= PSHASH[move._.pfrom][move._.from];
+   trunk.hash ^= PSHASH[move._.pfrom][move._.to];
+   trunk.hash ^= PSHASH[move._.pto][move._.to];
+   trunk.hash ^= MVHASH;
+
+   --trunk.step;
+
    retract(move);
-   state.ply = 0;
-   --age;
 }

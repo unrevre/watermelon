@@ -62,7 +62,7 @@ void reset_fen(const char* fen_str) {
 
    game.pieces[empty] = ~(game.occupancy[0] | game.occupancy[1]);
 
-   state.side = (schar == 'b') ? black : red;
+   trunk.side = (schar == 'b') ? black : red;
 }
 
 int64_t side_from(char const* fen_str) {

@@ -69,6 +69,17 @@ typedef struct {
 } killer_t;
 
 /*!
+ * trunk_t
+ * @ semi-permanent game state outside search
+ */
+
+typedef struct {
+   int64_t side;
+   uint32_t hash;
+   int32_t step;
+} trunk_t;
+
+/*!
  * transient_t
  * @ transient variable struct
  */
