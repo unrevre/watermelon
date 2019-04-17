@@ -47,7 +47,7 @@ void store_hash(transient_t* state, int32_t depth, int32_t alpha, int32_t beta,
             || ttable[index]._.hash == state->hash >> HASHBITS) {
          ttable[index] = new; return; }
 
-      if (ttable[index]._.age != (state->step & AGEMASK)) {
+      if (ttable[index]._.age != (trunk.step & AGEMASK)) {
          age_prefer = index; }
       if (ttable[index]._.depth < ttable[depth_prefer]._.depth) {
          depth_prefer = index; }

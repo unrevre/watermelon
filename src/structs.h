@@ -88,7 +88,6 @@ typedef struct {
    uint32_t hash;
    int32_t ply;
    int64_t side;
-   int32_t step;
 } transient_t;
 
 /*!
