@@ -89,7 +89,12 @@ void reset_state(const char* fen) {
    reset_tables();
 }
 
-void advance(move_t move) {
+/*!
+ * advance_state
+ * @ advance move (update state variables)
+ */
+
+void advance_state(move_t move) {
    ++state.ply;
    state.side = !state.side;
 
@@ -99,7 +104,26 @@ void advance(move_t move) {
    state.hash ^= MVHASH;
 
    htable[++state.step] = state.hash;
+}
 
+/*!
+ * retract_state
+ * @ retract move (update state variables)
+ */
+
+void retract_state(move_t move) {
+   --state.ply;
+   state.side = !state.side;
+
+   state.hash ^= PSHASH[move._.pfrom][move._.from];
+   state.hash ^= PSHASH[move._.pfrom][move._.to];
+   state.hash ^= PSHASH[move._.pto][move._.to];
+   state.hash ^= MVHASH;
+
+   --state.step;
+}
+
+void advance_board(move_t move) {
    game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
    game.pieces[move._.pto] ^= PMASK[move._.to];
    game.pieces[empty] ^= PMASK[move._.from];
@@ -112,17 +136,7 @@ void advance(move_t move) {
    board[move._.to] = move._.pfrom;
 }
 
-void retract(move_t move) {
-   --state.ply;
-   state.side = !state.side;
-
-   state.hash ^= PSHASH[move._.pfrom][move._.from];
-   state.hash ^= PSHASH[move._.pfrom][move._.to];
-   state.hash ^= PSHASH[move._.pto][move._.to];
-   state.hash ^= MVHASH;
-
-   --state.step;
-
+void retract_board(move_t move) {
    game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
    game.pieces[move._.pto] ^= PMASK[move._.to];
    game.pieces[empty] ^= PMASK[move._.from];
@@ -136,6 +150,16 @@ void retract(move_t move) {
    board[move._.to] = move._.pto;
 }
 
+void advance(move_t move) {
+   advance_state(move);
+   advance_board(move);
+}
+
+void retract(move_t move) {
+   retract_state(move);
+   retract_board(move);
+}
+
 void advance_game(move_t move) {
    trunk.side = !trunk.side;
 
@@ -146,7 +170,7 @@ void advance_game(move_t move) {
 
    htable[++trunk.step] = trunk.hash;
 
-   advance(move);
+   advance_board(move);
 }
 
 void retract_game(move_t move) {
@@ -159,5 +183,5 @@ void retract_game(move_t move) {
 
    --trunk.step;
 
-   retract(move);
+   retract_board(move);
 }
