@@ -66,6 +66,20 @@ void init_state(const char* fen);
 void reset_state(const char* fen);
 
 /*!
+ * advance_board
+ * @ advance move (update piece bitboards and board array)
+ */
+
+void advance_board(move_t move);
+
+/*!
+ * retract_board
+ * @ retract move (update piece bitboards and board array)
+ */
+
+void retract_board(move_t move);
+
+/*!
  * advance
  * @ advance move
  */
