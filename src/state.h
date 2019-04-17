@@ -12,7 +12,6 @@ extern uint32_t PSHASH[15][128];
 extern uint32_t MVHASH;
 
 extern search_t search;
-extern transient_t state;
 extern trunk_t trunk;
 extern int64_t age;
 
@@ -31,6 +30,13 @@ void init_hashes(void);
 void reset_hashes(void);
 
 /*!
+ * init_transients
+ * @ initialise transient state variables from trunk
+ */
+
+void init_transients(transient_t* state);
+
+/*!
  * init_search
  * @ initialise search parameters
  */
@@ -42,7 +48,7 @@ void init_search(void);
  * @ reset search parameters
  */
 
-void reset_search(void);
+void reset_search(transient_t* state);
 
 /*!
  * set_timer
@@ -84,14 +90,14 @@ void retract_board(move_t move);
  * @ advance move
  */
 
-void advance(move_t move);
+void advance(move_t move, transient_t* state);
 
 /*!
  * retract
  * @ retract move
  */
 
-void retract(move_t move);
+void retract(move_t move, transient_t* state);
 
 /*!
  * advance_game

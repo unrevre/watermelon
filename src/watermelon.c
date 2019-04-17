@@ -78,8 +78,8 @@ int watermelon(option_t** options, char const* fen) {
       wmprint_info(itf, "cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
 
       wmprint_search(itf, move);
-   } while (!once && is_legal(move) && (advance_history(move),
-                                        advance_game(move), 1));
+   } while (!once && is_legal(move, trunk.side) && (advance_history(move),
+                                                    advance_game(move), 1));
 
    close_interface(itf);
 

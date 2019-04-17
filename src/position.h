@@ -24,14 +24,14 @@ uint32_t is_valid(move_t move, uint32_t side);
  * @ test if given move is legal in current position
  */
 
-uint32_t is_legal(move_t move);
+uint32_t is_legal(move_t move, uint32_t side);
 
 /*!
  * is_repetition
  * @ test if current position is in state of repetition
  */
 
-uint32_t is_repetition(void);
+uint32_t is_repetition(transient_t* state);
 
 /*!
  * is_index_movable

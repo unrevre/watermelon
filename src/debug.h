@@ -20,6 +20,13 @@ void init_debug(debug_t* info);
 void free_debug(debug_t* info);
 
 /*!
+ * set_debug_state
+ * @ callback-like function to redirect transient state variables
+ */
+
+void set_debug_state(transient_t* external);
+
+/*!
  * info_eval
  * @ return internal evaluation of current game state
  */

@@ -171,7 +171,7 @@ void fetch(interface_t* itf) {
       itf->index = -1;
    } else {
       move_t move = move_for_indices(itf->index, index);
-      if (move.bits && is_legal(move)) {
+      if (move.bits && is_legal(move, trunk.side)) {
          advance_history(move);
          advance_game(move);
          wmprint_state(itf);
@@ -276,7 +276,7 @@ int64_t event_loop(interface_t* itf) {
                if (tokens[0] && tokens[1]) {
                   move_t move = move_for_indices(atoi(tokens[1]),
                                                  atoi(tokens[2]));
-                  if (move.bits && is_legal(move)) {
+                  if (move.bits && is_legal(move, trunk.side)) {
                      advance_history(move);
                      advance_game(move);
                      wmprint_state(itf);

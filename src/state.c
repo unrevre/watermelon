@@ -1,5 +1,6 @@
 #include "state.h"
 
+#include "debug.h"
 #include "fen.h"
 #include "generate.h"
 #include "magics.h"
@@ -18,7 +19,6 @@ uint32_t STHASH;
 uint32_t MVHASH;
 
 search_t search;
-transient_t state;
 trunk_t trunk;
 int64_t age;
 
@@ -44,23 +44,28 @@ void reset_hashes(void) {
    htable[0] = trunk.hash;
 }
 
+void init_transients(transient_t* state) {
+   state->hash = trunk.hash;
+   state->ply = 0;
+   state->side = trunk.side;
+   state->step = trunk.step;
+}
+
 void init_search(void) {
    search.clock = malloc(sizeof(timer_t));
    search.clock->status = 1;
    search.clock->limit = -1.;
 }
 
-void reset_search(void) {
+void reset_search(transient_t* state) {
    search.clock->status = 0;
 
    search.nodes = 0;
    search.qnodes = 0;
    search.tthits = 0;
 
-   state.hash = trunk.hash;
-   state.ply = 0;
-   state.side = trunk.side;
-   state.step = trunk.step;
+   init_transients(state);
+   set_debug_state(state);
 
    ++age;
 }
@@ -80,12 +85,10 @@ void init_state(const char* fen) {
 void reset_state(const char* fen) {
    game = (state_t){ {0}, {0} };
    trunk = (trunk_t){ 0, 0, 0 };
-   state = (transient_t) { 0, 0, 0, 0 };
    age = 0;
 
    reset_fen(fen);
    reset_hashes();
-   reset_search();
    reset_tables();
 }
 
@@ -94,16 +97,16 @@ void reset_state(const char* fen) {
  * @ advance move (update state variables)
  */
 
-void advance_state(move_t move) {
-   ++state.ply;
-   state.side = !state.side;
+void advance_state(move_t move, transient_t* state) {
+   ++state->ply;
+   state->side = !state->side;
 
-   state.hash ^= PSHASH[move._.pfrom][move._.from];
-   state.hash ^= PSHASH[move._.pfrom][move._.to];
-   state.hash ^= PSHASH[move._.pto][move._.to];
-   state.hash ^= MVHASH;
+   state->hash ^= PSHASH[move._.pfrom][move._.from];
+   state->hash ^= PSHASH[move._.pfrom][move._.to];
+   state->hash ^= PSHASH[move._.pto][move._.to];
+   state->hash ^= MVHASH;
 
-   htable[++state.step] = state.hash;
+   htable[++state->step] = state->hash;
 }
 
 /*!
@@ -111,16 +114,16 @@ void advance_state(move_t move) {
  * @ retract move (update state variables)
  */
 
-void retract_state(move_t move) {
-   --state.ply;
-   state.side = !state.side;
+void retract_state(move_t move, transient_t* state) {
+   --state->ply;
+   state->side = !state->side;
 
-   state.hash ^= PSHASH[move._.pfrom][move._.from];
-   state.hash ^= PSHASH[move._.pfrom][move._.to];
-   state.hash ^= PSHASH[move._.pto][move._.to];
-   state.hash ^= MVHASH;
+   state->hash ^= PSHASH[move._.pfrom][move._.from];
+   state->hash ^= PSHASH[move._.pfrom][move._.to];
+   state->hash ^= PSHASH[move._.pto][move._.to];
+   state->hash ^= MVHASH;
 
-   --state.step;
+   --state->step;
 }
 
 void advance_board(move_t move) {
@@ -150,13 +153,13 @@ void retract_board(move_t move) {
    board[move._.to] = move._.pto;
 }
 
-void advance(move_t move) {
-   advance_state(move);
+void advance(move_t move, transient_t* state) {
+   advance_state(move, state);
    advance_board(move);
 }
 
-void retract(move_t move) {
-   retract_state(move);
+void retract(move_t move, transient_t* state) {
+   retract_state(move, state);
    retract_board(move);
 }
 
