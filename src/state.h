@@ -13,6 +13,7 @@ extern uint32_t MVHASH;
 
 extern search_t search;
 extern transient_t state;
+extern trunk_t trunk;
 extern int64_t age;
 
 /*!

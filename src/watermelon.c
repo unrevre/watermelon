@@ -69,7 +69,7 @@ int watermelon(option_t** options, char const* fen) {
       wmprint_state(itf);
       refresh_all(itf);
 
-      if (!idle[state.side] && !event_loop(itf)) { break; }
+      if (!idle[trunk.side] && !event_loop(itf)) { break; }
 
       clock_t cpu_time = clock();
       move = iter_dfs(depth);
