@@ -123,8 +123,9 @@ uint32_t is_legal(move_t move, uint32_t side) {
 }
 
 uint32_t is_repetition(transient_t* state) {
-   return state->step > 4 ? *((uint64_t*)(htable + state->step - 1))
-      == *((uint64_t*)(htable + state->step - 5)) : 0;
+   int32_t step = trunk.step + state->ply;
+   return step > 4 ? *((uint64_t*)(htable + step - 1))
+      == *((uint64_t*)(htable + step - 5)) : 0;
 }
 
 uint32_t is_index_movable(int32_t index) {

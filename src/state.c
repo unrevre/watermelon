@@ -48,7 +48,6 @@ void init_transients(transient_t* state) {
    state->hash = trunk.hash;
    state->ply = 0;
    state->side = trunk.side;
-   state->step = trunk.step;
 }
 
 void init_search(void) {
@@ -106,7 +105,7 @@ void advance_state(move_t move, transient_t* state) {
    state->hash ^= PSHASH[move._.pto][move._.to];
    state->hash ^= MVHASH;
 
-   htable[++state->step] = state->hash;
+   htable[trunk.step + state->ply] = state->hash;
 }
 
 /*!
@@ -122,8 +121,6 @@ void retract_state(move_t move, transient_t* state) {
    state->hash ^= PSHASH[move._.pfrom][move._.to];
    state->hash ^= PSHASH[move._.pto][move._.to];
    state->hash ^= MVHASH;
-
-   --state->step;
 }
 
 void advance_board(move_t move) {
