@@ -614,7 +614,7 @@ void sort_moves(move_array_t* moves) {
    memcpy(moves->data, sorted, moves->count * sizeof(move_t));
 }
 
-move_t next(generator_t* engine) {
+move_t next(generator_t* engine, transient_t* state) {
    switch (engine->state) {
       case 0:
          ++(engine->state);
@@ -622,7 +622,7 @@ move_t next(generator_t* engine) {
             return engine->move;
       case 1:
          ++(engine->state);
-         engine->moves = generate_pseudolegal(state.side);
+         engine->moves = generate_pseudolegal(state->side);
          sort_moves(&(engine->moves));
       case 2:
          if (engine->index < engine->moves.quiet)
@@ -630,13 +630,13 @@ move_t next(generator_t* engine) {
       case 3:
          ++(engine->state);
          ++(engine->state);
-         move_t first = ktable[state.ply].first;
-         if (first.bits && is_valid(first, state.side))
+         move_t first = ktable[state->ply].first;
+         if (first.bits && is_valid(first, state->side))
             return first;
       case 4:
          ++(engine->state);
-         move_t second = ktable[state.ply].second;
-         if (second.bits && is_valid(second, state.side))
+         move_t second = ktable[state->ply].second;
+         if (second.bits && is_valid(second, state->side))
             return second;
       case 5:
          ++(engine->state);

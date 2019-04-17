@@ -65,6 +65,6 @@ void sort_moves(move_array_t* moves);
  * @ iterate through moves to be searched
  */
 
-move_t next(generator_t* engine);
+move_t next(generator_t* engine, transient_t* state);
 
 #endif /* GENERATE_H */

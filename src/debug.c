@@ -13,12 +13,17 @@
 
 #define entry_length 27
 
+transient_t* state = 0;
+
 void init_debug(debug_t* info) {
    info->buffer = calloc(256, sizeof(char));
    info->buffers = calloc(PLYLIMIT, sizeof(char*));
 
    for (int64_t i = 0; i < PLYLIMIT; ++i)
       info->buffers[i] = calloc(entry_length + 1, sizeof(char));
+
+   state = malloc(sizeof(transient_t));
+   init_transients(state);
 }
 
 void free_debug(debug_t* info) {
@@ -27,6 +32,10 @@ void free_debug(debug_t* info) {
 
    free(info->buffer);
    free(info->buffers);
+}
+
+void set_debug_state(transient_t* external) {
+   state = external;
 }
 
 /*!
@@ -78,7 +87,7 @@ void impl_fen(char* buffer) {
    }
 
    buffer[--f] = ' ';
-   buffer[++f] = fen_side[state.side];
+   buffer[++f] = fen_side[state->side];
    buffer[++f] = '\0';
 }
 
@@ -162,24 +171,24 @@ char* info_transposition_table_entry(debug_t* info, ttentry_t entry) {
 
 void trace_principal_variation(char** buffer) {
    **buffer = '\0';
-   ttentry_t entry = probe_hash_for_entry();
+   ttentry_t entry = probe_hash_for_entry(state);
 
    move_t next = entry._.move;
-   if (next.bits && is_valid(next, state.side)) {
-      if (is_legal(next)) {
-         advance(next);
+   if (next.bits && is_valid(next, state->side)) {
+      if (is_legal(next, state->side)) {
+         advance(next, state);
 
          impl_transposition_table_entry(*buffer, entry);
          strcat(*buffer, "  \n");
-         if (is_repetition()) {
+         if (is_repetition(state)) {
             (*buffer)[entry_length - 2] = '%';
             **++buffer = '\0';
          } else {
             trace_principal_variation(++buffer);
          }
 
-         retract(next);
-      } else if (state.ply) {
+         retract(next, state);
+      } else if (state->ply) {
          --buffer;
          (*buffer)[entry_length - 2] = '#';
       }
@@ -248,21 +257,21 @@ void tree_root_exit(void) {
 }
 
 void tree_node_entry(int32_t alpha, int32_t beta) {
-   for (int32_t t = 0; t < state.ply; ++t) { printf("│"); }
+   for (int32_t t = 0; t < state->ply; ++t) { printf("│"); }
    char buffer[102]; impl_fen(buffer); printf("├┬╸%s\n", buffer);
-   for (int32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
+   for (int32_t t = 0; t < state->ply + 1; ++t) { printf("│"); }
    printf("├╸      [%5i, %5i]\n", alpha, beta);
 }
 
 void tree_node_message(char const* fmt, ...) {
-   for (int32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
+   for (int32_t t = 0; t < state->ply + 1; ++t) { printf("│"); }
    printf("├╸"); va_list args; va_start(args, fmt); vprintf(fmt, args);
 }
 
 void tree_node_exit(int32_t alpha, int32_t beta, int32_t score) {
-   for (int32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
+   for (int32_t t = 0; t < state->ply + 1; ++t) { printf("│"); }
    char buffer[102]; impl_fen(buffer); printf("├╸%s\n", buffer);
-   for (int32_t t = 0; t < state.ply + 1; ++t) { printf("│"); }
+   for (int32_t t = 0; t < state->ply + 1; ++t) { printf("│"); }
    printf("└╸%5i [%5i, %5i]\n", -score, -beta, -alpha);
 }
 #endif /* TREE */

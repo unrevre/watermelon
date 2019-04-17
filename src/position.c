@@ -112,19 +112,19 @@ uint32_t is_valid(move_t move, uint32_t side) {
    __builtin_unreachable();
 }
 
-uint32_t is_legal(move_t move) {
-   if (!is_valid(move, state.side)) { return 0; }
+uint32_t is_legal(move_t move, uint32_t side) {
+   if (!is_valid(move, side)) { return 0; }
 
-   advance(move);
-   uint32_t legal = !in_check(state.side ^ pass);
-   retract(move);
+   advance_board(move);
+   uint32_t legal = !in_check(side);
+   retract_board(move);
 
    return legal;
 }
 
-uint32_t is_repetition(void) {
-   return state.step > 4 ? *((uint64_t*)(htable + state.step - 1))
-      == *((uint64_t*)(htable + state.step - 5)) : 0;
+uint32_t is_repetition(transient_t* state) {
+   return state->step > 4 ? *((uint64_t*)(htable + state->step - 1))
+      == *((uint64_t*)(htable + state->step - 5)) : 0;
 }
 
 uint32_t is_index_movable(int32_t index) {
