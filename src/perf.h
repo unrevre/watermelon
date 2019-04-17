@@ -8,13 +8,13 @@
  * @ number of legal moves
  */
 
-int64_t perft(int32_t depth, int64_t side);
+int64_t perft(int32_t depth);
 
 /*!
  * perft_capture
  * @ number of legal capture moves
  */
 
-int64_t perft_capture(int32_t depth, int64_t side);
+int64_t perft_capture(int32_t depth);
 
 #endif /* PERF_H */
