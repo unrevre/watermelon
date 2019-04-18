@@ -98,13 +98,6 @@ void debug_variable_reset(int64_t count, ...);
 void debug_variable_increment(int64_t count, ...);
 
 /*!
- * debug_variable_headers
- * @ print labels for debug variable(s)
- */
-
-void debug_variable_headers(int64_t count, ...);
-
-/*!
  * debug_variable_values
  * @ print value of debug variable(s)
  */
@@ -120,7 +113,6 @@ void debug_printf(char const* fmt, ...);
 #else
 #define debug_variable_reset(count, ...)
 #define debug_variable_increment(count, ...)
-#define debug_variable_headers(count, ...)
 #define debug_variable_values(count, ...)
 #define debug_printf(fmt, ...)
 #endif /* DEBUG */
