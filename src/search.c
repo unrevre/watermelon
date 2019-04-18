@@ -46,7 +46,7 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
    beta = beta > INFPLUS - state->ply ? INFPLUS - state->ply : beta;
    if (alpha >= beta) { return alpha; }
 
-   if (is_repetition(state)) { return INFLIMIT; }
+   if (is_repetition(state)) { return DRAW; }
 
    int32_t alpha_parent = alpha;
    move_t store = (move_t){0};

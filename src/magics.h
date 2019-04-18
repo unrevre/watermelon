@@ -10,6 +10,8 @@
 #define INFMINUS    (-INFINITY)
 #define INFLIMIT    (INFPLUS - PLYLIMIT)
 
+#define DRAW        0
+
 /* state */
 
 #define red     0x0
