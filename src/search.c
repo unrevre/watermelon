@@ -21,12 +21,24 @@ move_t iter_dfs(int32_t depth) {
    reset_search(state);
    start(search.clock);
 
+   int32_t score = 0;
    for (int32_t d = 1; d != depth; ++d) {
-      tree_root_entry();
-      tree_node_entry(INFMINUS, INFPLUS);
-      int32_t score = negamax(d, state, INFMINUS, INFPLUS, 1);
-      tree_node_exit(INFMINUS, INFPLUS, score);
-      tree_root_exit();
+      int32_t delta = 2;
+
+      for (;;) {
+         int32_t alpha = score - delta;
+         int32_t beta = score + delta;
+
+         tree_root_entry();
+         tree_node_entry(alpha, beta);
+         score = negamax(d, state, alpha, beta, 1);
+         tree_node_exit(alpha, beta, score);
+         tree_root_exit();
+
+         if (score > alpha && score < beta) { break; }
+
+         delta = delta << 2;
+      }
 
       if (abs(score) >= INFINITY - d) { break; }
       if (tick(search.clock)) { break; }
