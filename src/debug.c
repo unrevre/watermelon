@@ -222,15 +222,6 @@ void debug_variable_increment(int64_t count, ...) {
    va_end(args);
 }
 
-void debug_variable_headers(int64_t count, ...) {
-   va_list args;
-   va_start(args, count);
-   for (int64_t i = 0; i < count; ++i)
-      printf("%16s | ", va_arg(args, const char*));
-   printf("\n");
-   va_end(args);
-}
-
 void debug_variable_values(int64_t count, ...) {
    va_list args;
    va_start(args, count);

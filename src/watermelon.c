@@ -83,8 +83,7 @@ int watermelon(option_t** options, char const* fen) {
 
    close_interface(itf);
 
-   debug_variable_headers(3,
-      "alpha-beta nodes", "quiescence nodes", "hash table hits");
+   debug_printf("alpha-beta nodes | quiescence nodes |  hash table hits |\n");
    debug_variable_values(3, search.nodes, search.qnodes, search.tthits);
    debug_printf("\n");
 
