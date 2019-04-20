@@ -1,11 +1,9 @@
 CC = gcc
-CFLAGS += -O3 -std=gnu99 -march=native -Wall -Wextra \
+CFLAGS += -O3 -flto -std=gnu99 -march=native -Wall -Wextra \
 	  -fno-exceptions -fno-strict-aliasing -fno-stack-protector \
 	  -fomit-frame-pointer -fno-asynchronous-unwind-tables
 
-ifeq ($(CC), clang)
-	CFLAGS += -Wno-for-loop-analysis
-else
+ifeq ($(CC), gcc)
 	CFLAGS += -Wno-implicit-fallthrough
 endif
 
