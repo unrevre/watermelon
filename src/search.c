@@ -101,12 +101,10 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
       __builtin_prefetch(&ttable[state->hash & (HASHMASK ^ 0x3)], 1, 3);
       tree_node_entry(alpha, beta);
 
-      if (depth > 3 && !in_check(state->side) && engine.state > 3
-            && reduced == depth && engine.index > 3) {
-         --reduced; }
-
-      if (depth > 3 && !in_check(state->side) && engine.state > 3
-            && reduced == depth - 1 && engine.index > 24) {
+      if (depth > 3 && engine.state > 3
+            && ((reduced == depth && engine.index > 3)
+            || (reduced == depth - 1 && engine.index > 24))
+            && !in_check(state->side)) {
          --reduced; }
 
       int32_t score;
