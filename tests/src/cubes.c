@@ -85,7 +85,7 @@ void taste(int64_t side, char* buffer) {
    int32_t status;
    if (waitpid(-1, &status, WNOHANG)) {
       printf("%c loss\n", fen_side[side]);
-      exit(1);
+      exit(0);
    }
 }
 
