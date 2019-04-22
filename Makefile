@@ -7,6 +7,8 @@ ifeq ($(CC), gcc)
 	CFLAGS += -Wno-implicit-fallthrough
 endif
 
+ASMFLAGS := $(filter-out -flto,$(CFLAGS))
+
 LIBS += -lncurses
 
 MAKE = make
@@ -44,7 +46,7 @@ $(BLDDIR)/%.o: $(SRCDIR)/%.c
 asm: mkdir $(ASML)
 
 $(ASMDIR)/%.S: $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) -S $< -o $@
+	$(CC) $(ASMFLAGS) -S $< -o $@
 
 tests: $(OBJS)
 	$(MAKE) -C $(TSTDIR)
