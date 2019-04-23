@@ -27,6 +27,15 @@ void reset_tables(void) {
    memset(ktable, 0, PLYLIMIT * sizeof(killer_t));
 }
 
+/*!
+ * matching
+ * @ helper function to check hash signatures
+ */
+
+static inline int64_t matching(ttentry_t* entry, uint32_t hash) {
+   return (entry->_.hash ^ entry->_.move.bits >> HASHBITS) == hash >> HASHBITS;
+}
+
 void store_hash(transient_t* state, int32_t depth, int32_t alpha, int32_t beta,
                 int32_t score, move_t move) {
    int32_t flags = abs(score) > INFLIMIT ? exact : 0;
@@ -38,7 +47,7 @@ void store_hash(transient_t* state, int32_t depth, int32_t alpha, int32_t beta,
 
    ttentry_t new = {
       ._ = {
-         state->hash >> HASHBITS,
+         (state->hash ^ move.bits) >> HASHBITS,
          flags,
          depth,
          score,
@@ -51,8 +60,7 @@ void store_hash(transient_t* state, int32_t depth, int32_t alpha, int32_t beta,
    int64_t depth_prefer = state->hash & HASHMASK;
    for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t index = (state->hash & HASHMASK) ^ t;
-      if (!ttable[index].bits
-            || ttable[index]._.hash == state->hash >> HASHBITS) {
+      if (!ttable[index].bits || matching(ttable + index, state->hash)) {
          ttable[index] = new; return; }
 
       if (ttable[index]._.age != (trunk.step & AGEMASK)) {
@@ -69,7 +77,7 @@ int32_t probe_hash(transient_t* state, int32_t depth, int32_t* alpha,
                    int32_t* beta, move_t* move) {
    for (uint32_t t = 0; t < BASKETS; ++t) {
       ttentry_t entry = ttable[(state->hash & HASHMASK) ^ t];
-      if (entry._.hash == state->hash >> HASHBITS) {
+      if (matching(&entry, state->hash)) {
          if (!is_valid(entry._.move, state->side)) { break; }
          *move = entry._.move;
 
@@ -97,7 +105,7 @@ int32_t probe_hash(transient_t* state, int32_t depth, int32_t* alpha,
 ttentry_t probe_hash_for_entry(transient_t* state) {
    for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t index = (state->hash & HASHMASK) ^ t;
-      if (ttable[index]._.hash == state->hash >> HASHBITS
+      if (matching(ttable + index, state->hash)
             && ttable[index]._.flags == exact) {
          return ttable[index]; }
    }
