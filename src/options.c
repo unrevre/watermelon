@@ -4,13 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-void free_options(option_t** options, int64_t nopts) {
-   for (int64_t i = 0; i < nopts; ++i)
-      free(options[i]);
-
-   free(options);
-}
-
 /*!
  * sink
  * @ (static) shift arguments forward
@@ -23,7 +16,7 @@ static void sink(int64_t start, int64_t end, char const* argv[]) {
    argv[end] = a;
 }
 
-int parse_opts(int argc, char const* argv[], int64_t nopts, option_t** opts) {
+int parse_opts(int argc, char const* argv[], int64_t nopts, option_t* opts) {
    int positional = 1;
 
    for (int i = 1; i < argc; ++i) {
@@ -34,13 +27,13 @@ int parse_opts(int argc, char const* argv[], int64_t nopts, option_t** opts) {
 
       int64_t type = argv[i][1] == '-';
       for (int64_t j = 0; j < nopts; ++j) {
-         if (opts[j]->active) { continue; }
+         if (opts[j].active) { continue; }
 
          if (!strcmp(argv[i] + 1 + type, type ?
-               opts[j]->long_opt : opts[j]->short_opt)) {
-            opts[j]->active = 1;
-            if (opts[j]->flags & 0x1)
-               opts[j]->opt_str = argv[++i];
+               opts[j].long_opt : opts[j].short_opt)) {
+            opts[j].active = 1;
+            if (opts[j].flags & 0x1)
+               opts[j].opt_str = argv[++i];
 
             type = 0xf;
             break;
