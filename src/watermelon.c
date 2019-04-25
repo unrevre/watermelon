@@ -6,6 +6,7 @@
 #include "search.h"
 #include "state.h"
 
+#include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -84,8 +85,8 @@ int watermelon(option_t* options, char const* fen) {
    close_interface(itf);
 
    debug_printf("alpha-beta nodes | quiescence nodes |  hash table hits |\n");
-   debug_variable_values(3, search.nodes, search.qnodes, search.tthits);
-   debug_printf("\n");
+   debug_printf("%16"PRIu64" | %16"PRIu64" | %16"PRIu64" |\n\n",
+                search.nodes, search.qnodes, search.tthits);
 
    return 0;
 }
