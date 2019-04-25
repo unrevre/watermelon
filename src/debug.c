@@ -203,7 +203,6 @@ char** info_principal_variation(debug_t* info) {
 
 #ifdef DEBUG
 #define __STDC_FORMAT_MACROS
-#include <inttypes.h>
 #include <stdarg.h>
 
 void debug_variable_reset(int64_t count, ...) {
@@ -219,15 +218,6 @@ void debug_variable_increment(int64_t count, ...) {
    va_start(args, count);
    for (int64_t i = 0; i < count; ++i)
       ++(*(va_arg(args, uint64_t*)));
-   va_end(args);
-}
-
-void debug_variable_values(int64_t count, ...) {
-   va_list args;
-   va_start(args, count);
-   for (int64_t i = 0; i < count; ++i)
-      printf("%16"PRIu64" | ", va_arg(args, uint64_t));
-   printf("\n");
    va_end(args);
 }
 
