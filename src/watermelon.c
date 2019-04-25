@@ -21,10 +21,10 @@ enum options {
    nopts
 };
 
-int watermelon(option_t** options, char const* fen);
+int watermelon(option_t* options, char const* fen);
 
 int main(int argc, char const* argv[]) {
-   option_t** options = set_options(nopts);
+   option_t* options = set_options(nopts);
 
    argc = parse_opts(argc, argv, nopts, options);
 
@@ -39,14 +39,14 @@ int main(int argc, char const* argv[]) {
    }
 }
 
-int watermelon(option_t** options, char const* fen) {
-   int64_t afk = options[opt_afk]->active;
-   int64_t curses = options[opt_curses]->active;
-   int32_t depth = atoi(options[opt_depth]->opt_str);
-   int64_t once = options[opt_once]->active;
-   int64_t quiet = options[opt_quiet]->active;
-   char const* side = options[opt_side]->opt_str;
-   double time = atof(options[opt_time]->opt_str);
+int watermelon(option_t* options, char const* fen) {
+   int64_t afk = options[opt_afk].active;
+   int64_t curses = options[opt_curses].active;
+   int32_t depth = atoi(options[opt_depth].opt_str);
+   int64_t once = options[opt_once].active;
+   int64_t quiet = options[opt_quiet].active;
+   char const* side = options[opt_side].opt_str;
+   double time = atof(options[opt_time].opt_str);
 
    int64_t idle[2] = {0, 0};
    if (afk || once) { idle[0] = 1; idle[1] = 1; }
@@ -54,7 +54,7 @@ int watermelon(option_t** options, char const* fen) {
    if (!strcmp(side, sides[0])) { idle[0] = 1; }
    if (!strcmp(side, sides[1])) { idle[1] = 1; }
 
-   free_options(options, nopts);
+   free(options);
 
    init_state(fen);
    set_timer(time);
@@ -90,37 +90,16 @@ int watermelon(option_t** options, char const* fen) {
    return 0;
 }
 
-option_t** set_options(int64_t nopts) {
-   option_t** options = malloc(nopts * sizeof(option_t*));
-   for (int64_t i = 0; i < nopts; ++i)
-      options[i] = calloc(1, sizeof(option_t));
+option_t* set_options(int64_t nopts) {
+   option_t* options = malloc(nopts * sizeof(option_t));
 
-   options[opt_afk]->short_opt = "a";
-   options[opt_afk]->long_opt = "afk";
-
-   options[opt_curses]->short_opt = "c";
-   options[opt_curses]->long_opt = "curses";
-
-   options[opt_depth]->short_opt = "d";
-   options[opt_depth]->long_opt = "depth";
-   options[opt_depth]->opt_str = "4";
-   options[opt_depth]->flags = 0x1;
-
-   options[opt_once]->short_opt = "1";
-   options[opt_once]->long_opt = "once";
-
-   options[opt_quiet]->short_opt = "q";
-   options[opt_quiet]->long_opt = "quiet";
-
-   options[opt_side]->short_opt = "s";
-   options[opt_side]->long_opt = "side";
-   options[opt_side]->opt_str = "none";
-   options[opt_side]->flags = 0x1;
-
-   options[opt_time]->short_opt = "t";
-   options[opt_time]->long_opt = "time";
-   options[opt_time]->opt_str = "144";
-   options[opt_time]->flags = 0x1;
+   options[opt_afk] = (option_t){ "a", "afk", 0, 0, 0 };
+   options[opt_curses] = (option_t){ "c", "curses", 0, 0, 0 };
+   options[opt_depth] = (option_t){ "d", "depth", "4", 0, 1 };
+   options[opt_once] = (option_t){ "1", "once", 0, 0, 0 };
+   options[opt_quiet] = (option_t) { "q", "quiet", 0, 0, 0 };
+   options[opt_side] = (option_t){ "s", "side", "none", 0, 1 };
+   options[opt_time] = (option_t){ "t", "time", "144", 0, 1 };
 
    return options;
 }
