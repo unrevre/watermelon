@@ -43,12 +43,6 @@ void reset_hashes(void) {
    htable[0] = trunk.hash;
 }
 
-void init_transients(transient_t* state) {
-   state->hash = trunk.hash;
-   state->ply = 0;
-   state->side = trunk.side;
-}
-
 void init_search(void) {
    search.clock = malloc(sizeof(timer_t));
    search.clock->status = 1;
@@ -62,7 +56,10 @@ void reset_search(transient_t* state) {
    search.qnodes = 0;
    search.tthits = 0;
 
-   init_transients(state);
+   state->hash = trunk.hash;
+   state->ply = 0;
+   state->side = trunk.side;
+
    set_debug_state(state);
 }
 
