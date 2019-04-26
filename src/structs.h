@@ -1,8 +1,8 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-#include <time.h>
 #include <stdint.h>
+#include <time.h>
 
 /*!
  * state_t
