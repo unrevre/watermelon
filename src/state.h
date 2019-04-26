@@ -12,7 +12,7 @@ extern uint32_t PSHASH[15][128];
 extern uint32_t MVHASH;
 
 extern search_t search;
-extern trunk_t trunk;
+extern transient_t trunk;
 
 /*!
  * init_hashes

@@ -51,7 +51,7 @@ void store_hash(transient_t* state, int32_t depth, int32_t alpha, int32_t beta,
          flags,
          depth,
          score,
-         trunk.step & AGEMASK,
+         trunk.ply & AGEMASK,
          move
       }
    };
@@ -63,7 +63,7 @@ void store_hash(transient_t* state, int32_t depth, int32_t alpha, int32_t beta,
       if (!ttable[index].bits || matching(ttable + index, state->hash)) {
          ttable[index] = new; return; }
 
-      if (ttable[index]._.age != (trunk.step & AGEMASK)) {
+      if (ttable[index]._.age != (trunk.ply & AGEMASK)) {
          age_prefer = index; }
       if (ttable[index]._.depth < ttable[depth_prefer]._.depth) {
          depth_prefer = index; }
@@ -114,22 +114,22 @@ ttentry_t probe_hash_for_entry(transient_t* state) {
 }
 
 void advance_history(move_t move) {
-   int32_t step = trunk.step;
+   int32_t step = trunk.ply;
    move_t future = history[step];
    if (future.bits && move.bits != future.bits)
       while (history[++step].bits)
          history[step] = (move_t){0};
 
-   history[trunk.step] = move;
+   history[trunk.ply] = move;
 }
 
 void undo_history(void) {
-   if (trunk.step) { retract_game(history[trunk.step - 1]); }
+   if (trunk.ply) { retract_game(history[trunk.ply - 1]); }
 }
 
 void redo_history(void) {
-   if (history[trunk.step].bits) {
-      advance_history(history[trunk.step]);
-      advance_game(history[trunk.step]);
+   if (history[trunk.ply].bits) {
+      advance_history(history[trunk.ply]);
+      advance_game(history[trunk.ply]);
    }
 }

@@ -19,7 +19,7 @@ uint32_t STHASH;
 uint32_t MVHASH;
 
 search_t search;
-trunk_t trunk;
+transient_t trunk;
 
 void init_hashes(void) {
    srand(0x91);
@@ -80,7 +80,7 @@ void init_state(const char* fen) {
 
 void reset_state(const char* fen) {
    game = (state_t){ {0}, {0} };
-   trunk = (trunk_t){ 0, 0, 0 };
+   trunk = (transient_t){ 0, 0, 0 };
 
    reset_fen(fen);
    reset_hashes();
@@ -101,7 +101,7 @@ void advance_state(move_t move, transient_t* state) {
    state->hash ^= PSHASH[move._.pto][move._.to];
    state->hash ^= MVHASH;
 
-   htable[trunk.step + state->ply] = state->hash;
+   htable[trunk.ply + state->ply] = state->hash;
 }
 
 /*!
@@ -164,7 +164,7 @@ void advance_game(move_t move) {
    trunk.hash ^= PSHASH[move._.pto][move._.to];
    trunk.hash ^= MVHASH;
 
-   htable[++trunk.step] = trunk.hash;
+   htable[++trunk.ply] = trunk.hash;
 
    advance_board(move);
 }
@@ -177,7 +177,7 @@ void retract_game(move_t move) {
    trunk.hash ^= PSHASH[move._.pto][move._.to];
    trunk.hash ^= MVHASH;
 
-   --trunk.step;
+   --trunk.ply;
 
    retract_board(move);
 }
