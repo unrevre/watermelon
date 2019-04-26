@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 uint32_t in_check(uint32_t side) {
-   uint64_t index = bsf_branchless(game.pieces[ps(side, 0x0)]);
+   uint64_t index = bsf(game.pieces[ps(side, 0x0)]);
 
    __uint128_t pmask = PMASK[index];
    __uint128_t emask = game.pieces[empty];

@@ -4,11 +4,11 @@
 #include <stdint.h>
 
 /*!
- * bsf_branchless
+ * bsf
  * @ returns index of least significant bit of __uint128_t
  */
 
-__inline__ uint64_t bsf_branchless(__uint128_t bits) {
+__inline__ uint64_t bsf(__uint128_t bits) {
    uint64_t clobber;
 
    uint64_t index;
@@ -29,11 +29,11 @@ __inline__ uint64_t bsf_branchless(__uint128_t bits) {
 }
 
 /*!
- * bsr_branchless
+ * bsr
  * @ returns index of most significant bit of __uint128_t
  */
 
-__inline__ uint64_t bsr_branchless(__uint128_t bits) {
+__inline__ uint64_t bsr(__uint128_t bits) {
    uint64_t clobber;
 
    uint64_t index;
