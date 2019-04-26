@@ -128,9 +128,7 @@ void wmprint_state(interface_t* itf) {
 }
 
 void wmprint_search(interface_t* itf, move_t move) {
-   char* (*str_move) (debug_t*, move_t) =
-      flag(itf, ITF_QUIET) && !flag(itf, ITF_CURSES) ? resp_move : info_move;
-   wmprint(itf, itf->win_info, 0, "%s\n", str_move(itf->info, move));
+   wmprint(itf, itf->win_info, 0, "%s\n", info_move(itf->info, move));
    if (flag(itf, ITF_QUIET)) { return; }
 
    wmprint_info(itf, "\n");
@@ -265,10 +263,8 @@ int64_t event_loop(interface_t* itf) {
 
          int64_t retval = -1;
          switch (cmd) {
-            case cmd_eval: ;
-               char* (*str_eval) (debug_t*) = flag(itf, ITF_QUIET) ?
-                  resp_eval : info_eval;
-               wmprint(itf, itf->win_info, 0, "%s\n\n", str_eval(itf->info));
+            case cmd_eval:
+               wmprint(itf, itf->win_info, 0, "%s\n\n", info_eval(itf->info));
                break;
             case cmd_leap:
                retval = 1;

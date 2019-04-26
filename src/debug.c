@@ -44,17 +44,11 @@ void set_debug_state(transient_t* external) {
  */
 
 void impl_eval(char* buffer) {
-   sprintf(buffer, "eval: [r] %i", eval(red));
+   sprintf(buffer, "eval %i", eval(red));
 }
 
 char* info_eval(debug_t* info) {
    impl_eval(info->buffer);
-
-   return info->buffer;
-}
-
-char* resp_eval(debug_t* info) {
-   sprintf(info->buffer, "eval %i", eval(red));
 
    return info->buffer;
 }
@@ -132,18 +126,12 @@ char* info_game_state(debug_t* info) {
  */
 
 void impl_move(char* buffer, move_t move) {
-   sprintf(buffer, "%c: %2i - %2i [%c]",
-      fen_char[move._.pfrom], move._.from, move._.to, fen_char[move._.pto]);
+   sprintf(buffer, "move %2i %2i %c/%c", move._.from, move._.to,
+           fen_char[move._.pfrom], fen_char[move._.pto]);
 }
 
 char* info_move(debug_t* info, move_t move) {
    impl_move(info->buffer, move);
-
-   return info->buffer;
-}
-
-char* resp_move(debug_t* info, move_t move) {
-   sprintf(info->buffer, "move %i %i", move._.from, move._.to);
 
    return info->buffer;
 }
