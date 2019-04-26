@@ -44,7 +44,7 @@ void reset_hashes(void) {
 }
 
 void init_search(void) {
-   search.clock = malloc(sizeof(timer_t));
+   search.clock = malloc(sizeof(wmclock_t));
    search.clock->status = 1;
    search.clock->limit = -1.;
 }
