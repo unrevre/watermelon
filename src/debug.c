@@ -22,8 +22,7 @@ void init_debug(debug_t* info) {
    for (int64_t i = 0; i < PLYLIMIT; ++i)
       info->buffers[i] = calloc(entry_length + 1, sizeof(char));
 
-   state = malloc(sizeof(transient_t));
-   init_transients(state);
+   state = &trunk;
 }
 
 void free_debug(debug_t* info) {

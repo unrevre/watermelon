@@ -29,13 +29,6 @@ void init_hashes(void);
 void reset_hashes(void);
 
 /*!
- * init_transients
- * @ initialise transient state variables from trunk
- */
-
-void init_transients(transient_t* state);
-
-/*!
  * init_search
  * @ initialise search parameters
  */
