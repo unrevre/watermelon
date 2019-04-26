@@ -70,5 +70,5 @@ int64_t side_from(char const* fen_str) {
 
    char schar;
    sscanf(fen_str, "%*s %c", &schar);
-   return schar == 'b';
+   return schar == 'b' ? black : red;
 }

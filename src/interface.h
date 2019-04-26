@@ -11,6 +11,8 @@
 #define ITF_CURSES   0x1
 #define ITF_QUIET    0x1 << 1
 
+#define set(flag, boolean) ((boolean) ? (flag) : 0)
+
 /*!
  * interface_t
  * @ interface struct
@@ -31,8 +33,6 @@ typedef struct {
    WINDOW* border_state;
    WINDOW* border_info;
 } interface_t;
-
-#define set_interface(flag, condition) ((condition) ? (flag) : 0)
 
 /*!
  * init_interface

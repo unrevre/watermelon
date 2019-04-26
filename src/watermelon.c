@@ -26,7 +26,6 @@ int watermelon(option_t* options, char const* fen);
 
 int main(int argc, char const* argv[]) {
    option_t* options = set_options(nopts);
-
    argc = parse_opts(argc, argv, nopts, options);
 
    switch (argc) {
@@ -51,7 +50,7 @@ int watermelon(option_t* options, char const* fen) {
 
    int64_t idle[2] = {0, 0};
    if (afk || once) { idle[0] = 1; idle[1] = 1; }
-   static char const* sides[2] = { "red", "black" };
+   char const* sides[2] = { "red", "black" };
    if (!strcmp(side, sides[0])) { idle[0] = 1; }
    if (!strcmp(side, sides[1])) { idle[1] = 1; }
 
@@ -61,8 +60,7 @@ int watermelon(option_t* options, char const* fen) {
    set_timer(time);
 
    interface_t* itf = malloc(sizeof(interface_t));
-   init_interface(itf, set_interface(ITF_CURSES, curses)
-      | set_interface(ITF_QUIET, quiet));
+   init_interface(itf, set(ITF_CURSES, curses) | set(ITF_QUIET, quiet));
 
    move_t move;
 
@@ -77,7 +75,6 @@ int watermelon(option_t* options, char const* fen) {
       cpu_time = clock() - cpu_time;
 
       wmprint_info(itf, "cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
-
       wmprint_search(itf, move);
    } while (!once && is_legal(move, trunk.side) && (advance_history(move),
                                                     advance_game(move), 1));
