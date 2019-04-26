@@ -1,9 +1,9 @@
-CC = gcc
+CC = clang
 CFLAGS += -O3 -flto -std=gnu99 -march=native -Wall -Wextra \
 	  -fno-exceptions -fno-strict-aliasing -fno-stack-protector \
 	  -fomit-frame-pointer -fno-asynchronous-unwind-tables
 
-ifeq ($(CC), gcc)
+ifneq (,$(findstring gcc,$(CC)))
 	CFLAGS += -Wno-implicit-fallthrough
 endif
 
