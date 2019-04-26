@@ -17,21 +17,17 @@ char** slice(char* string) {
          if (isspace(*p)) {
             continue; }
 
-         if (*p == '"') {
-            state = 1;
-            slices[count++] = p + 1;
-         } else {
-            state = 2;
-            slices[count++] = p;
-         }
+         int64_t quote = *p == '"';
+         state = quote + 1;
+         slices[count++] = p + quote;
 
          if (count == size) {
             size = size * 2;
             slices = realloc(slices, size);
          }
       } else {
-         if (*p == '\0' || (state == 1 && *p == '"')
-               || (state == 2 && isspace(*p))) {
+         if (*p == '\0' || (state == 2 && *p == '"')
+               || (state == 1 && isspace(*p))) {
             state = 0;
             *p = '\0';
          }
