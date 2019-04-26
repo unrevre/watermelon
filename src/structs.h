@@ -102,7 +102,7 @@ typedef struct {
 } debug_t;
 
 /*!
- * timer_t
+ * wmclock_t
  * @ struct for time management
  */
 
@@ -110,7 +110,7 @@ typedef struct {
    uint64_t status;
    double limit;
    time_t ref;
-} timer_t;
+} wmclock_t;
 
 /*!
  * search_t
@@ -118,7 +118,7 @@ typedef struct {
  */
 
 typedef struct {
-   timer_t* clock;
+   wmclock_t* clock;
    uint64_t nodes;
    uint64_t qnodes;
    uint64_t tthits;
