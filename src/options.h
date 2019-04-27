@@ -17,13 +17,6 @@ typedef struct {
 } option_t;
 
 /*!
- * set_options
- * @ set parameters for options
- */
-
-option_t* set_options(int64_t nopts);
-
-/*!
  * parse_opts
  * @ parse command line options
  */
