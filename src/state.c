@@ -21,6 +21,11 @@ uint32_t MVHASH;
 search_t search;
 transient_t trunk;
 
+/*!
+ * init_hashes
+ * @ initialise zobrist hashes
+ */
+
 void init_hashes(void) {
    srand(0x91);
 
@@ -34,6 +39,11 @@ void init_hashes(void) {
    MVHASH = rand();
 }
 
+/*!
+ * reset_hashes
+ * @ reset zobrist hash
+ */
+
 void reset_hashes(void) {
    for (int64_t i = 0; i != 90; ++i)
       if (board[i] != empty)
@@ -41,12 +51,6 @@ void reset_hashes(void) {
 
    trunk.hash ^= STHASH;
    htable[0] = trunk.hash;
-}
-
-void init_search(void) {
-   search.clock = malloc(sizeof(wmclock_t));
-   search.clock->status = 1;
-   search.clock->limit = -1.;
 }
 
 void reset_search(transient_t* state) {
@@ -70,9 +74,12 @@ void set_timer(double time) {
 void init_state(const char* fen) {
    init_hashes();
    init_masks();
-   init_search();
 
    reset_state(fen);
+
+   search.clock = malloc(sizeof(wmclock_t));
+   search.clock->status = 1;
+   search.clock->limit = -1.;
 }
 
 void reset_state(const char* fen) {

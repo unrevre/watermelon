@@ -15,27 +15,6 @@ extern search_t search;
 extern transient_t trunk;
 
 /*!
- * init_hashes
- * @ initialise zobrist hashes
- */
-
-void init_hashes(void);
-
-/*!
- * reset_hashes
- * @ reset zobrist hash
- */
-
-void reset_hashes(void);
-
-/*!
- * init_search
- * @ initialise search parameters
- */
-
-void init_search(void);
-
-/*!
  * reset_search
  * @ reset search parameters
  */
