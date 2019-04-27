@@ -22,6 +22,7 @@ enum options {
    nopts
 };
 
+option_t* set_options(int64_t nopts);
 int watermelon(option_t* options, char const* fen);
 
 int main(int argc, char const* argv[]) {
