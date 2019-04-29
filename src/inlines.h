@@ -3,62 +3,17 @@
 
 #include <stdint.h>
 
-#ifndef __clang__
-/*!
- * bsfq
- * @ assembly instrinsic for bsfq
- */
-
-__inline__ uint64_t bsfq(uint64_t bits) {
-   uint64_t index;
-   asm ("                  \n\
-        bsfq   %1, %0      \n\
-        "
-        : "=rm" (index)
-        : "rm" (bits)
-        :
-   );
-
-   return index;
-}
-
-/*!
- * bsrq
- * @ assembly instrinsic for bsrq
- */
-
-__inline__ uint64_t bsrq(uint64_t bits) {
-   uint64_t index;
-   asm ("                  \n\
-        bsrq   %1, %0      \n\
-        "
-        : "=rm" (index)
-        : "rm" (bits)
-        :
-   );
-
-   return index;
-}
-#endif /* __clang__ */
-
 /*!
  * bsf
  * @ returns index of least significant bit of __uint128_t
  */
 
 __inline__ uint64_t bsf(__uint128_t bits) {
-   uint64_t clobber;
-   uint64_t index;
-#ifndef __clang__
    uint64_t high = bits >> 64;
    uint64_t low = bits;
 
-   clobber = bsfq(high);
-   index = high ? clobber : 64;
-   index = index + 64;
-   clobber = bsfq(low);
-   index = low ? clobber : index;
-#else
+   uint64_t clobber;
+   uint64_t index;
    asm ("                  \n\
         movq   $64, %0     \n\
         bsfq   %3, %1      \n\
@@ -68,10 +23,9 @@ __inline__ uint64_t bsf(__uint128_t bits) {
         cmovnz %1, %0      \n\
         "
         : "=&r" (index), "=&r" (clobber)
-        : "r" (bits), "r" (bits >> 64)
+        : "r" (low), "r" (high)
         :
    );
-#endif /* __clang__ */
 
    return index;
 }
@@ -82,19 +36,11 @@ __inline__ uint64_t bsf(__uint128_t bits) {
  */
 
 __inline__ uint64_t bsr(__uint128_t bits) {
-   uint64_t clobber;
-   uint64_t index;
-#ifndef __clang__
    uint64_t high = bits >> 64;
    uint64_t low = bits;
 
-   index = bsrq(low);
-   clobber = low ? index : 128;
-   clobber = clobber ^ 64;
-   index = bsrq(high);
-   index = !high ? clobber : index;
-   index = index ^ 64;
-#else
+   uint64_t clobber;
+   uint64_t index;
    asm ("                  \n\
         movq   $128, %1    \n\
         bsrq   %2, %0      \n\
@@ -105,10 +51,9 @@ __inline__ uint64_t bsr(__uint128_t bits) {
         xorq   $64, %0     \n\
         "
         : "=&r" (index), "=&r" (clobber)
-        : "r" (bits), "r" (bits >> 64)
+        : "r" (low), "r" (high)
         :
    );
-#endif /* __clang__ */
 
    return index;
 }
