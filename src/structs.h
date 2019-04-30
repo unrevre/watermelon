@@ -1,6 +1,8 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+#include "magics.h"
+
 #include <stdint.h>
 #include <time.h>
 
@@ -10,7 +12,7 @@
  */
 
 typedef struct {
-   __uint128_t pieces[15];
+   __uint128_t pieces[PIECES];
    __uint128_t occupancy[2];
 } state_t;
 

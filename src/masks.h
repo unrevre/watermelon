@@ -1,17 +1,19 @@
 #ifndef MASKS_H
 #define MASKS_H
 
+#include "magics.h"
+
 extern __uint128_t BMASK;
 
-extern __uint128_t PMASK[128];
+extern __uint128_t PMASK[BITS];
 
-extern __uint128_t UMASK[90];
-extern __uint128_t LMASK[90];
+extern __uint128_t UMASK[POINTS];
+extern __uint128_t LMASK[POINTS];
 
-extern __uint128_t RMASK[90];
-extern __uint128_t FMASK[90];
+extern __uint128_t RMASK[POINTS];
+extern __uint128_t FMASK[POINTS];
 
-extern __uint128_t OMASK[90];
+extern __uint128_t OMASK[POINTS];
 
 extern __uint128_t JMASK[2];
 extern __uint128_t SMASK[2];

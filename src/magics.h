@@ -1,6 +1,16 @@
 #ifndef MAGIC_H
 #define MAGIC_H
 
+/* structs */
+
+#define BITS        128
+#define PIECES      15
+
+#define FILES       9
+#define RANKS       10
+
+#define POINTS      (RANKS * FILES)
+
 /* search */
 
 #define PLYLIMIT    32

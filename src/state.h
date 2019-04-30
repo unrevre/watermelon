@@ -1,14 +1,15 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include "magics.h"
 #include "structs.h"
 
 #include <stdint.h>
 
 extern state_t game;
-extern uint32_t board[128];
+extern uint32_t board[BITS];
 
-extern uint32_t PSHASH[15][128];
+extern uint32_t PSHASH[PIECES][BITS];
 extern uint32_t MVHASH;
 
 extern search_t search;
