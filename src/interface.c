@@ -155,7 +155,7 @@ void wmprint_info(interface_t* itf, char const* fmt, ...) {
 void fetch(interface_t* itf) {
    int32_t x; int32_t y;
    getyx(itf->win_state, y, x);
-   int64_t index = (9 - y) * 9 + x / 2;
+   int64_t index = (RANKS - 1 - y) * WIDTH + SENTINEL + x / 2;
 
    if (itf->index == -1) {
       if (is_index_movable(index)) {

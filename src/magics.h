@@ -8,10 +8,12 @@
 
 #define FILES       9
 #define RANKS       10
+#define SENTINEL    0
 
-#define WIDTH       (FILES)
+#define WIDTH       (FILES + (SENTINEL << 1))
 #define HEIGHT      (RANKS)
 
+#define INDICES     (FILES * RANKS)
 #define POINTS      (WIDTH * HEIGHT)
 
 /* shifts */
