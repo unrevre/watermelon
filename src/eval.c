@@ -14,3 +14,7 @@ int32_t eval(int32_t side) {
 
    return side ? -popdiff : popdiff;
 }
+
+int32_t gain(move_t move) {
+   return weights[p(move._.pto)];
+}
