@@ -21,9 +21,9 @@ void reset_fen(const char* fen_str) {
    if (!fen_str) { fen_str = fen_default; }
    sscanf(fen_str, "%s %c", fstr, &schar);
 
-   for (int64_t i = 0; i < 15; ++i)
+   for (int64_t i = 0; i != PIECES; ++i)
       game.pieces[i] = 0x0;
-   for (int64_t i = 0; i < 90; ++i)
+   for (int64_t i = 0; i != POINTS; ++i)
       board[i] = empty;
 
    char* fstr_p = fstr;
@@ -53,7 +53,7 @@ void reset_fen(const char* fen_str) {
    game.occupancy[0] = 0x0;
    game.occupancy[1] = 0x0;
 
-   for (int64_t i = 0; i < 90; ++i) {
+   for (int64_t i = 0; i != POINTS; ++i) {
       uint32_t piece = board[i];
       game.pieces[piece] |= PMASK[i];
       if (piece != empty) {

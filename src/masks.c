@@ -4,15 +4,15 @@
 
 __uint128_t BMASK;
 
-__uint128_t PMASK[128] __attribute__((aligned(64)));
+__uint128_t PMASK[BITS] __attribute__((aligned(64)));
 
-__uint128_t UMASK[90] __attribute__((aligned(64)));
-__uint128_t LMASK[90] __attribute__((aligned(64)));
+__uint128_t UMASK[POINTS] __attribute__((aligned(64)));
+__uint128_t LMASK[POINTS] __attribute__((aligned(64)));
 
-__uint128_t RMASK[90] __attribute__((aligned(64)));
-__uint128_t FMASK[90] __attribute__((aligned(64)));
+__uint128_t RMASK[POINTS] __attribute__((aligned(64)));
+__uint128_t FMASK[POINTS] __attribute__((aligned(64)));
 
-__uint128_t OMASK[90] __attribute__((aligned(64)));
+__uint128_t OMASK[POINTS] __attribute__((aligned(64)));
 
 __uint128_t JMASK[2];
 __uint128_t SMASK[2];
@@ -29,13 +29,13 @@ void init_masks(void) {
    BMASK = (BMASK << 64) + 0xffffffffffffffff;
 
    PMASK[0] = 0x1;
-   for (uint32_t i = 1; i < 90; ++i)
+   for (uint32_t i = 1; i != POINTS; ++i)
       PMASK[i] = PMASK[i - 1] << 1;
 
    __uint128_t R0MASK = 0x1ff;
    __uint128_t F0MASK = 0x20100;
    F0MASK = (F0MASK << 64) + 0x8040201008040201;
-   for (uint32_t i = 0; i < 90; ++i) {
+   for (uint32_t i = 0; i != POINTS; ++i) {
       FMASK[i] = F0MASK << (i % 9);
       RMASK[i] = R0MASK << 9 * (i / 9);
 

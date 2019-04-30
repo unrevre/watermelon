@@ -3,7 +3,6 @@
 #include "debug.h"
 #include "fen.h"
 #include "generate.h"
-#include "magics.h"
 #include "masks.h"
 #include "memory.h"
 #include "search.h"
@@ -12,9 +11,9 @@
 #include <string.h>
 
 state_t game __attribute__((aligned(64)));
-uint32_t board[128] __attribute__((aligned(64)));
+uint32_t board[BITS] __attribute__((aligned(64)));
 
-uint32_t PSHASH[15][128] __attribute__((aligned(64)));
+uint32_t PSHASH[PIECES][BITS] __attribute__((aligned(64)));
 uint32_t STHASH;
 uint32_t MVHASH;
 
@@ -30,9 +29,9 @@ void init_hashes(void) {
    srand(0x91);
 
    for (int64_t i = 0; i != empty; ++i)
-      for (int64_t j = 0; j != 90; ++j)
+      for (int64_t j = 0; j != POINTS; ++j)
          PSHASH[i][j] = rand();
-   for (int64_t i = 0; i != 128; ++i)
+   for (int64_t i = 0; i != POINTS; ++i)
       PSHASH[empty][i] = 0x0;
 
    STHASH = rand();
@@ -45,7 +44,7 @@ void init_hashes(void) {
  */
 
 void reset_hashes(void) {
-   for (int64_t i = 0; i != 90; ++i)
+   for (int64_t i = 0; i != POINTS; ++i)
       if (board[i] != empty)
          trunk.hash ^= PSHASH[board[i]][i];
 
