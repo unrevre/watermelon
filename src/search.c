@@ -14,6 +14,7 @@
 
 #define FDEPTH    3
 #define FMARGIN   16
+#define QMARGIN   4
 
 move_t iter_dfs(int32_t depth) {
    transient_t* state = malloc(sizeof(transient_t));
@@ -168,6 +169,9 @@ int32_t quiescence(transient_t* state, int32_t alpha, int32_t beta) {
    move_array_t moves = generate_captures(state->side);
    sort_moves(&moves);
    for (int64_t i = 0; i != moves.count; ++i) {
+      if (stand + gain(moves.data[i]) + QMARGIN < alpha) {
+         continue; }
+
       advance(moves.data[i], state);
       tree_node_entry(alpha, beta);
       int32_t score = -quiescence(state, -beta, -alpha);
