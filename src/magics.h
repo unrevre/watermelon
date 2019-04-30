@@ -18,7 +18,7 @@
 #define _1s(a)      (a >> (FILES))
 #define _1w(a)      (a >> 1)
 
-#define _1f(a, s)   ((a << (FILES)) >> ((FILES << 1) * s))
+#define _1f(a, s)   ((a << (FILES)) >> (s ? (FILES << 1) : 0))
 
 #define _1n1e(a)    _1n(_1e(a))
 #define _1n1w(a)    _1n(_1w(a))

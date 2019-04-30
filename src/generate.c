@@ -108,7 +108,7 @@ move_array_t generate(int64_t side) {
    __uint128_t zset;
    zset = _1f(game.pieces[ps(side, 0x6)], side);
    zset &= ZMASK[side] & ~game.occupancy[side];
-   add_shiftwise(zset, FILES - (FILES << 1) * side, &moves);
+   add_shiftwise(zset, side ? -FILES : FILES, &moves);
 
    zset = _1e(game.pieces[ps(side, 0x6)]) & FMASKN0;
    zset &= ZMASK[side] & ~game.occupancy[side];
@@ -259,7 +259,7 @@ move_array_t generate_pseudolegal(int64_t side) {
    __uint128_t zset;
    zset = _1f(game.pieces[ps(side, 0x6)], side);
    zset &= ZMASK[side] & ~game.occupancy[side];
-   add_shiftwise(zset, FILES - (FILES << 1) * side, &moves);
+   add_shiftwise(zset, side ? -FILES : FILES, &moves);
 
    zset = _1e(game.pieces[ps(side, 0x6)]) & FMASKN0;
    zset &= ZMASK[side] & ~game.occupancy[side];
@@ -411,7 +411,7 @@ move_array_t generate_captures(int64_t side) {
    __uint128_t zset;
    zset = _1f(game.pieces[ps(side, 0x6)], side);
    zset &= ZMASK[side] & game.occupancy[!side];
-   add_shiftwise(zset, FILES - (FILES << 1) * side, &moves);
+   add_shiftwise(zset, side ? -FILES : FILES, &moves);
 
    zset = _1e(game.pieces[ps(side, 0x6)]) & FMASKN0;
    zset &= ZMASK[side] & game.occupancy[!side];
@@ -527,7 +527,7 @@ move_array_t generate_quiet(int64_t side) {
    __uint128_t zset;
    zset = _1f(game.pieces[ps(side, 0x6)], side);
    zset &= ZMASK[side] & game.pieces[empty];
-   add_shiftwise(zset, FILES - (FILES << 1) * side, &moves);
+   add_shiftwise(zset, side ? -FILES : FILES, &moves);
 
    zset = _1e(game.pieces[ps(side, 0x6)]) & FMASKN0;
    zset &= ZMASK[side] & game.pieces[empty];
