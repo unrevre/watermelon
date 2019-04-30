@@ -134,7 +134,6 @@ uint32_t is_index_movable(int32_t index) {
 
 move_t move_for_indices(uint32_t from, uint32_t to) {
    if (from > 89 || to > 89) { return (move_t){0}; }
-
    if (is_index_movable(to)) { return (move_t){0}; }
 
    int64_t side = trunk.side;
@@ -155,7 +154,7 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
             return (move_t){0};
          break;
       case 2:
-         if (!fdabs || !rdabs || (fdabs + rdabs != 3) || !(tpmask & BMASK))
+         if (!fdabs || !rdabs || (fdabs + rdabs != 3))
             return (move_t){0};
          break;
       case 4:
