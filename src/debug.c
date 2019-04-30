@@ -60,11 +60,11 @@ char* info_eval(debug_t* info) {
 void impl_fen(char* buffer) {
    memset(buffer, '0', 91);
 
-   int64_t a = 81;
+   int64_t a = (HEIGHT - 1) * WIDTH + SENTINEL;
    int64_t f = 0;
-   for (int64_t i = 0; i < 10; ++i) {
+   for (int64_t i = 0; i != RANKS; ++i) {
       int64_t g = f;
-      for (int64_t j = 0; j < 9; ++a, ++j) {
+      for (int64_t j = 0; j != FILES; ++a, ++j) {
          if (f == g) { ++f; }
          if (board[a] == empty) {
             buffer[g]++;
@@ -76,7 +76,7 @@ void impl_fen(char* buffer) {
       }
 
       buffer[f++] = '/';
-      a = a - 18;
+      a = a - FILES - WIDTH;
    }
 
    buffer[--f] = ' ';
@@ -96,18 +96,18 @@ char* info_fen(debug_t* info) {
  */
 
 void impl_game_state(char* buffer) {
-   int64_t a = 81;
+   int64_t a = (HEIGHT - 1) * WIDTH + SENTINEL;
    int64_t g = 0;
-   for (int64_t i = 0; i < 10; ++i) {
+   for (int64_t i = 0; i != RANKS; ++i) {
       char filler = (i == 4 || i == 5) ? '-' : ' ';
-      for (int64_t j = 0; j < 9; ++a, ++j) {
+      for (int64_t j = 0; j != FILES; ++a, ++j) {
          buffer[g++] = filler;
          buffer[g++] = (board[a] == empty) ? filler : fen_char[board[a]];
       }
 
       buffer[g++] = filler;
       buffer[g++] = '\n';
-      a = a - 18;
+      a = a - FILES - WIDTH;
    }
 
    buffer[g++] = '\0';
@@ -120,12 +120,24 @@ char* info_game_state(debug_t* info) {
 }
 
 /*!
+ * adjust
+ * @ adjust internal indices for output
+ */
+
+static int32_t adjust(int32_t index) {
+   int32_t y = index / WIDTH;
+   int32_t x = index % WIDTH - SENTINEL;
+   return y * FILES + x;
+}
+
+/*!
  * impl_move
  * @ internal implementation for 'info_move'
  */
 
 void impl_move(char* buffer, move_t move) {
-   sprintf(buffer, "move %2i %2i %c/%c", move._.from, move._.to,
+   sprintf(buffer, "move %2i %2i %c/%c",
+           adjust(move._.from), adjust(move._.to),
            fen_char[move._.pfrom], fen_char[move._.pto]);
 }
 

@@ -27,7 +27,7 @@ void reset_fen(const char* fen_str) {
       board[i] = empty;
 
    char* fstr_p = fstr;
-   for (int64_t i = 81; *fstr_p; ++fstr_p, ++i) {
+   for (int64_t i = (HEIGHT - 1) * WIDTH + SENTINEL; *fstr_p; ++fstr_p, ++i) {
       int32_t piece = -1;
 
       switch (*fstr_p) {
@@ -41,7 +41,7 @@ void reset_fen(const char* fen_str) {
          case 'a': case 'A': piece = 0x4; break;
          case 'b': case 'B': piece = 0x5; break;
          case 'p': case 'P': piece = 0x6; break;
-         case '/': i -= 19; break;
+         case '/': i = i - FILES - WIDTH - 1; break;
       }
 
       if (piece != -1) {
