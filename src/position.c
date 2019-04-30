@@ -88,13 +88,13 @@ uint32_t is_valid(move_t move, uint32_t side) {
          uint32_t low = from > to ? to : from;
 
          __uint128_t jspan = PMASK[high] - (PMASK[low] << 1);
-         jspan = high - low >= FILES ? jspan & FMASK[high] : jspan;
+         jspan = high - low >= WIDTH ? jspan & FMASK[high] : jspan;
          return !(jspan & ~game.pieces[empty]); }
       case 2: ;
          int64_t diff = from > to ? from - to : to - from;
-         int64_t offset = (diff == (FILES - 2))
-            ? (FILES - 1) : (diff == ((FILES << 1) - 1))
-            ? (FILES - 1) : (FILES + 1);
+         int64_t offset = (diff == (WIDTH - 2))
+            ? (WIDTH - 1) : (diff == ((WIDTH << 1) - 1))
+            ? (WIDTH - 1) : (WIDTH + 1);
          offset = from > to ? offset : -offset;
          return board[to + offset] == empty;
       case 3: ;
@@ -103,7 +103,7 @@ uint32_t is_valid(move_t move, uint32_t side) {
          int64_t count = move._.pto == empty ? 0 : 1;
 
          __uint128_t pspan = PMASK[high] - (PMASK[low] << 1);
-         pspan = high - low >= FILES ? pspan & FMASK[high] : pspan;
+         pspan = high - low >= WIDTH ? pspan & FMASK[high] : pspan;
          pspan = pspan & ~game.pieces[empty];
          return popcnt(pspan) == count;
       case 4: return 1;
@@ -141,9 +141,9 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
    int64_t side = trunk.side;
    __uint128_t tpmask = PMASK[to];
 
-   int32_t fdiff = from % FILES - to % FILES;
+   int32_t fdiff = from % WIDTH - to % WIDTH;
    int32_t fdabs = abs(fdiff);
-   int32_t rdiff = from / FILES - to / FILES;
+   int32_t rdiff = from / WIDTH - to / WIDTH;
    int32_t rdabs = abs(rdiff);
 
    switch (p(board[from])) {

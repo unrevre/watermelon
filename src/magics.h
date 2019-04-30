@@ -9,16 +9,19 @@
 #define FILES       9
 #define RANKS       10
 
-#define POINTS      (RANKS * FILES)
+#define WIDTH       (FILES)
+#define HEIGHT      (RANKS)
+
+#define POINTS      (WIDTH * HEIGHT)
 
 /* shifts */
 
-#define _1n(a)      (a << (FILES))
+#define _1n(a)      (a << (WIDTH))
 #define _1e(a)      (a << 1)
-#define _1s(a)      (a >> (FILES))
+#define _1s(a)      (a >> (WIDTH))
 #define _1w(a)      (a >> 1)
 
-#define _1f(a, s)   ((a << (FILES)) >> (s ? (FILES << 1) : 0))
+#define _1f(a, s)   ((a << (WIDTH)) >> (s ? (WIDTH << 1) : 0))
 
 #define _1n1e(a)    _1n(_1e(a))
 #define _1n1w(a)    _1n(_1w(a))
