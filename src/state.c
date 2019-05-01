@@ -72,7 +72,6 @@ void set_timer(double time) {
 
 void init_state(const char* fen) {
    init_hashes();
-   init_masks();
 
    reset_state(fen);
 
