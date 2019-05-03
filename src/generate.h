@@ -28,13 +28,6 @@ move_array_t generate_pseudolegal(int64_t side);
 move_array_t generate_captures(int64_t side);
 
 /*!
- * generate_quiet
- * @ generate quiet moves
- */
-
-move_array_t generate_quiet(int64_t side);
-
-/*!
  * add_piecewise
  * @ add moves (for fixed piece)
  */
