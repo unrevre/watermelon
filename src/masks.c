@@ -721,15 +721,3 @@ const __uint128_t ZMASK[2] = {
    (((__uint128_t)0xaa9) << 64) + 0x553fe7fcff9ff3fe
 };
 
-const __uint128_t FMASKN0 =
-   (((__uint128_t)0xffffffeffdffbff7) << 64) + 0xfeffdffbff7feffd;
-
-const __uint128_t FMASKN8 =
-   (((__uint128_t)0xffffeffdffbff7fe) << 64) + 0xffdffbff7feffdff;
-
-const __uint128_t FMASKN01 =
-   (((__uint128_t)0xffffffcff9ff3fe7) << 64) + 0xfcff9ff3fe7fcff9;
-
-const __uint128_t FMASKN78 =
-   (((__uint128_t)0xffffe7fcff9ff3fe) << 64) + 0x7fcff9ff3fe7fcff;
-
