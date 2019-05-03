@@ -2,13 +2,17 @@
 # pylint: disable=missing-docstring,invalid-name
 
 import re
-import sys
 import textwrap
 
 BITS = 128
 
 FILES = 9
 RANKS = 10
+SENTINEL = 1
+
+WIDTH = FILES + 2 * SENTINEL
+HEIGHT = RANKS
+POINTS = WIDTH * HEIGHT
 
 class Mask():
     def __init__(self):
@@ -22,64 +26,55 @@ class Mask():
     def clear(self):
         self.bits = bytearray(128)
 
+    def index(self, x, y):
+        return y * WIDTH + x
+
     def fill(self, index, count, value):
         for i in range(count):
             self.bits[index + i] = value
 
 
 class Board(Mask):
-    def __init__(self, sentinel):
+    def __init__(self):
         super().__init__()
-        self.sentinel = sentinel
-        self.width = FILES + 2 * self.sentinel
-        self.height = RANKS
 
     def index(self, x, y):
-        return y * self.width + self.sentinel + x
+        return y * WIDTH + SENTINEL + x
 
     def layout_board(self):
-        for y in range(self.height):
+        for y in range(HEIGHT):
             self.fill(self.index(0, y), FILES, 1)
 
     def layout_jmask(self, side):
-        h = self.height - 3 if side else 0
+        h = HEIGHT - 3 if side else 0
         for y in range(h, h + 3):
             self.fill(self.index(3, y), 3, 1)
 
     def layout_smask(self, side):
-        h = self.height - 3 if side else 0
+        h = HEIGHT - 3 if side else 0
         for x, y in ((3, h), (5, h), (4, h + 1), (3, h + 2), (5, h + 2)):
             self.fill(self.index(x, y), 1, 1)
 
     def layout_xmask(self, side):
-        h = self.height - 5 if side else 0
+        h = HEIGHT - 5 if side else 0
         for x, y in ((2, h), (6, h), (0, h + 2), (4, h + 2), (8, h + 2),
                      (2, h + 4), (6, h + 4)):
             self.fill(self.index(x, y), 1, 1)
 
     def layout_zmask(self, side):
-        h = self.height - 5 if side else 3
+        h = HEIGHT - 5 if side else 3
         for y in range(h, h + 2):
             for x, y in ((0, y), (2, y), (4, y), (6, y), (8, y)):
                 self.fill(self.index(x, y), 1, 1)
 
-        h = 0 if side else self.height - 5
+        h = 0 if side else HEIGHT - 5
         for y in range(h, h + 5):
             self.fill(self.index(0, y), FILES, 1)
 
 
 def main():
-    try:
-        sentinel = int(sys.argv[1])
-    except IndexError:
-        sentinel = 0
-
-    width = FILES + 2 * sentinel
-    height = RANKS
-    points = width * height
-
     mask = Mask()
-    board = Board(sentinel)
+    board = Board()
 
     # templates
     typename = 'const __uint128_t'
@@ -143,7 +138,7 @@ def main():
         etch_point_masks('{} PMASK[BITS] {}'.format(typename, attr_align))
 
         # upper masks   [UMASK]
-        @array_format(points)
+        @array_format(POINTS)
         @clear_and_return(mask)
         def etch_upper_masks(i):
             mask.fill(i + 1, BITS - 1 - i, 1)
@@ -151,7 +146,7 @@ def main():
         etch_upper_masks('{} UMASK[POINTS] {}'.format(typename, attr_align))
 
         # lower masks   [LMASK]
-        @array_format(points)
+        @array_format(POINTS)
         @clear_and_return(mask)
         def etch_lower_masks(i):
             mask.fill(0, i, 1)
@@ -159,32 +154,30 @@ def main():
         etch_lower_masks('{} LMASK[POINTS] {}'.format(typename, attr_align))
 
         # rank masks    [RMASK]
-        @array_format(points)
+        @array_format(POINTS)
         @clear_and_return(mask)
         def etch_rank_masks(i):
-            mask.fill((i // width) * width + sentinel, FILES, 1)
+            mask.fill(mask.index(SENTINEL, i // WIDTH), FILES, 1)
 
         etch_rank_masks('{} RMASK[POINTS] {}'.format(typename, attr_align))
 
         # file masks    [FMASK]
-        @array_format(points)
+        @array_format(POINTS)
         @clear_and_return(mask)
         def etch_file_masks(i):
             for y in range(RANKS):
-                mask.fill(y * width + (i % width), 1, 1)
+                mask.fill(mask.index(i % WIDTH, y), 1, 1)
 
         etch_file_masks('{} FMASK[POINTS] {}'.format(typename, attr_align))
 
         # outer masks   [OMASK]
-        @array_format(points)
+        @array_format(POINTS)
         @clear_and_return(mask)
         def etch_outer_masks(i):
-            for index in (i - (i % width), i - (i % width) + width - 1,
-                          i % width, (RANKS - 1) * width + (i % width)):
-                mask.fill(index, 1, 1)
+            for x, y in ((0, i // WIDTH), (WIDTH - 1, i // WIDTH),
+                         (i % WIDTH, 0), (i % WIDTH, HEIGHT - 1)):
+                mask.fill(mask.index(x, y), 1, 1)
             mask.fill(i, 1, 0)
-            if not sentinel and i == 0:
-                mask.fill(i, 1, 1)
 
         etch_outer_masks('{} OMASK[POINTS] {}'.format(typename, attr_align))
 
