@@ -8,7 +8,7 @@
 
 #define FILES       9
 #define RANKS       10
-#define SENTINEL    0
+#define SENTINEL    1
 
 #define WIDTH       (FILES + (SENTINEL << 1))
 #define HEIGHT      (RANKS)
