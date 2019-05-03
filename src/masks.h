@@ -20,9 +20,4 @@ extern const __uint128_t SMASK[2];
 extern const __uint128_t XMASK[2];
 extern const __uint128_t ZMASK[2];
 
-extern const __uint128_t FMASKN0;
-extern const __uint128_t FMASKN8;
-extern const __uint128_t FMASKN01;
-extern const __uint128_t FMASKN78;
-
 #endif /* MASKS_H */

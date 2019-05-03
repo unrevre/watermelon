@@ -220,45 +220,6 @@ def main():
 
         etch_zmasks('{} ZMASK[2]'.format(typename))
 
-        # special masks
-        @format()
-        @clear_and_return(mask)
-        def etch_fmaskn0_mask():
-            mask.fill(0, BITS, 1)
-            for i in range(RANKS):
-                mask.fill(i * width + sentinel, 1, 0)
-
-        etch_fmaskn0_mask('{} FMASKN0'.format(typename))
-
-        @format()
-        @clear_and_return(mask)
-        def etch_fmaskn8_mask():
-            mask.fill(0, BITS, 1)
-            for i in range(RANKS):
-                mask.fill(i * width + sentinel + 8, 1, 0)
-
-        etch_fmaskn8_mask('{} FMASKN8'.format(typename))
-
-        @format()
-        @clear_and_return(mask)
-        def etch_fmaskn01_mask():
-            mask.fill(0, BITS, 1)
-            for i in range(RANKS):
-                mask.fill(i * width + sentinel, 1, 0)
-                mask.fill(i * width + sentinel + 1, 1, 0)
-
-        etch_fmaskn01_mask('{} FMASKN01'.format(typename))
-
-        @format()
-        @clear_and_return(mask)
-        def etch_fmaskn78_mask():
-            mask.fill(0, BITS, 1)
-            for i in range(RANKS):
-                mask.fill(i * width + sentinel + 7, 1, 0)
-                mask.fill(i * width + sentinel + 8, 1, 0)
-
-        etch_fmaskn78_mask('{} FMASKN78'.format(typename))
-
     # generate header (.h) file
     output = re.sub(r'.c$', '.h', output)
 
@@ -285,11 +246,6 @@ def main():
             extern {0} SMASK[2];
             extern {0} XMASK[2];
             extern {0} ZMASK[2];
-
-            extern {0} FMASKN0;
-            extern {0} FMASKN8;
-            extern {0} FMASKN01;
-            extern {0} FMASKN78;
 
             #endif /* MASKS_H */
             """.format(typename)))
