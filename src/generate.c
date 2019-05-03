@@ -51,14 +51,10 @@ move_array_t generate(int64_t side) {
       moveset = moveset | _2w1n(lset) | _2w1s(lset);
       __uint128_t rset = PMASK[index] & _1w(game.pieces[empty]);
       moveset = moveset | _2e1n(rset) | _2e1s(rset);
-      __uint128_t flset = PMASK[index] & _1s(game.pieces[empty]);
-      moveset = moveset | _2n1w(flset);
-      __uint128_t frset = PMASK[index] & _1s(game.pieces[empty]);
-      moveset = moveset | _2n1e(frset);
-      __uint128_t blset = PMASK[index] & _1n(game.pieces[empty]);
-      moveset = moveset | _2s1w(blset);
-      __uint128_t brset = PMASK[index] & _1n(game.pieces[empty]);
-      moveset = moveset | _2s1e(brset);
+      __uint128_t nset = PMASK[index] & _1s(game.pieces[empty]);
+      moveset = moveset | _2n1w(nset) | _2n1e(nset);
+      __uint128_t sset = PMASK[index] & _1n(game.pieces[empty]);
+      moveset = moveset | _2s1w(sset) | _2s1e(sset);
       moveset = moveset & BMASK & ~game.occupancy[side];
 
       add_piecewise(moveset, index, &moves);
@@ -202,14 +198,10 @@ move_array_t generate_pseudolegal(int64_t side) {
       moveset = moveset | _2w1n(lset) | _2w1s(lset);
       __uint128_t rset = PMASK[index] & _1w(game.pieces[empty]);
       moveset = moveset | _2e1n(rset) | _2e1s(rset);
-      __uint128_t flset = PMASK[index] & _1s(game.pieces[empty]);
-      moveset = moveset | _2n1w(flset);
-      __uint128_t frset = PMASK[index] & _1s(game.pieces[empty]);
-      moveset = moveset | _2n1e(frset);
-      __uint128_t blset = PMASK[index] & _1n(game.pieces[empty]);
-      moveset = moveset | _2s1w(blset);
-      __uint128_t brset = PMASK[index] & _1n(game.pieces[empty]);
-      moveset = moveset | _2s1e(brset);
+      __uint128_t nset = PMASK[index] & _1s(game.pieces[empty]);
+      moveset = moveset | _2n1w(nset) | _2n1e(nset);
+      __uint128_t sset = PMASK[index] & _1n(game.pieces[empty]);
+      moveset = moveset | _2s1w(sset) | _2s1e(sset);
       moveset = moveset & BMASK & ~game.occupancy[side];
 
       add_piecewise(moveset, index, &moves);
@@ -360,14 +352,10 @@ move_array_t generate_captures(int64_t side) {
       moveset = moveset | _2w1n(lset) | _2w1s(lset);
       __uint128_t rset = PMASK[index] & _1w(game.pieces[empty]);
       moveset = moveset | _2e1n(rset) | _2e1s(rset);
-      __uint128_t flset = PMASK[index] & _1s(game.pieces[empty]);
-      moveset = moveset | _2n1w(flset);
-      __uint128_t frset = PMASK[index] & _1s(game.pieces[empty]);
-      moveset = moveset | _2n1e(frset);
-      __uint128_t blset = PMASK[index] & _1n(game.pieces[empty]);
-      moveset = moveset | _2s1w(blset);
-      __uint128_t brset = PMASK[index] & _1n(game.pieces[empty]);
-      moveset = moveset | _2s1e(brset);
+      __uint128_t nset = PMASK[index] & _1s(game.pieces[empty]);
+      moveset = moveset | _2n1w(nset) | _2n1e(nset);
+      __uint128_t sset = PMASK[index] & _1n(game.pieces[empty]);
+      moveset = moveset | _2s1w(sset) | _2s1e(sset);
       moveset = moveset & BMASK & game.occupancy[!side];
 
       add_piecewise(moveset, index, &moves);
@@ -511,14 +499,10 @@ move_array_t generate_quiet(int64_t side) {
       moveset = moveset | _2w1n(lset) | _2w1s(lset);
       __uint128_t rset = PMASK[index] & _1w(game.pieces[empty]);
       moveset = moveset | _2e1n(rset) | _2e1s(rset);
-      __uint128_t flset = PMASK[index] & _1s(game.pieces[empty]);
-      moveset = moveset | _2n1w(flset);
-      __uint128_t frset = PMASK[index] & _1s(game.pieces[empty]);
-      moveset = moveset | _2n1e(frset);
-      __uint128_t blset = PMASK[index] & _1n(game.pieces[empty]);
-      moveset = moveset | _2s1w(blset);
-      __uint128_t brset = PMASK[index] & _1n(game.pieces[empty]);
-      moveset = moveset | _2s1e(brset);
+      __uint128_t nset = PMASK[index] & _1s(game.pieces[empty]);
+      moveset = moveset | _2n1w(nset) | _2n1e(nset);
+      __uint128_t sset = PMASK[index] & _1n(game.pieces[empty]);
+      moveset = moveset | _2s1w(sset) | _2s1e(sset);
       moveset = moveset & BMASK & game.pieces[empty];
 
       add_piecewise(moveset, index, &moves);
