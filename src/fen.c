@@ -1,5 +1,6 @@
 #include "fen.h"
 
+#include "inlines.h"
 #include "magics.h"
 #include "masks.h"
 #include "state.h"
@@ -27,7 +28,7 @@ void reset_fen(const char* fen_str) {
       board[i] = empty;
 
    char* fstr_p = fstr;
-   for (int64_t i = (HEIGHT - 1) * WIDTH + SENTINEL; *fstr_p; ++fstr_p, ++i) {
+   for (int64_t i = to_internal(0, HEIGHT - 1); *fstr_p; ++fstr_p, ++i) {
       int32_t piece = -1;
 
       switch (*fstr_p) {
