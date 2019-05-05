@@ -141,10 +141,9 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
    int64_t side = trunk.side;
    __uint128_t tpmask = PMASK[to];
 
-   int32_t fmod = (to - from) % WIDTH;
-   int32_t fdiff = fmod < 0 ? fmod + WIDTH : fmod;
+   int32_t fdiff = (to - from) % WIDTH;
+   int32_t fdabs = fdiff < 0 ? fdiff + WIDTH : fdiff;
    int32_t rdiff = from / WIDTH - to / WIDTH;
-   int32_t fdabs = abs(fdiff);
    int32_t rdabs = abs(rdiff);
 
    switch (p(board[from])) {
