@@ -270,9 +270,12 @@ int64_t event_loop(interface_t* itf) {
             case cmd_leap:
                retval = 1;
             case cmd_move:
-               if (tokens[0] && tokens[1]) {
-                  move_t move = move_for_indices(atoi(tokens[1]),
-                                                 atoi(tokens[2]));
+               if (tokens[1] && tokens[2]) {
+                  move_t move = move_for_indices(
+                     to_internal(atoi(tokens[1]) % FILES,
+                                 atoi(tokens[1]) / FILES),
+                     to_internal(atoi(tokens[2]) % FILES,
+                                 atoi(tokens[2]) / FILES));
                   if (move.bits && is_legal(move, trunk.side)) {
                      advance_history(move);
                      advance_game(move);
