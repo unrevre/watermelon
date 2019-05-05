@@ -1,6 +1,8 @@
 #ifndef INLINES_H
 #define INLINES_H
 
+#include "magics.h"
+
 #include <stdint.h>
 
 /*!
@@ -66,6 +68,26 @@ __inline__ uint64_t bsr(__uint128_t bits) {
 
 __inline__ uint32_t popcnt(__uint128_t bits) {
    return __builtin_popcountll(bits >> 64) + __builtin_popcountll(bits);
+}
+
+/*!
+ * to_external
+ * @ convert internal index for output
+ */
+
+__inline__ int32_t to_external(int32_t index) {
+   int32_t y = index / WIDTH;
+   int32_t x = index % WIDTH - SENTINEL;
+   return y * FILES + x;
+}
+
+/*!
+ * to_internal
+ * @ convert coordinates to internal index
+ */
+
+__inline__ int32_t to_internal(int32_t x, int32_t y) {
+   return y * WIDTH + x + SENTINEL;
 }
 
 #endif /* INLINES_H */

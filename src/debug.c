@@ -2,6 +2,7 @@
 
 #include "eval.h"
 #include "fen.h"
+#include "inlines.h"
 #include "magics.h"
 #include "memory.h"
 #include "position.h"
@@ -60,7 +61,7 @@ char* info_eval(debug_t* info) {
 void impl_fen(char* buffer) {
    memset(buffer, '0', 91);
 
-   int64_t a = (HEIGHT - 1) * WIDTH + SENTINEL;
+   int64_t a = to_internal(0, HEIGHT - 1);
    int64_t f = 0;
    for (int64_t i = 0; i != RANKS; ++i) {
       int64_t g = f;
@@ -96,7 +97,7 @@ char* info_fen(debug_t* info) {
  */
 
 void impl_game_state(char* buffer) {
-   int64_t a = (HEIGHT - 1) * WIDTH + SENTINEL;
+   int64_t a = to_internal(0, HEIGHT - 1);
    int64_t g = 0;
    for (int64_t i = 0; i != RANKS; ++i) {
       char filler = (i == 4 || i == 5) ? '-' : ' ';
@@ -120,24 +121,13 @@ char* info_game_state(debug_t* info) {
 }
 
 /*!
- * adjust
- * @ adjust internal indices for output
- */
-
-static int32_t adjust(int32_t index) {
-   int32_t y = index / WIDTH;
-   int32_t x = index % WIDTH - SENTINEL;
-   return y * FILES + x;
-}
-
-/*!
  * impl_move
  * @ internal implementation for 'info_move'
  */
 
 void impl_move(char* buffer, move_t move) {
    sprintf(buffer, "move %2i %2i %c/%c",
-           adjust(move._.from), adjust(move._.to),
+           to_external(move._.from), to_external(move._.to),
            fen_char[move._.pfrom], fen_char[move._.pto]);
 }
 
