@@ -14,9 +14,17 @@ WIDTH = FILES + 2 * SENTINEL
 HEIGHT = RANKS
 POINTS = WIDTH * HEIGHT
 
+def point(x, y):
+    return y * WIDTH + x
+
+def index(x, y):
+    return y * WIDTH + x + SENTINEL
+
+
 class Mask():
     def __init__(self):
-        self.bits = bytearray(128)
+        self.bits = None
+        self.clear()
 
     def __str__(self):
         strrep = ''.join((str(b) for b in self.bits[::-1]))
@@ -26,88 +34,50 @@ class Mask():
     def clear(self):
         self.bits = bytearray(128)
 
-    def index(self, x, y):
-        return y * WIDTH + x
-
     def fill(self, index, count, value):
         for i in range(count):
             self.bits[index + i] = value
 
 
-class Board(Mask):
-    def __init__(self):
-        super().__init__()
-
-    def index(self, x, y):
-        return y * WIDTH + SENTINEL + x
-
-    def layout_board(self):
-        for y in range(HEIGHT):
-            self.fill(self.index(0, y), FILES, 1)
-
-    def layout_jmask(self, side):
-        h = HEIGHT - 3 if side else 0
-        for y in range(h, h + 3):
-            self.fill(self.index(3, y), 3, 1)
-
-    def layout_smask(self, side):
-        h = HEIGHT - 3 if side else 0
-        for x, y in ((3, h), (5, h), (4, h + 1), (3, h + 2), (5, h + 2)):
-            self.fill(self.index(x, y), 1, 1)
-
-    def layout_xmask(self, side):
-        h = HEIGHT - 5 if side else 0
-        for x, y in ((2, h), (6, h), (0, h + 2), (4, h + 2), (8, h + 2),
-                     (2, h + 4), (6, h + 4)):
-            self.fill(self.index(x, y), 1, 1)
-
-    def layout_zmask(self, side):
-        h = HEIGHT - 5 if side else 3
-        for y in range(h, h + 2):
-            for x, y in ((0, y), (2, y), (4, y), (6, y), (8, y)):
-                self.fill(self.index(x, y), 1, 1)
-
-        h = 0 if side else HEIGHT - 5
-        for y in range(h, h + 5):
-            self.fill(self.index(0, y), FILES, 1)
-
-
 def main():
     mask = Mask()
-    board = Board()
 
     # templates
     typename = 'const __uint128_t'
-    attr_align = '__attribute__((aligned(64)))'
-
-    class clear_and_return():
-        def __init__(self, mask):
-            self.mask = mask
-
-        def __call__(self, fn):
-            def wrapped(*args):
-                self.mask.clear()
-                fn(*args)
-                return self.mask
-            return wrapped
+    attr = ' __attribute__((aligned(64)))'
 
     class format():
-        def __call__(self, fn):
-            def wrapped(identifier):
-                f.write(identifier + ' =\n   ' + fn().__str__() + ';\n\n')
+        def __init__(self, f, identifier):
+            self.f = f
+            self.identifier = identifier
+
+        def __call__(self, func):
+            def wrapped(*args):
+                self.f.write(self.identifier + ' =\n')
+                args[0].clear()
+                func(*args)
+                self.f.write('   ' + str(*args))
+                self.f.write(';\n\n')
             return wrapped
 
-    class array_format():
-        def __init__(self, n):
+    class format_array():
+        def __init__(self, f, identifier, n):
+            self.f = f
+            self.identifier = identifier
             self.n = n
 
-        def __call__(self, fn):
-            def wrapped(identifier):
-                f.write(identifier + ' = {\n')
+        def __call__(self, func):
+            def wrapped(*args):
+                self.f.write(self.identifier + ' = {\n')
                 for i in range(self.n):
-                    f.write('   ' + fn(i).__str__() + ',\n')
-                f.truncate(f.tell() - 2)
-                f.write('\n};\n\n')
+                    args[0].clear()
+                    func(*args, i)
+                    self.f.write('   ' + str(*args))
+                    if i < self.n - 1:
+                        self.f.write(',\n')
+                    else:
+                        self.f.write('\n}')
+                self.f.write(';\n\n')
             return wrapped
 
     # generate source (.c) file
@@ -122,96 +92,100 @@ def main():
             """))
 
         # board mask    [BMASK]
-        @format()
-        @clear_and_return(board)
-        def etch_board_mask():
-            board.layout_board()
+        @format(f, '{} BMASK'.format(typename))
+        def etch_board_mask(mask):
+            for y in range(HEIGHT):
+                mask.fill(index(0, y), FILES, 1)
 
-        etch_board_mask('{} BMASK'.format(typename))
+        etch_board_mask(mask)
 
         # point masks   [PMASK]
-        @array_format(BITS)
-        @clear_and_return(mask)
-        def etch_point_masks(i):
+        @format_array(f, '{} PMASK[BITS]{}'.format(typename, attr), BITS)
+        def etch_point_masks(mask, i):
             mask.fill(i, 1, 1)
 
-        etch_point_masks('{} PMASK[BITS] {}'.format(typename, attr_align))
+        etch_point_masks(mask)
 
         # upper masks   [UMASK]
-        @array_format(POINTS)
-        @clear_and_return(mask)
-        def etch_upper_masks(i):
+        @format_array(f, '{} UMASK[POINTS]{}'.format(typename, attr), POINTS)
+        def etch_upper_masks(mask, i):
             mask.fill(i + 1, BITS - 1 - i, 1)
 
-        etch_upper_masks('{} UMASK[POINTS] {}'.format(typename, attr_align))
+        etch_upper_masks(mask)
 
         # lower masks   [LMASK]
-        @array_format(POINTS)
-        @clear_and_return(mask)
-        def etch_lower_masks(i):
+        @format_array(f, '{} LMASK[POINTS]{}'.format(typename, attr), POINTS)
+        def etch_lower_masks(mask, i):
             mask.fill(0, i, 1)
 
-        etch_lower_masks('{} LMASK[POINTS] {}'.format(typename, attr_align))
+        etch_lower_masks(mask)
 
         # rank masks    [RMASK]
-        @array_format(POINTS)
-        @clear_and_return(mask)
-        def etch_rank_masks(i):
-            mask.fill(mask.index(SENTINEL, i // WIDTH), FILES, 1)
+        @format_array(f, '{} RMASK[POINTS]{}'.format(typename, attr), POINTS)
+        def etch_rank_masks(mask, i):
+            mask.fill(index(0, i // WIDTH), FILES, 1)
 
-        etch_rank_masks('{} RMASK[POINTS] {}'.format(typename, attr_align))
+        etch_rank_masks(mask)
 
         # file masks    [FMASK]
-        @array_format(POINTS)
-        @clear_and_return(mask)
-        def etch_file_masks(i):
+        @format_array(f, '{} FMASK[POINTS]{}'.format(typename, attr), POINTS)
+        def etch_file_masks(mask, i):
             for y in range(RANKS):
-                mask.fill(mask.index(i % WIDTH, y), 1, 1)
+                mask.fill(point(i % WIDTH, y), 1, 1)
 
-        etch_file_masks('{} FMASK[POINTS] {}'.format(typename, attr_align))
+        etch_file_masks(mask)
 
         # outer masks   [OMASK]
-        @array_format(POINTS)
-        @clear_and_return(mask)
-        def etch_outer_masks(i):
+        @format_array(f, '{} OMASK[POINTS]{}'.format(typename, attr), POINTS)
+        def etch_outer_masks(mask, i):
             for x, y in ((0, i // WIDTH), (WIDTH - 1, i // WIDTH),
                          (i % WIDTH, 0), (i % WIDTH, HEIGHT - 1)):
-                mask.fill(mask.index(x, y), 1, 1)
+                mask.fill(point(x, y), 1, 1)
             mask.fill(i, 1, 0)
 
-        etch_outer_masks('{} OMASK[POINTS] {}'.format(typename, attr_align))
+        etch_outer_masks(mask)
 
         # jiang mask    [JMASK]
-        @array_format(2)
-        @clear_and_return(board)
-        def etch_jmasks(i):
-            board.layout_jmask(i)
+        @format_array(f, '{} JMASK[2]'.format(typename), 2)
+        def etch_jmasks(mask, side):
+            h = HEIGHT - 3 if side else 0
+            for y in range(h, h + 3):
+                mask.fill(index(3, y), 3, 1)
 
-        etch_jmasks('{} JMASK[2]'.format(typename))
+        etch_jmasks(mask)
 
         # shi mask      [SMASK]
-        @array_format(2)
-        @clear_and_return(board)
-        def etch_smasks(i):
-            board.layout_smask(i)
+        @format_array(f, '{} SMASK[2]'.format(typename), 2)
+        def etch_smasks(mask, side):
+            h = HEIGHT - 3 if side else 0
+            for x, y in ((3, h), (5, h), (4, h + 1), (3, h + 2), (5, h + 2)):
+                mask.fill(index(x, y), 1, 1)
 
-        etch_smasks('{} SMASK[2]'.format(typename))
+        etch_smasks(mask)
 
         # xiang mask    [XMASK]
-        @array_format(2)
-        @clear_and_return(board)
-        def etch_xmasks(i):
-            board.layout_xmask(i)
+        @format_array(f, '{} XMASK[2]'.format(typename), 2)
+        def etch_xmasks(mask, side):
+            h = HEIGHT - 5 if side else 0
+            for x, y in ((2, h), (6, h), (0, h + 2), (4, h + 2), (8, h + 2),
+                         (2, h + 4), (6, h + 4)):
+                mask.fill(index(x, y), 1, 1)
 
-        etch_xmasks('{} XMASK[2]'.format(typename))
+        etch_xmasks(mask)
 
         # zu mask       [ZMASK]
-        @array_format(2)
-        @clear_and_return(board)
-        def etch_zmasks(i):
-            board.layout_zmask(i)
+        @format_array(f, '{} ZMASK[2]'.format(typename), 2)
+        def etch_zmasks(mask, side):
+            h = HEIGHT - 5 if side else 3
+            for y in range(h, h + 2):
+                for x, y in ((0, y), (2, y), (4, y), (6, y), (8, y)):
+                    mask.fill(index(x, y), 1, 1)
 
-        etch_zmasks('{} ZMASK[2]'.format(typename))
+            h = 0 if side else HEIGHT - 5
+            for y in range(h, h + 5):
+                mask.fill(index(0, y), FILES, 1)
+
+        etch_zmasks(mask)
 
     # generate header (.h) file
     output = re.sub(r'.c$', '.h', output)
