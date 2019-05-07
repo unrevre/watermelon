@@ -6,6 +6,7 @@
 #include "magics.h"
 
 extern const __uint128_t BMASK;
+extern const __uint128_t OMASK;
 
 extern const __uint128_t PMASK[BITS];
 
@@ -13,7 +14,6 @@ extern const __uint128_t UMASK[POINTS];
 extern const __uint128_t LMASK[POINTS];
 extern const __uint128_t RMASK[POINTS];
 extern const __uint128_t FMASK[POINTS];
-extern const __uint128_t OMASK[POINTS];
 
 extern const __uint128_t JMASK[2];
 extern const __uint128_t SMASK[2];

@@ -24,7 +24,7 @@ move_array_t generate(int64_t side) {
       __uint128_t fset, flow, fcbn;
       __uint128_t moveset;
 
-      __uint128_t outer = (~game.pieces[empty] ^ PMASK[index]) | OMASK[index];
+      __uint128_t outer = (~game.pieces[empty] ^ PMASK[index]) | OMASK;
 
       rlow = outer & LMASK[index];
       rcbn = C3U128 << bsr(rlow);
@@ -70,7 +70,7 @@ move_array_t generate(int64_t side) {
       __uint128_t moveset, captures;
 
       __uint128_t occupancy = (~game.pieces[empty] ^ PMASK[index]);
-      __uint128_t outer = occupancy | OMASK[index];
+      __uint128_t outer = occupancy | OMASK;
 
       rlow = outer & LMASK[index];
       rcbn = C3U128 << bsr(rlow);
@@ -171,7 +171,7 @@ move_array_t generate_pseudolegal(int64_t side) {
       __uint128_t fset, flow, fcbn;
       __uint128_t moveset;
 
-      __uint128_t outer = (~game.pieces[empty] ^ PMASK[index]) | OMASK[index];
+      __uint128_t outer = (~game.pieces[empty] ^ PMASK[index]) | OMASK;
 
       rlow = outer & LMASK[index];
       rcbn = C3U128 << bsr(rlow);
@@ -217,7 +217,7 @@ move_array_t generate_pseudolegal(int64_t side) {
       __uint128_t moveset, captures;
 
       __uint128_t occupancy = (~game.pieces[empty] ^ PMASK[index]);
-      __uint128_t outer = occupancy | OMASK[index];
+      __uint128_t outer = occupancy | OMASK;
 
       rlow = outer & LMASK[index];
       rcbn = C3U128 << bsr(rlow);
@@ -325,7 +325,7 @@ move_array_t generate_captures(int64_t side) {
       __uint128_t fset, flow, fcbn;
       __uint128_t moveset;
 
-      __uint128_t outer = (~game.pieces[empty] ^ PMASK[index]) | OMASK[index];
+      __uint128_t outer = (~game.pieces[empty] ^ PMASK[index]) | OMASK;
 
       rlow = outer & LMASK[index];
       rcbn = C3U128 << bsr(rlow);
@@ -371,7 +371,7 @@ move_array_t generate_captures(int64_t side) {
       __uint128_t moveset;
 
       __uint128_t occupancy = (~game.pieces[empty] ^ PMASK[index]);
-      __uint128_t outer = occupancy | OMASK[index];
+      __uint128_t outer = occupancy | OMASK;
 
       rlow = outer & LMASK[index];
       rcbn = C3U128 << bsr(rlow);
