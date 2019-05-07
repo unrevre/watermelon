@@ -14,6 +14,20 @@ WIDTH = FILES + 2 * SENTINEL
 HEIGHT = RANKS
 POINTS = WIDTH * HEIGHT
 
+class OutsideBoard(Exception):
+    def __init__(self, index):
+        message = '[{}] not a valid board index'.format(index)
+        super().__init__(message)
+        self.index = index
+
+
+def coordinates(index):
+    x = index % WIDTH - SENTINEL
+    y = index // WIDTH
+    if 0 <= x < FILES and 0 <= y < RANKS:
+        return x, y
+    raise OutsideBoard(index)
+
 def point(x, y):
     return y * WIDTH + x
 
@@ -80,6 +94,17 @@ def main():
                 self.f.write(';\n\n')
             return wrapped
 
+    class valid_board_index():
+        def __init__(self, func):
+            self.func = func
+
+        def __call__(self, *args):
+            try:
+                coordinates(args[1])
+                self.func(*args)
+            except OutsideBoard:
+                pass
+
     # generate source (.c) file
     output = 'masks.c'
 
@@ -122,6 +147,7 @@ def main():
 
         # rank masks    [RMASK]
         @format_array(f, '{} RMASK[POINTS]{}'.format(typename, attr), POINTS)
+        @valid_board_index
         def etch_rank_masks(mask, i):
             mask.fill(index(0, i // WIDTH), FILES, 1)
 
@@ -129,6 +155,7 @@ def main():
 
         # file masks    [FMASK]
         @format_array(f, '{} FMASK[POINTS]{}'.format(typename, attr), POINTS)
+        @valid_board_index
         def etch_file_masks(mask, i):
             for y in range(RANKS):
                 mask.fill(point(i % WIDTH, y), 1, 1)
