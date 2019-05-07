@@ -143,7 +143,7 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
 
    int32_t fdiff = (to - from) % WIDTH;
    int32_t fdabs = fdiff < 0 ? fdiff + WIDTH : fdiff;
-   int32_t rdiff = from / WIDTH - to / WIDTH;
+   int32_t rdiff = (from - OFFSET) / WIDTH - (to - OFFSET) / WIDTH;
    int32_t rdabs = abs(rdiff);
 
    switch (p(board[from])) {
