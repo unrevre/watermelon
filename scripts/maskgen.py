@@ -125,6 +125,17 @@ def main():
 
         etch_board_mask(mask)
 
+        # outer masks   [OMASK]
+        @format(f, '{} OMASK'.format(typename))
+        def etch_outer_mask(mask):
+            for i in range(BITS):
+                try:
+                    coordinates(i)
+                except OutsideBoard:
+                    mask.fill(i, 1, 1)
+
+        etch_outer_mask(mask)
+
         # point masks   [PMASK]
         @format_array(f, '{} PMASK[BITS]{}'.format(typename, attr), BITS)
         def etch_point_masks(mask, i):
@@ -162,17 +173,6 @@ def main():
                 mask.fill(point((i - OFFSET) % WIDTH, y), 1, 1)
 
         etch_file_masks(mask)
-
-        # outer masks   [OMASK]
-        @format_array(f, '{} OMASK[POINTS]{}'.format(typename, attr), POINTS)
-        def etch_outer_masks(mask, i):
-            for j in range(BITS):
-                try:
-                    coordinates(j)
-                except OutsideBoard:
-                    mask.fill(j, 1, 1)
-
-        etch_outer_masks(mask)
 
         # jiang mask    [JMASK]
         @format_array(f, '{} JMASK[2]'.format(typename), 2)
@@ -229,6 +229,7 @@ def main():
             #include "magics.h"
 
             extern {0} BMASK;
+            extern {0} OMASK;
 
             extern {0} PMASK[BITS];
 
@@ -236,7 +237,6 @@ def main():
             extern {0} LMASK[POINTS];
             extern {0} RMASK[POINTS];
             extern {0} FMASK[POINTS];
-            extern {0} OMASK[POINTS];
 
             extern {0} JMASK[2];
             extern {0} SMASK[2];
