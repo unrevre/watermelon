@@ -9,7 +9,7 @@ BITS = 128
 FILES = 9
 RANKS = 10
 SENTINEL = 1
-OFFSET = 0
+OFFSET = 9
 
 WIDTH = FILES + 2 * SENTINEL
 HEIGHT = RANKS
@@ -166,12 +166,11 @@ def main():
         # outer masks   [OMASK]
         @format_array(f, '{} OMASK[POINTS]{}'.format(typename, attr), POINTS)
         def etch_outer_masks(mask, i):
-            for x, y in ((0, (i - OFFSET) // WIDTH),
-                         (WIDTH - 1, (i - OFFSET) // WIDTH),
-                         ((i - OFFSET) % WIDTH, 0),
-                         ((i - OFFSET) % WIDTH, HEIGHT - 1)):
-                mask.fill(point(x, y), 1, 1)
-            mask.fill(i, 1, 0)
+            for j in range(BITS):
+                try:
+                    coordinates(j)
+                except OutsideBoard:
+                    mask.fill(j, 1, 1)
 
         etch_outer_masks(mask)
 
