@@ -9,10 +9,11 @@ BITS = 128
 FILES = 9
 RANKS = 10
 SENTINEL = 1
+OFFSET = 0
 
 WIDTH = FILES + 2 * SENTINEL
 HEIGHT = RANKS
-POINTS = WIDTH * HEIGHT
+POINTS = WIDTH * HEIGHT + 2 * OFFSET
 
 class OutsideBoard(Exception):
     def __init__(self, index):
@@ -22,17 +23,17 @@ class OutsideBoard(Exception):
 
 
 def coordinates(index):
-    x = index % WIDTH - SENTINEL
-    y = index // WIDTH
+    x = (index - OFFSET) % WIDTH - SENTINEL
+    y = (index - OFFSET) // WIDTH
     if 0 <= x < FILES and 0 <= y < RANKS:
         return x, y
     raise OutsideBoard(index)
 
 def point(x, y):
-    return y * WIDTH + x
+    return y * WIDTH + x + OFFSET
 
 def index(x, y):
-    return y * WIDTH + x + SENTINEL
+    return y * WIDTH + x + SENTINEL + OFFSET
 
 
 class Mask():
@@ -149,7 +150,7 @@ def main():
         @format_array(f, '{} RMASK[POINTS]{}'.format(typename, attr), POINTS)
         @valid_board_index
         def etch_rank_masks(mask, i):
-            mask.fill(index(0, i // WIDTH), FILES, 1)
+            mask.fill(index(0, (i - OFFSET) // WIDTH), FILES, 1)
 
         etch_rank_masks(mask)
 
@@ -158,15 +159,17 @@ def main():
         @valid_board_index
         def etch_file_masks(mask, i):
             for y in range(RANKS):
-                mask.fill(point(i % WIDTH, y), 1, 1)
+                mask.fill(point((i - OFFSET) % WIDTH, y), 1, 1)
 
         etch_file_masks(mask)
 
         # outer masks   [OMASK]
         @format_array(f, '{} OMASK[POINTS]{}'.format(typename, attr), POINTS)
         def etch_outer_masks(mask, i):
-            for x, y in ((0, i // WIDTH), (WIDTH - 1, i // WIDTH),
-                         (i % WIDTH, 0), (i % WIDTH, HEIGHT - 1)):
+            for x, y in ((0, (i - OFFSET) // WIDTH),
+                         (WIDTH - 1, (i - OFFSET) // WIDTH),
+                         ((i - OFFSET) % WIDTH, 0),
+                         ((i - OFFSET) % WIDTH, HEIGHT - 1)):
                 mask.fill(point(x, y), 1, 1)
             mask.fill(i, 1, 0)
 

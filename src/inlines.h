@@ -76,8 +76,8 @@ __inline__ uint32_t popcnt(__uint128_t bits) {
  */
 
 __inline__ int32_t to_external(int32_t index) {
-   int32_t y = index / WIDTH;
-   int32_t x = index % WIDTH - SENTINEL;
+   int32_t y = (index - OFFSET) / WIDTH;
+   int32_t x = (index - OFFSET) % WIDTH - SENTINEL;
    return y * FILES + x;
 }
 
@@ -87,7 +87,7 @@ __inline__ int32_t to_external(int32_t index) {
  */
 
 __inline__ int32_t to_internal(int32_t x, int32_t y) {
-   return y * WIDTH + x + SENTINEL;
+   return y * WIDTH + x + SENTINEL + OFFSET;
 }
 
 #endif /* INLINES_H */
