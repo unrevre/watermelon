@@ -27,8 +27,8 @@
 #define _1f(a, s)   ((a << (WIDTH)) >> (s ? (WIDTH << 1) : 0))
 
 #define _1n1e(a)    _1n(_1e(a))
-#define _1n1w(a)    _1n(_1w(a))
-#define _1s1e(a)    _1s(_1e(a))
+#define _1n1w(a)    (a << (WIDTH - 1))
+#define _1s1e(a)    (a >> (WIDTH - 1))
 #define _1s1w(a)    _1s(_1w(a))
 
 #define _2n(a)      _1n(_1n(a))
@@ -37,17 +37,17 @@
 #define _2w(a)      _1w(_1w(a))
 
 #define _2n1e(a)    _2n(_1e(a))
-#define _2n1w(a)    _2n(_1w(a))
+#define _2n1w(a)    _1n(_1n1w(a))
 #define _2e1n(a)    _2e(_1n(a))
-#define _2e1s(a)    _2e(_1s(a))
-#define _2s1e(a)    _2s(_1e(a))
+#define _2e1s(a)    (a >> (WIDTH - 2))
+#define _2s1e(a)    _1s(_1s1e(a))
 #define _2s1w(a)    _2s(_1w(a))
-#define _2w1n(a)    _2w(_1n(a))
+#define _2w1n(a)    (a << (WIDTH - 2))
 #define _2w1s(a)    _2w(_1s(a))
 
 #define _2n2e(a)    _2n(_2e(a))
-#define _2n2w(a)    _2n(_2w(a))
-#define _2s2e(a)    _2s(_2e(a))
+#define _2n2w(a)    _1n1w(_1n1w(a))
+#define _2s2e(a)    _1s1e(_1s1e(a))
 #define _2s2w(a)    _2s(_2w(a))
 
 /* search */
