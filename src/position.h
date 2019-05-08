@@ -10,21 +10,21 @@
  * @ test if side is in check
  */
 
-uint32_t in_check(uint32_t side);
+uint32_t in_check(int64_t side);
 
 /*!
  * is_valid
  * @ test if given move is pseudolegal
  */
 
-uint32_t is_valid(move_t move, uint32_t side);
+uint32_t is_valid(move_t move, int64_t side);
 
 /*!
  * is_legal
  * @ test if given move is legal in current position
  */
 
-uint32_t is_legal(move_t move, uint32_t side);
+uint32_t is_legal(move_t move, int64_t side);
 
 /*!
  * is_repetition
@@ -38,7 +38,7 @@ uint32_t is_repetition(transient_t* state);
  * @ test if piece at index is on side to move
  */
 
-uint32_t is_index_movable(int32_t index);
+uint32_t is_index_movable(int64_t index);
 
 /*!
  * move_for_indices
