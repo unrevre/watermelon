@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 
-uint32_t in_check(uint32_t side) {
+uint32_t in_check(int64_t side) {
    uint64_t index = bsf(game.pieces[ps(side, 0x0)]);
 
    __uint128_t pmask = PMASK[index];
@@ -66,7 +66,7 @@ uint32_t in_check(uint32_t side) {
    return 0;
 }
 
-uint32_t is_valid(move_t move, uint32_t side) {
+uint32_t is_valid(move_t move, int64_t side) {
    if (!game.pieces[ps(side, 0x0)]) { return 0; }
 
    if (side != s(move._.pfrom)) { return 0; }
@@ -114,7 +114,7 @@ uint32_t is_valid(move_t move, uint32_t side) {
    __builtin_unreachable();
 }
 
-uint32_t is_legal(move_t move, uint32_t side) {
+uint32_t is_legal(move_t move, int64_t side) {
    if (!is_valid(move, side)) { return 0; }
 
    advance_board(move);
@@ -130,7 +130,7 @@ uint32_t is_repetition(transient_t* state) {
       == *((uint64_t*)(htable + step - 5)) : 0;
 }
 
-uint32_t is_index_movable(int32_t index) {
+uint32_t is_index_movable(int64_t index) {
    return (board[index] != empty && s(board[index]) == trunk.side);
 }
 
