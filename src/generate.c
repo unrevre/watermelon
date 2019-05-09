@@ -460,7 +460,7 @@ move_array_t generate_captures(int64_t side) {
 void add_piecewise(__uint128_t set, uint64_t from, move_array_t* moves) {
    for (; set; set &= set - 1) {
       uint64_t to = bsf(set);
-      move_t move = { ._ = { from, to, board[from], board[to] } };
+      move_t move = { ._ = { from, to, game.board[from], game.board[to] } };
       moves->data[moves->count++] = move;
    }
 }
@@ -469,7 +469,7 @@ void add_shiftwise(__uint128_t set, int64_t shift, move_array_t* moves) {
    for (; set; set &= set - 1) {
       uint64_t to = bsf(set);
       uint64_t from = to - shift;
-      move_t move = { ._ = { from, to, board[from], board[to] } };
+      move_t move = { ._ = { from, to, game.board[from], game.board[to] } };
       moves->data[moves->count++] = move;
    }
 }

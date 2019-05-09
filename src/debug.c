@@ -63,11 +63,11 @@ void impl_fen(char* buffer) {
       int64_t g = f;
       for (int64_t j = 0; j != FILES; ++a, ++j) {
          if (f == g) { ++f; }
-         if (board[a] == empty) {
+         if (game.board[a] == empty) {
             buffer[g]++;
          } else {
             if (buffer[g] == '0') { f = g; }
-            buffer[f++] = fen_char[board[a]];
+            buffer[f++] = fen_char[game.board[a]];
             g = f;
          }
       }
@@ -99,7 +99,8 @@ void impl_game_state(char* buffer) {
       char filler = (i == 4 || i == 5) ? '-' : ' ';
       for (int64_t j = 0; j != FILES; ++a, ++j) {
          buffer[g++] = filler;
-         buffer[g++] = (board[a] == empty) ? filler : fen_char[board[a]];
+         buffer[g++] = game.board[a] == empty
+            ? filler : fen_char[game.board[a]];
       }
 
       buffer[g++] = filler;
