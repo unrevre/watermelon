@@ -68,13 +68,12 @@ uint32_t in_check(int64_t side) {
 
 uint32_t is_valid(move_t move, int64_t side) {
    if (!game.pieces[ps(side, 0x0)]) { return 0; }
-
    if (side != s(move._.pfrom)) { return 0; }
 
-   uint32_t from = move._.from;
+   int32_t from = move._.from;
    if (board[from] != move._.pfrom) { return 0; }
 
-   uint32_t to = move._.to;
+   int32_t to = move._.to;
    if (board[to] != move._.pto) { return 0; }
 
    switch (p(move._.pfrom)) {
@@ -84,26 +83,24 @@ uint32_t is_valid(move_t move, int64_t side) {
             - (game.pieces[ps(red, 0x0)] << 1);
          return !(jspan & FMASK[from] & ~game.pieces[empty]);
       case 1: {
-         uint32_t high = from > to ? from : to;
-         uint32_t low = from > to ? to : from;
-
+         int32_t high = from > to ? from : to;
+         int32_t low = from > to ? to : from;
          __uint128_t jspan = PMASK[high] - (PMASK[low] << 1);
-         jspan = high - low >= WIDTH ? jspan & FMASK[high] : jspan;
+         if (high - low >= WIDTH) { jspan = jspan & FMASK[high]; }
          return !(jspan & ~game.pieces[empty]); }
       case 2: ;
-         int64_t diff = from > to ? from - to : to - from;
+         int64_t diff = abs(from - to);
          int64_t offset = (diff == (WIDTH - 2))
             ? (WIDTH - 1) : (diff == ((WIDTH << 1) - 1))
             ? (WIDTH - 1) : (WIDTH + 1);
          offset = from > to ? offset : -offset;
          return board[to + offset] == empty;
       case 3: ;
-         uint32_t high = from > to ? from : to;
-         uint32_t low = from > to ? to : from;
-         int64_t count = move._.pto == empty ? 0 : 1;
-
+         int32_t high = from > to ? from : to;
+         int32_t low = from > to ? to : from;
+         int64_t count = move._.pto != empty;
          __uint128_t pspan = PMASK[high] - (PMASK[low] << 1);
-         pspan = high - low >= WIDTH ? pspan & FMASK[high] : pspan;
+         if (high - low >= WIDTH) { pspan = pspan & FMASK[high]; }
          pspan = pspan & ~game.pieces[empty];
          return popcnt(pspan) == count;
       case 4: return 1;
