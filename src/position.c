@@ -12,43 +12,46 @@ uint32_t in_check(int64_t side) {
    uint64_t index = bsf(game.pieces[ps(side, 0x0)]);
 
    __uint128_t pmask = PMASK[index];
+   __uint128_t umask = UMASK[index];
+   __uint128_t rmask = RMASK[index];
+   __uint128_t fmask = FMASK[index];
    __uint128_t emask = game.pieces[empty];
    __uint128_t xmask = pmask | emask;
 
    __uint128_t pset = game.pieces[po(side, 0x3)];
 
-   __uint128_t prset = pset & RMASK[index];
+   __uint128_t prset = pset & rmask;
    for (; prset; prset &= prset - 1) {
-      __uint128_t range = prset ^ -prset ^ UMASK[index];
+      __uint128_t range = prset ^ -prset ^ umask;
       __uint128_t lsb = prset & -prset;
       __uint128_t pxmask = ~(lsb | xmask);
-      range = range & pxmask & RMASK[index];
+      range = range & pxmask & rmask;
       if (popcnt(range) == 1) { return 1; }
    }
 
-   __uint128_t pfset = pset & FMASK[index];
+   __uint128_t pfset = pset & fmask;
    for (; pfset; pfset &= pfset - 1) {
-      __uint128_t range = pfset ^ -pfset ^ UMASK[index];
+      __uint128_t range = pfset ^ -pfset ^ umask;
       __uint128_t lsb = pfset & -pfset;
       __uint128_t pxmask = ~(lsb | xmask);
-      range = range & pxmask & FMASK[index];
+      range = range & pxmask & fmask;
       if (popcnt(range) == 1) { return 1; }
    }
 
    __uint128_t jset = game.pieces[po(side, 0x0)] | game.pieces[po(side, 0x1)];
    __uint128_t jxmask = ~(jset | xmask);
 
-   __uint128_t jrset = jset & RMASK[index];
+   __uint128_t jrset = jset & rmask;
    for (; jrset; jrset &= jrset - 1) {
-      __uint128_t range = jrset ^ -jrset ^ UMASK[index];
-      range = range & jxmask & RMASK[index];
+      __uint128_t range = jrset ^ -jrset ^ umask;
+      range = range & jxmask & rmask;
       if (!range) { return 1; }
    }
 
-   __uint128_t jfset = jset & FMASK[index];
+   __uint128_t jfset = jset & fmask;
    for (; jfset; jfset &= jfset - 1) {
-      __uint128_t range = jfset ^ -jfset ^ UMASK[index];
-      range = range & jxmask & FMASK[index];
+      __uint128_t range = jfset ^ -jfset ^ umask;
+      range = range & jxmask & fmask;
       if (!range) { return 1; }
    }
 
