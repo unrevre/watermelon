@@ -45,7 +45,7 @@ move_t iter_dfs(int32_t depth) {
       if (tick(search.clock)) { break; }
    }
 
-   set_debug_state(&trunk);
+   tree_debug_state(&trunk);
    free(state);
 
    return probe_hash_for_entry(&trunk)._.move;

@@ -34,10 +34,6 @@ void free_debug(debug_t* info) {
    free(info->buffers);
 }
 
-void set_debug_state(transient_t* external) {
-   state = external;
-}
-
 /*!
  * impl_eval
  * @ internal implementation for 'info_eval'
@@ -218,6 +214,10 @@ void debug_printf(char const* fmt, ...) {
 }
 
 #ifdef TREE
+void tree_debug_state(transient_t* external) {
+   state = external;
+}
+
 void tree_root_entry(void) {
    printf("╻\n");
 }

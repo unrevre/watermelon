@@ -63,7 +63,7 @@ void reset_search(transient_t* state) {
    state->ply = 0;
    state->side = trunk.side;
 
-   set_debug_state(state);
+   tree_debug_state(state);
 }
 
 void set_timer(double time) {
