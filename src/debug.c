@@ -40,7 +40,7 @@ void free_debug(debug_t* info) {
  */
 
 void impl_eval(char* buffer) {
-   sprintf(buffer, "eval %i", eval(red));
+   sprintf(buffer, "eval %i", eval(&trunk, red));
 }
 
 char* info_eval(debug_t* info) {
@@ -63,11 +63,11 @@ void impl_fen(char* buffer) {
       int64_t g = f;
       for (int64_t j = 0; j != FILES; ++a, ++j) {
          if (f == g) { ++f; }
-         if (game.board[a] == empty) {
+         if (trunk.game.board[a] == empty) {
             buffer[g]++;
          } else {
             if (buffer[g] == '0') { f = g; }
-            buffer[f++] = fen_char[game.board[a]];
+            buffer[f++] = fen_char[trunk.game.board[a]];
             g = f;
          }
       }
@@ -99,8 +99,8 @@ void impl_game_state(char* buffer) {
       char filler = (i == 4 || i == 5) ? '-' : ' ';
       for (int64_t j = 0; j != FILES; ++a, ++j) {
          buffer[g++] = filler;
-         buffer[g++] = game.board[a] == empty
-            ? filler : fen_char[game.board[a]];
+         buffer[g++] = trunk.game.board[a] == empty
+            ? filler : fen_char[trunk.game.board[a]];
       }
 
       buffer[g++] = filler;
@@ -160,8 +160,8 @@ void trace_principal_variation(char** buffer) {
    ttentry_t entry = probe_hash_for_entry(state);
 
    move_t next = entry._.move;
-   if (next.bits && is_valid(next, state->side)) {
-      if (is_legal(next, state->side)) {
+   if (next.bits && is_valid(state, next, state->side)) {
+      if (is_legal(state, next, state->side)) {
          advance(next, state);
 
          impl_transposition_table_entry(*buffer, entry);

@@ -10,21 +10,21 @@
  * @ test if side is in check
  */
 
-uint32_t in_check(int64_t side);
+uint32_t in_check(transient_t* state, int64_t side);
 
 /*!
  * is_valid
  * @ test if given move is pseudolegal
  */
 
-uint32_t is_valid(move_t move, int64_t side);
+uint32_t is_valid(transient_t* state, move_t move, int64_t side);
 
 /*!
  * is_legal
  * @ test if given move is legal in current position
  */
 
-uint32_t is_legal(move_t move, int64_t side);
+uint32_t is_legal(transient_t* state, move_t move, int64_t side);
 
 /*!
  * is_repetition

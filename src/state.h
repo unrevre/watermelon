@@ -6,8 +6,6 @@
 
 #include <stdint.h>
 
-extern state_t game;
-
 extern uint32_t PSHASH[PIECES][BITS];
 extern uint32_t MVHASH;
 
@@ -47,14 +45,14 @@ void reset_state(const char* fen);
  * @ advance move (update piece bitboards and board array)
  */
 
-void advance_board(move_t move);
+void advance_board(move_t move, transient_t* state);
 
 /*!
  * retract_board
  * @ retract move (update piece bitboards and board array)
  */
 
-void retract_board(move_t move);
+void retract_board(move_t move, transient_t* state);
 
 /*!
  * advance

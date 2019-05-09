@@ -23,9 +23,9 @@ void reset_fen(const char* fen_str) {
    sscanf(fen_str, "%s %c", fstr, &schar);
 
    for (int64_t i = 0; i != PIECES; ++i)
-      game.pieces[i] = 0x0;
+      trunk.game.pieces[i] = 0x0;
    for (int64_t i = 0; i != POINTS; ++i)
-      game.board[i] = empty;
+      trunk.game.board[i] = empty;
 
    char* fstr_p = fstr;
    for (int64_t i = to_internal(0, HEIGHT - 1); *fstr_p; ++fstr_p, ++i) {
@@ -47,21 +47,22 @@ void reset_fen(const char* fen_str) {
 
       if (piece != -1) {
          int64_t side = (*fstr_p > 'Z');
-         game.board[i] = ps(side, piece);
+         trunk.game.board[i] = ps(side, piece);
       }
    }
 
-   game.occupancy[0] = 0x0;
-   game.occupancy[1] = 0x0;
+   trunk.game.occupancy[0] = 0x0;
+   trunk.game.occupancy[1] = 0x0;
 
    for (int64_t i = 0; i != POINTS; ++i) {
-      uint32_t piece = game.board[i];
-      game.pieces[piece] |= PMASK[i];
+      uint32_t piece = trunk.game.board[i];
+      trunk.game.pieces[piece] |= PMASK[i];
       if (piece != empty) {
-         game.occupancy[s(piece)] |= PMASK[i]; }
+         trunk.game.occupancy[s(piece)] |= PMASK[i]; }
    }
 
-   game.pieces[empty] = ~(game.occupancy[0] | game.occupancy[1]);
+   trunk.game.pieces[empty] = ~(trunk.game.occupancy[0]
+      | trunk.game.occupancy[1]);
 
    trunk.side = (schar == 'b') ? black : red;
 }
