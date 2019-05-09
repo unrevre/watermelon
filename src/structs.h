@@ -14,6 +14,7 @@
 typedef struct {
    __uint128_t pieces[PIECES];
    __uint128_t occupancy[2];
+   uint32_t board[BITS];
 } state_t;
 
 /*!

@@ -7,7 +7,6 @@
 #include <stdint.h>
 
 extern state_t game;
-extern uint32_t board[BITS];
 
 extern uint32_t PSHASH[PIECES][BITS];
 extern uint32_t MVHASH;

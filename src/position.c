@@ -74,10 +74,10 @@ uint32_t is_valid(move_t move, int64_t side) {
    if (side != s(move._.pfrom)) { return 0; }
 
    int32_t from = move._.from;
-   if (board[from] != move._.pfrom) { return 0; }
+   if (game.board[from] != move._.pfrom) { return 0; }
 
    int32_t to = move._.to;
-   if (board[to] != move._.pto) { return 0; }
+   if (game.board[to] != move._.pto) { return 0; }
 
    switch (p(move._.pfrom)) {
       case 0: ;
@@ -97,7 +97,7 @@ uint32_t is_valid(move_t move, int64_t side) {
             ? (WIDTH - 1) : (diff == ((WIDTH << 1) - 1))
             ? (WIDTH - 1) : (WIDTH + 1);
          offset = from > to ? offset : -offset;
-         return board[to + offset] == empty;
+         return game.board[to + offset] == empty;
       case 3: ;
          int32_t high = from > to ? from : to;
          int32_t low = from > to ? to : from;
@@ -107,7 +107,7 @@ uint32_t is_valid(move_t move, int64_t side) {
          pspan = pspan & ~game.pieces[empty];
          return popcnt(pspan) == count;
       case 4: return 1;
-      case 5: return board[(from + to) / 2] == empty;
+      case 5: return game.board[(from + to) / 2] == empty;
       case 6: return 1;
    }
 
@@ -131,7 +131,7 @@ uint32_t is_repetition(transient_t* state) {
 }
 
 uint32_t is_index_movable(int64_t index) {
-   return (board[index] != empty && s(board[index]) == trunk.side);
+   return (game.board[index] != empty && s(game.board[index]) == trunk.side);
 }
 
 move_t move_for_indices(uint32_t from, uint32_t to) {
@@ -146,7 +146,7 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
    int32_t rdiff = (from - OFFSET) / WIDTH - (to - OFFSET) / WIDTH;
    int32_t rdabs = abs(rdiff);
 
-   switch (p(board[from])) {
+   switch (p(game.board[from])) {
       case 0:
          if ((fdabs + rdabs != 1) || !(tpmask & JMASK[side]))
             return (move_t){0};
@@ -174,5 +174,5 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
          break;
    }
 
-   return (move_t){ ._ = { from, to, board[from], board[to] } };
+   return (move_t){ ._ = { from, to, game.board[from], game.board[to] } };
 }
