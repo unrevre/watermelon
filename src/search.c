@@ -45,7 +45,10 @@ move_t iter_dfs(int32_t depth) {
       if (tick(search.clock)) { break; }
    }
 
-   return probe_hash_for_entry(state)._.move;
+   set_debug_state(&trunk);
+   free(state);
+
+   return probe_hash_for_entry(&trunk)._.move;
 }
 
 int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
