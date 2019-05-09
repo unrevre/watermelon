@@ -10,8 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-state_t game __attribute__((aligned(64)));
-
 uint32_t PSHASH[PIECES][BITS] __attribute__((aligned(64)));
 uint32_t STHASH;
 uint32_t MVHASH;
@@ -44,8 +42,8 @@ void init_hashes(void) {
 
 void reset_hashes(void) {
    for (int64_t i = 0; i != POINTS; ++i)
-      if (game.board[i] != empty)
-         trunk.hash ^= PSHASH[game.board[i]][i];
+      if (trunk.game.board[i] != empty)
+         trunk.hash ^= PSHASH[trunk.game.board[i]][i];
 
    trunk.hash ^= STHASH;
    htable[0] = trunk.hash;
@@ -61,6 +59,7 @@ void reset_search(transient_t* state) {
    state->hash = trunk.hash;
    state->ply = 0;
    state->side = trunk.side;
+   state->game = trunk.game;
 
    tree_debug_state(state);
 }
@@ -80,8 +79,7 @@ void init_state(const char* fen) {
 }
 
 void reset_state(const char* fen) {
-   game = (state_t){ {0}, {0}, {0} };
-   trunk = (transient_t){ 0, 0, 0 };
+   trunk = (transient_t){0, 0, 0, {{0}, {0}, {0}}};
 
    reset_fen(fen);
    reset_hashes();
@@ -120,41 +118,42 @@ void retract_state(move_t move, transient_t* state) {
    state->hash ^= MVHASH;
 }
 
-void advance_board(move_t move) {
-   game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
-   game.pieces[move._.pto] ^= PMASK[move._.to];
-   game.pieces[empty] ^= PMASK[move._.from];
+void advance_board(move_t move, transient_t* state) {
+   state->game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
+   state->game.pieces[move._.pto] ^= PMASK[move._.to];
+   state->game.pieces[empty] ^= PMASK[move._.from];
 
    uint32_t s = s(move._.pfrom);
-   game.occupancy[s] ^= PMASK[move._.from] ^ PMASK[move._.to];
-   game.occupancy[!s] ^= game.occupancy[0] & game.occupancy[1];
+   state->game.occupancy[s] ^= PMASK[move._.from] ^ PMASK[move._.to];
+   state->game.occupancy[!s] ^= state->game.occupancy[0]
+      & state->game.occupancy[1];
 
-   game.board[move._.from] = empty;
-   game.board[move._.to] = move._.pfrom;
+   state->game.board[move._.from] = empty;
+   state->game.board[move._.to] = move._.pfrom;
 }
 
-void retract_board(move_t move) {
-   game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
-   game.pieces[move._.pto] ^= PMASK[move._.to];
-   game.pieces[empty] ^= PMASK[move._.from];
+void retract_board(move_t move, transient_t* state) {
+   state->game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
+   state->game.pieces[move._.pto] ^= PMASK[move._.to];
+   state->game.pieces[empty] ^= PMASK[move._.from];
 
    uint32_t s = s(move._.pfrom);
-   game.occupancy[s] ^= PMASK[move._.from] ^ PMASK[move._.to];
-   game.occupancy[!s] ^= (game.pieces[empty] & PMASK[move._.to])
+   state->game.occupancy[s] ^= PMASK[move._.from] ^ PMASK[move._.to];
+   state->game.occupancy[!s] ^= (state->game.pieces[empty] & PMASK[move._.to])
       ^ PMASK[move._.to];
 
-   game.board[move._.from] = move._.pfrom;
-   game.board[move._.to] = move._.pto;
+   state->game.board[move._.from] = move._.pfrom;
+   state->game.board[move._.to] = move._.pto;
 }
 
 void advance(move_t move, transient_t* state) {
    advance_state(move, state);
-   advance_board(move);
+   advance_board(move, state);
 }
 
 void retract(move_t move, transient_t* state) {
    retract_state(move, state);
-   retract_board(move);
+   retract_board(move, state);
 }
 
 void advance_game(move_t move) {
@@ -167,7 +166,7 @@ void advance_game(move_t move) {
 
    htable[++trunk.ply] = trunk.hash;
 
-   advance_board(move);
+   advance_board(move, &trunk);
 }
 
 void retract_game(move_t move) {
@@ -180,5 +179,5 @@ void retract_game(move_t move) {
 
    --trunk.ply;
 
-   retract_board(move);
+   retract_board(move, &trunk);
 }

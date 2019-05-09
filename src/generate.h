@@ -10,7 +10,7 @@
  * @ generate all moves
  */
 
-move_array_t generate(int64_t side);
+move_array_t generate(transient_t* state, int64_t side);
 
 /*!
  * generate_pseudolegal
@@ -18,28 +18,30 @@ move_array_t generate(int64_t side);
  * # including feijiang as literal move
  */
 
-move_array_t generate_pseudolegal(int64_t side);
+move_array_t generate_pseudolegal(transient_t* state, int64_t side);
 
 /*!
  * generate_captures
  * @ generate capture moves
  */
 
-move_array_t generate_captures(int64_t side);
+move_array_t generate_captures(transient_t* state, int64_t side);
 
 /*!
  * add_piecewise
  * @ add moves (for fixed piece)
  */
 
-void add_piecewise(__uint128_t set, uint64_t from, move_array_t* moves);
+void add_piecewise(transient_t* state, __uint128_t set, uint64_t from,
+                   move_array_t* moves);
 
 /*!
  * add_shiftwise
  * @ add moves (for fixed direction)
  */
 
-void add_shiftwise(__uint128_t set, int64_t shift, move_array_t* moves);
+void add_shiftwise(transient_t* state, __uint128_t set, int64_t shift,
+                   move_array_t* moves);
 
 /*!
  * sort_moves

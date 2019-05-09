@@ -71,15 +71,16 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
    if (!principal && hash_score != -INFINITY) {
       return hash_score; }
 
-   if (!depth && in_check(state->side)) { ++depth; }
+   if (!depth && in_check(state, state->side)) { ++depth; }
    if (!depth) { return quiescence(state, alpha, beta); }
 
-   int32_t stand = eval(state->side);
+   int32_t stand = eval(state, state->side);
    if (!principal && depth < FDEPTH && stand - FMARGIN >= beta
-         && stand < INFLIMIT && !in_check(state->side)) {
+         && stand < INFLIMIT && !in_check(state, state->side)) {
       return stand; }
 
-   if (!principal && state->ply > 1 && depth > 4 && !in_check(state->side)) {
+   if (!principal && state->ply > 1 && depth > 4
+         && !in_check(state, state->side)) {
       move_t null = { ._ = { 0x7f, 0x7f, empty, empty } };
 
       advance(null, state);
@@ -108,7 +109,7 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
       if (depth > 3 && engine.state > 3
             && ((reduced == depth && engine.index > 3)
             || (reduced == depth - 1 && engine.index > 24))
-            && !in_check(state->side)) {
+            && !in_check(state, state->side)) {
          --reduced; }
 
       int32_t score;
@@ -165,11 +166,11 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
 int32_t quiescence(transient_t* state, int32_t alpha, int32_t beta) {
    debug_variable_increment(1, &search.qnodes);
 
-   int32_t stand = eval(state->side);
+   int32_t stand = eval(state, state->side);
    if (stand >= beta) { return stand; }
    alpha = stand > alpha ? stand : alpha;
 
-   move_array_t moves = generate_captures(state->side);
+   move_array_t moves = generate_captures(state, state->side);
    sort_moves(&moves);
    for (int64_t i = 0; i != moves.count; ++i) {
       if (stand + gain(moves.data[i]) + QMARGIN < alpha) {

@@ -16,12 +16,12 @@ int64_t impl_perft(int32_t depth, int64_t side) {
    if (!depth) { return 1; }
 
    int64_t nmoves = 0;
-   move_array_t moves = generate(side);
+   move_array_t moves = generate(&trunk, side);
    for (int64_t i = 0; i != moves.count; ++i) {
-      advance_board(moves.data[i]);
-      if (!in_check(side))
+      advance_board(moves.data[i], &trunk);
+      if (!in_check(&trunk, side))
          nmoves += impl_perft(depth - 1, side ^ pass);
-      retract_board(moves.data[i]);
+      retract_board(moves.data[i], &trunk);
    }
    free(moves.data);
 
@@ -41,12 +41,12 @@ int64_t impl_perft_capture(int32_t depth, int64_t side) {
    if (!depth) { return 1; }
 
    int64_t nmoves = 0;
-   move_array_t moves = generate_captures(side);
+   move_array_t moves = generate_captures(&trunk, side);
    for (int64_t i = 0; i != moves.count; ++i) {
-      advance_board(moves.data[i]);
-      if (!in_check(side))
+      advance_board(moves.data[i], &trunk);
+      if (!in_check(&trunk, side))
          nmoves += impl_perft_capture(depth - 1, side ^ pass);
-      retract_board(moves.data[i]);
+      retract_board(moves.data[i], &trunk);
    }
    free(moves.data);
 

@@ -80,6 +80,7 @@ typedef struct {
    uint32_t hash;
    int32_t ply;
    int64_t side;
+   state_t game;
 } transient_t;
 
 /*!

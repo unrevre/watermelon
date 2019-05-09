@@ -10,7 +10,7 @@
  * @ evaluate position
  */
 
-int32_t eval(int32_t side);
+int32_t eval(transient_t* state, int32_t side);
 
 /*!
  * gain
