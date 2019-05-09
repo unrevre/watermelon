@@ -20,13 +20,6 @@ void init_debug(debug_t* info);
 void free_debug(debug_t* info);
 
 /*!
- * set_debug_state
- * @ callback-like function to redirect transient state variables
- */
-
-void set_debug_state(transient_t* external);
-
-/*!
  * info_eval
  * @ return internal evaluation of current game state
  */
@@ -105,6 +98,13 @@ void debug_printf(char const* fmt, ...);
 
 #ifdef TREE
 /*!
+ * tree_debug_state
+ * @ callback-like function to redirect transient state variables
+ */
+
+void tree_debug_state(transient_t* external);
+
+/*!
  * tree_root_entry
  * @ print tree root character (entry)
  */
@@ -139,6 +139,7 @@ void tree_node_message(char const* fmt, ...);
 
 void tree_node_exit(int32_t alpha, int32_t beta, int32_t score);
 #else
+#define tree_debug_state(...)
 #define tree_root_entry(...)
 #define tree_root_exit(...)
 #define tree_node_entry(...)
