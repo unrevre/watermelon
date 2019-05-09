@@ -99,8 +99,6 @@ void advance_state(move_t move, transient_t* state) {
    state->hash ^= PSHASH[move._.pfrom][move._.to];
    state->hash ^= PSHASH[move._.pto][move._.to];
    state->hash ^= MVHASH;
-
-   htable[trunk.ply + state->ply] = state->hash;
 }
 
 /*!
@@ -148,6 +146,7 @@ void retract_board(move_t move, transient_t* state) {
 
 void advance(move_t move, transient_t* state) {
    advance_state(move, state);
+   htable[trunk.ply + state->ply] = state->hash;
    advance_board(move, state);
 }
 
@@ -157,27 +156,12 @@ void retract(move_t move, transient_t* state) {
 }
 
 void advance_game(move_t move) {
-   trunk.side = !trunk.side;
-
-   trunk.hash ^= PSHASH[move._.pfrom][move._.from];
-   trunk.hash ^= PSHASH[move._.pfrom][move._.to];
-   trunk.hash ^= PSHASH[move._.pto][move._.to];
-   trunk.hash ^= MVHASH;
-
-   htable[++trunk.ply] = trunk.hash;
-
+   advance_state(move, &trunk);
+   htable[trunk.ply] = trunk.hash;
    advance_board(move, &trunk);
 }
 
 void retract_game(move_t move) {
-   trunk.side = !trunk.side;
-
-   trunk.hash ^= PSHASH[move._.pfrom][move._.from];
-   trunk.hash ^= PSHASH[move._.pfrom][move._.to];
-   trunk.hash ^= PSHASH[move._.pto][move._.to];
-   trunk.hash ^= MVHASH;
-
-   --trunk.ply;
-
+   retract_state(move, &trunk);
    retract_board(move, &trunk);
 }
