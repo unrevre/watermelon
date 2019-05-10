@@ -367,12 +367,12 @@ move_t next(generator_t* engine, transient_t* state) {
          ++(engine->state);
          ++(engine->state);
          move_t first = ktable[state->ply].first;
-         if (first.bits && is_valid(state, first, state->side))
+         if (first.bits && is_valid(state, first))
             return first;
       case 4:
          ++(engine->state);
          move_t second = ktable[state->ply].second;
-         if (second.bits && is_valid(state, second, state->side))
+         if (second.bits && is_valid(state, second))
             return second;
       case 5:
          ++(engine->state);
