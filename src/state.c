@@ -79,7 +79,7 @@ void init_state(const char* fen) {
 }
 
 void reset_state(const char* fen) {
-   trunk = (transient_t){0, 0, 0, {{0}, {0}, {0}}};
+   trunk = (transient_t){0, 0, 0, {{0}, {0}, {0}}, {}};
 
    reset_fen(fen);
    reset_hashes();
