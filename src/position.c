@@ -70,7 +70,8 @@ uint32_t in_check(transient_t* state, int64_t side) {
    return 0;
 }
 
-uint32_t is_valid(transient_t* state, move_t move, int64_t side) {
+uint32_t is_valid(transient_t* state, move_t move) {
+   int64_t side = state->side;
    if (!state->game.pieces[ps(side, 0x0)]) { return 0; }
    if (side != s(move._.pfrom)) { return 0; }
 
@@ -115,11 +116,11 @@ uint32_t is_valid(transient_t* state, move_t move, int64_t side) {
    __builtin_unreachable();
 }
 
-uint32_t is_legal(transient_t* state, move_t move, int64_t side) {
-   if (!is_valid(state, move, side)) { return 0; }
+uint32_t is_legal(transient_t* state, move_t move) {
+   if (!is_valid(state, move)) { return 0; }
 
    advance_board(move, state);
-   uint32_t legal = !in_check(state, side);
+   uint32_t legal = !in_check(state, state->side);
    retract_board(move, state);
 
    return legal;
