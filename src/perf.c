@@ -16,7 +16,7 @@ int64_t impl_perft(int32_t depth, int64_t side) {
    if (!depth) { return 1; }
 
    int64_t nmoves = 0;
-   move_array_t moves = generate(&trunk, side);
+   move_array_t moves = generate_pseudolegal(&trunk, side);
    for (int64_t i = 0; i != moves.count; ++i) {
       advance_board(moves.data[i], &trunk);
       if (!in_check(&trunk, side))

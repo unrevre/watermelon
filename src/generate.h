@@ -6,13 +6,6 @@
 #include <stdint.h>
 
 /*!
- * generate
- * @ generate all moves
- */
-
-move_array_t generate(transient_t* state, int64_t side);
-
-/*!
  * generate_pseudolegal
  * @ generate all pseudolegal moves
  * # including feijiang as literal move
