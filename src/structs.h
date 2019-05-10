@@ -3,6 +3,7 @@
 
 #include "magics.h"
 
+#include <setjmp.h>
 #include <stdint.h>
 #include <time.h>
 
@@ -81,6 +82,7 @@ typedef struct {
    int32_t ply;
    int64_t side;
    state_t game;
+   jmp_buf env;
 } transient_t;
 
 /*!

@@ -10,11 +10,19 @@
 #include "state.h"
 #include "timer.h"
 
+#include <setjmp.h>
 #include <stdlib.h>
 
 #define FDEPTH    3
 #define FMARGIN   16
 #define QMARGIN   4
+
+#define TIMEOUT   1
+
+#ifdef __APPLE__
+#define setjmp    _setjmp
+#define longjmp   _longjmp
+#endif
 
 move_t iter_dfs(int32_t depth) {
    transient_t* state = malloc(sizeof(transient_t));
@@ -24,6 +32,8 @@ move_t iter_dfs(int32_t depth) {
 
    int32_t score = 0;
    for (int32_t d = 1; d != depth; ++d) {
+      if (setjmp(state->env)) { break; }
+
       int32_t delta = 2;
 
       for (;;) {
@@ -56,7 +66,7 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
    ++search.nodes;
 
    if (!(search.nodes & TIME_RES)) { tick(search.clock); }
-   if (search.clock->status) { return 0; }
+   if (search.clock->status) { longjmp(state->env, TIMEOUT); }
 
    alpha = alpha < INFMINUS + state->ply ? INFMINUS + state->ply : alpha;
    beta = beta > INFPLUS - state->ply ? INFPLUS - state->ply : beta;
