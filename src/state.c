@@ -42,8 +42,8 @@ void init_hashes(void) {
 
 void reset_hashes(void) {
    for (int64_t i = 0; i != POINTS; ++i)
-      if (trunk.game.board[i] != empty)
-         trunk.hash ^= PSHASH[trunk.game.board[i]][i];
+      if (trunk.board[i] != empty)
+         trunk.hash ^= PSHASH[trunk.board[i]][i];
 
    trunk.hash ^= STHASH;
    htable[0] = trunk.hash;
@@ -82,10 +82,8 @@ void init_search(transient_t* state) {
    search.qnodes = 0;
    search.tthits = 0;
 
-   state->hash = trunk.hash;
+   memcpy(state, &trunk, sizeof(transient_t));
    state->ply = 0;
-   state->side = trunk.side;
-   state->game = trunk.game;
 
    tree_debug_state(state);
 }
@@ -121,31 +119,30 @@ void retract_state(move_t move, transient_t* state) {
 }
 
 void advance_board(move_t move, transient_t* state) {
-   state->game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
-   state->game.pieces[move._.pto] ^= PMASK[move._.to];
-   state->game.pieces[empty] ^= PMASK[move._.from];
+   state->pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
+   state->pieces[move._.pto] ^= PMASK[move._.to];
+   state->pieces[empty] ^= PMASK[move._.from];
 
    uint32_t s = s(move._.pfrom);
-   state->game.occupancy[s] ^= PMASK[move._.from] ^ PMASK[move._.to];
-   state->game.occupancy[!s] ^= state->game.occupancy[0]
-      & state->game.occupancy[1];
+   state->occupancy[s] ^= PMASK[move._.from] ^ PMASK[move._.to];
+   state->occupancy[!s] ^= state->occupancy[0] & state->occupancy[1];
 
-   state->game.board[move._.from] = empty;
-   state->game.board[move._.to] = move._.pfrom;
+   state->board[move._.from] = empty;
+   state->board[move._.to] = move._.pfrom;
 }
 
 void retract_board(move_t move, transient_t* state) {
-   state->game.pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
-   state->game.pieces[move._.pto] ^= PMASK[move._.to];
-   state->game.pieces[empty] ^= PMASK[move._.from];
+   state->pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
+   state->pieces[move._.pto] ^= PMASK[move._.to];
+   state->pieces[empty] ^= PMASK[move._.from];
 
    uint32_t s = s(move._.pfrom);
-   state->game.occupancy[s] ^= PMASK[move._.from] ^ PMASK[move._.to];
-   state->game.occupancy[!s] ^= (state->game.pieces[empty] & PMASK[move._.to])
+   state->occupancy[s] ^= PMASK[move._.from] ^ PMASK[move._.to];
+   state->occupancy[!s] ^= (state->pieces[empty] & PMASK[move._.to])
       ^ PMASK[move._.to];
 
-   state->game.board[move._.from] = move._.pfrom;
-   state->game.board[move._.to] = move._.pto;
+   state->board[move._.from] = move._.pfrom;
+   state->board[move._.to] = move._.pto;
 }
 
 void advance(move_t move, transient_t* state) {
