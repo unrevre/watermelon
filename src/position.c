@@ -90,7 +90,7 @@ uint32_t is_valid(transient_t* state, move_t move) {
       case 1: {
          int32_t high = from > to ? from : to;
          int32_t low = from > to ? to : from;
-         __uint128_t jspan = PMASK[high] - (PMASK[low] << 1);
+         __uint128_t jspan = PMASK[high] - PMASK[low + 1];
          if (high - low >= WIDTH) { jspan = jspan & FMASK[high]; }
          return !(jspan & ~state->pieces[empty]); }
       case 2: ;
@@ -104,7 +104,7 @@ uint32_t is_valid(transient_t* state, move_t move) {
          int32_t high = from > to ? from : to;
          int32_t low = from > to ? to : from;
          int64_t count = move._.pto != empty;
-         __uint128_t pspan = PMASK[high] - (PMASK[low] << 1);
+         __uint128_t pspan = PMASK[high] - PMASK[low + 1];
          if (high - low >= WIDTH) { pspan = pspan & FMASK[high]; }
          pspan = pspan & ~state->pieces[empty];
          return popcnt(pspan) == count;
