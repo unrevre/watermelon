@@ -13,11 +13,18 @@ extern search_t search;
 extern transient_t trunk;
 
 /*!
- * reset_search
- * @ reset search parameters
+ * init_state
+ * @ initialise global state variables
  */
 
-void reset_search(transient_t* state);
+void init_state(const char* fen);
+
+/*!
+ * set_state
+ * @ set global state variables
+ */
+
+void set_state(const char* fen);
 
 /*!
  * set_timer
@@ -27,18 +34,11 @@ void reset_search(transient_t* state);
 void set_timer(double time);
 
 /*!
- * init_state
- * @ initialise global state variables
+ * init_search
+ * @ reset search parameters
  */
 
-void init_state(const char* fen);
-
-/*!
- * reset_state
- * @ (re)set global state variables
- */
-
-void reset_state(const char* fen);
+void init_search(transient_t* state);
 
 /*!
  * advance_board

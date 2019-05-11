@@ -49,7 +49,29 @@ void reset_hashes(void) {
    htable[0] = trunk.hash;
 }
 
-void reset_search(transient_t* state) {
+void init_state(const char* fen) {
+   init_hashes();
+
+   search.clock = malloc(sizeof(wmclock_t));
+   search.clock->status = 1;
+   search.clock->limit = -1.;
+
+   set_state(fen);
+}
+
+void set_state(const char* fen) {
+   memset(&trunk, 0, sizeof(transient_t));
+
+   reset_fen(fen);
+   reset_hashes();
+   reset_tables();
+}
+
+void set_timer(double time) {
+   search.clock->limit = time;
+}
+
+void init_search(transient_t* state) {
    search.clock->status = 0;
 
    search.nodes = 0;
@@ -62,28 +84,6 @@ void reset_search(transient_t* state) {
    state->game = trunk.game;
 
    tree_debug_state(state);
-}
-
-void set_timer(double time) {
-   search.clock->limit = time;
-}
-
-void init_state(const char* fen) {
-   init_hashes();
-
-   reset_state(fen);
-
-   search.clock = malloc(sizeof(wmclock_t));
-   search.clock->status = 1;
-   search.clock->limit = -1.;
-}
-
-void reset_state(const char* fen) {
-   trunk = (transient_t){0, 0, 0, {{0}, {0}, {0}}, {}};
-
-   reset_fen(fen);
-   reset_hashes();
-   reset_tables();
 }
 
 /*!
