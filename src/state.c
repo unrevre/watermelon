@@ -49,7 +49,7 @@ void reset_hashes(void) {
    htable[0] = trunk.hash;
 }
 
-void init_state(const char* fen) {
+void initialise(const char* fen) {
    init_hashes();
 
    search.clock = malloc(sizeof(wmclock_t));
@@ -57,6 +57,10 @@ void init_state(const char* fen) {
    search.clock->limit = -1.;
 
    set_state(fen);
+}
+
+void terminate(void) {
+   free(search.clock);
 }
 
 void set_state(const char* fen) {

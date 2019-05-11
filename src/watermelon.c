@@ -57,7 +57,7 @@ int watermelon(option_t* options, char const* fen) {
 
    free(options);
 
-   init_state(fen);
+   initialise(fen);
    set_timer(time);
 
    interface_t* itf = malloc(sizeof(interface_t));
@@ -81,6 +81,7 @@ int watermelon(option_t* options, char const* fen) {
       && (advance_history(move), advance_game(move), 1));
 
    close_interface(itf);
+   terminate();
 
    debug_printf("alpha-beta nodes | quiescence nodes |  hash table hits |\n");
    debug_printf("%16"PRIu64" | %16"PRIu64" | %16"PRIu64" |\n\n",
