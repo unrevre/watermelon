@@ -13,11 +13,18 @@ extern search_t search;
 extern transient_t trunk;
 
 /*!
- * init_state
+ * initialise
  * @ initialise global state variables
  */
 
-void init_state(const char* fen);
+void initialise(const char* fen);
+
+/*!
+ * terminate
+ * @ destroy global state variables
+ */
+
+void terminate(void);
 
 /*!
  * set_state

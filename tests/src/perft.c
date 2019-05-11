@@ -12,15 +12,15 @@ int main(int argc, char* argv[]) {
       return 1;
    }
 
-   int32_t depth = atoi(argv[1]);
-
-   init_state(argv[2]);
+   initialise(argv[2]);
 
    printf("fen: %s\n", argv[2]);
    printf("perft:");
-   for (int32_t i = 1; i < depth; ++i)
+   for (int32_t i = 1; i < atoi(argv[1]); ++i)
       printf(" %"PRIi64, perft(i));
    printf("\n");
+
+   terminate();
 
    return 0;
 }
