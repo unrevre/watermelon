@@ -9,11 +9,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-char fen_side[2] = { 'r', 'b' };
-char fen_char[16] = "KkRrNnCcAaBbPp ";
+const char fen_side[2] = { 'r', 'b' };
+const char fen_char[15] = "KkRrNnCcAaBbPp ";
 
-char fen_default[62] = "rnbakabnr/9/1c5c1/p1p1p1p1p/9/"
-                       "9/P1P1P1P1P/1C5C1/9/RNBAKABNR r";
+const char* fen_default = "rnbakabnr/9/1c5c1/p1p1p1p1p/9/"
+                          "9/P1P1P1P1P/1C5C1/9/RNBAKABNR r";
 
 void reset_fen(const char* fen_str) {
    char schar;

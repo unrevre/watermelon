@@ -63,19 +63,17 @@
 
 /* state */
 
-#define red     0x0
-#define black   0x1
-#define pass    black
-#define empty   0xe
+#define red         0x0
+#define black       0x1
+#define pass        0x1
+#define empty       0xe
 
-#define shiftp  1
+#define o(s)        (!s)
 
-#define o(s) (!s)
+#define p(p)        (p >> 1)
+#define s(p)        (p & 0x1)
 
-#define p(p) (p >> shiftp)
-#define s(p) (p & black)
-
-#define ps(s, p) ((p << shiftp) + s)
-#define po(s, p) ((p << shiftp) ^ o(s))
+#define ps(s, p)    ((p << 1) + s)
+#define po(s, p)    ((p << 1) ^ o(s))
 
 #endif /* MAGIC_H */
