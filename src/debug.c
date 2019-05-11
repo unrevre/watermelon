@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define entry_length 27
+#define entry_length 28
 
 transient_t* state = 0;
 
@@ -21,7 +21,7 @@ void init_debug(debug_t* info) {
    info->buffers = calloc(PLYLIMIT, sizeof(char*));
 
    for (int64_t i = 0; i < PLYLIMIT; ++i)
-      info->buffers[i] = calloc(entry_length + 1, sizeof(char));
+      info->buffers[i] = calloc(entry_length, sizeof(char));
 
    state = &trunk;
 }
@@ -167,7 +167,7 @@ void trace_principal_variation(char** buffer) {
          impl_transposition_table_entry(*buffer, entry);
          strcat(*buffer, "  \n");
          if (is_repetition(state)) {
-            (*buffer)[entry_length - 2] = '%';
+            (*buffer)[entry_length - 3] = '%';
             **++buffer = '\0';
          } else {
             trace_principal_variation(++buffer);
@@ -176,7 +176,7 @@ void trace_principal_variation(char** buffer) {
          retract(next, state);
       } else if (state->ply) {
          --buffer;
-         (*buffer)[entry_length - 2] = '#';
+         (*buffer)[entry_length - 3] = '#';
       }
    }
 }

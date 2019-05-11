@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-extern char fen_side[2];
-extern char fen_char[16];
+extern const char fen_side[2];
+extern const char fen_char[15];
 
 /*!
  * reset_fen
