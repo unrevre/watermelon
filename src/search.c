@@ -27,7 +27,7 @@
 move_t iter_dfs(int32_t depth) {
    transient_t* state = malloc(sizeof(transient_t));
 
-   reset_search(state);
+   init_search(state);
    start(search.clock);
 
    int32_t score = 0;

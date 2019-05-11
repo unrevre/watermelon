@@ -242,7 +242,7 @@ int64_t event_loop(interface_t* itf) {
                itf->index = -1;
                break;
             case '~':
-               reset_state(0);
+               set_state(0);
                wmprint_state(itf);
                refresh_windows(itf, 2, itf->win_fen, itf->win_state);
                itf->index = -1;
@@ -300,7 +300,7 @@ int64_t event_loop(interface_t* itf) {
                wmprint_state(itf);
                break;
             case cmd_zero:
-               reset_state(tokens[1]);
+               set_state(tokens[1]);
                wmprint_state(itf);
                break;
             default:
