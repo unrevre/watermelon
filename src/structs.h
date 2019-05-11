@@ -8,17 +8,6 @@
 #include <time.h>
 
 /*!
- * state_t
- * @ game status
- */
-
-typedef struct {
-   __uint128_t pieces[PIECES];
-   __uint128_t occupancy[2];
-   uint32_t board[BITS];
-} state_t;
-
-/*!
  * move_t
  * @ move representation
  */
@@ -81,7 +70,9 @@ typedef struct {
    uint32_t hash;
    int32_t ply;
    int64_t side;
-   state_t game;
+   __uint128_t pieces[PIECES];
+   __uint128_t occupancy[2];
+   uint32_t board[BITS];
    jmp_buf env;
 } transient_t;
 

@@ -12,11 +12,11 @@
 
 move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
    move_array_t moves = {malloc(111 * sizeof(move_t)), 0, 0};
-   if (!state->game.pieces[ps(side, 0x0)]) { return moves; }
+   if (!state->pieces[ps(side, 0x0)]) { return moves; }
 
    __uint128_t C3U128 = 0x3;
 
-   __uint128_t jset = state->game.pieces[ps(side, 0x1)];
+   __uint128_t jset = state->pieces[ps(side, 0x1)];
    while (jset) {
       uint64_t index = bsf(jset);
       jset = jset ^ PMASK[index];
@@ -25,7 +25,7 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       __uint128_t fset, flow, fcbn;
       __uint128_t moveset;
 
-      __uint128_t outer = (~state->game.pieces[empty] ^ PMASK[index]) | OMASK;
+      __uint128_t outer = (~state->pieces[empty] ^ PMASK[index]) | OMASK;
 
       rlow = outer & LMASK[index];
       rcbn = C3U128 << bsr(rlow);
@@ -37,31 +37,31 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       fset = fset ^ (fset - fcbn);
 
       moveset = (rset & RMASK[index]) | (fset & FMASK[index]);
-      moveset = moveset & ~state->game.occupancy[side];
+      moveset = moveset & ~state->occupancy[side];
 
       add_piecewise(state, moveset, index, &moves);
    }
 
-   __uint128_t mset = state->game.pieces[ps(side, 0x2)];
+   __uint128_t mset = state->pieces[ps(side, 0x2)];
    while (mset) {
       uint64_t index = bsf(mset);
       mset = mset ^ PMASK[index];
 
       __uint128_t moveset = 0;
-      __uint128_t lset = PMASK[index] & _1e(state->game.pieces[empty]);
+      __uint128_t lset = PMASK[index] & _1e(state->pieces[empty]);
       moveset = moveset | _2w1n(lset) | _2w1s(lset);
-      __uint128_t rset = PMASK[index] & _1w(state->game.pieces[empty]);
+      __uint128_t rset = PMASK[index] & _1w(state->pieces[empty]);
       moveset = moveset | _2e1n(rset) | _2e1s(rset);
-      __uint128_t nset = PMASK[index] & _1s(state->game.pieces[empty]);
+      __uint128_t nset = PMASK[index] & _1s(state->pieces[empty]);
       moveset = moveset | _2n1w(nset) | _2n1e(nset);
-      __uint128_t sset = PMASK[index] & _1n(state->game.pieces[empty]);
+      __uint128_t sset = PMASK[index] & _1n(state->pieces[empty]);
       moveset = moveset | _2s1w(sset) | _2s1e(sset);
-      moveset = moveset & BMASK & ~state->game.occupancy[side];
+      moveset = moveset & BMASK & ~state->occupancy[side];
 
       add_piecewise(state, moveset, index, &moves);
    }
 
-   __uint128_t pset = state->game.pieces[ps(side, 0x3)];
+   __uint128_t pset = state->pieces[ps(side, 0x3)];
    while (pset) {
       uint64_t index = bsf(pset);
       pset = pset ^ PMASK[index];
@@ -70,7 +70,7 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       __uint128_t fset, flow, fcbn;
       __uint128_t moveset, captures;
 
-      __uint128_t occupancy = (~state->game.pieces[empty] ^ PMASK[index]);
+      __uint128_t occupancy = (~state->pieces[empty] ^ PMASK[index]);
       __uint128_t outer = occupancy | OMASK;
 
       rlow = outer & LMASK[index];
@@ -83,7 +83,7 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       fset = fset ^ (fset - fcbn);
 
       moveset = (rset & RMASK[index]) | (fset & FMASK[index]);
-      moveset = moveset & state->game.pieces[empty];
+      moveset = moveset & state->pieces[empty];
 
       rset = ~rset & occupancy;
       rlow = rset & LMASK[index];
@@ -96,41 +96,41 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       fset = fset & ~(fset - fcbn);
 
       captures = (rset & RMASK[index]) | (fset & FMASK[index]);
-      captures = captures & state->game.occupancy[!side];
+      captures = captures & state->occupancy[!side];
       moveset = moveset | captures;
 
       add_piecewise(state, moveset, index, &moves);
    }
 
    __uint128_t zset;
-   zset = _1f(state->game.pieces[ps(side, 0x6)], side);
-   zset &= ZMASK[side] & ~state->game.occupancy[side];
+   zset = _1f(state->pieces[ps(side, 0x6)], side);
+   zset &= ZMASK[side] & ~state->occupancy[side];
    add_shiftwise(state, zset, side ? -WIDTH : WIDTH, &moves);
 
-   zset = _1e(state->game.pieces[ps(side, 0x6)]) & BMASK;
-   zset &= ZMASK[side] & ~state->game.occupancy[side];
+   zset = _1e(state->pieces[ps(side, 0x6)]) & BMASK;
+   zset &= ZMASK[side] & ~state->occupancy[side];
    add_shiftwise(state, zset, 1, &moves);
 
-   zset = _1w(state->game.pieces[ps(side, 0x6)]) & BMASK;
-   zset &= ZMASK[side] & ~state->game.occupancy[side];
+   zset = _1w(state->pieces[ps(side, 0x6)]) & BMASK;
+   zset &= ZMASK[side] & ~state->occupancy[side];
    add_shiftwise(state, zset, -1, &moves);
 
-   __uint128_t xset = state->game.pieces[ps(side, 0x5)];
+   __uint128_t xset = state->pieces[ps(side, 0x5)];
    while (xset) {
       uint64_t index = bsf(xset);
       xset = xset ^ PMASK[index];
 
       __uint128_t moveset;
-      moveset = (_2n2w(PMASK[index]) & _1n1w(state->game.pieces[empty]))
-         | (_2n2e(PMASK[index]) & _1n1e(state->game.pieces[empty]))
-         | (_2s2e(PMASK[index]) & _1s1e(state->game.pieces[empty]))
-         | (_2s2w(PMASK[index]) & _1s1w(state->game.pieces[empty]));
-      moveset = moveset & XMASK[side] & ~state->game.occupancy[side];
+      moveset = (_2n2w(PMASK[index]) & _1n1w(state->pieces[empty]))
+         | (_2n2e(PMASK[index]) & _1n1e(state->pieces[empty]))
+         | (_2s2e(PMASK[index]) & _1s1e(state->pieces[empty]))
+         | (_2s2w(PMASK[index]) & _1s1w(state->pieces[empty]));
+      moveset = moveset & XMASK[side] & ~state->occupancy[side];
 
       add_piecewise(state, moveset, index, &moves);
    }
 
-   __uint128_t sset = state->game.pieces[ps(side, 0x4)];
+   __uint128_t sset = state->pieces[ps(side, 0x4)];
    while (sset) {
       uint64_t index = bsf(sset);
       sset = sset ^ PMASK[index];
@@ -138,26 +138,26 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       __uint128_t moveset;
       moveset = _1n1w(PMASK[index]) | _1n1e(PMASK[index])
          | _1s1e(PMASK[index]) | _1s1w(PMASK[index]);
-      moveset = moveset & SMASK[side] & ~state->game.occupancy[side];
+      moveset = moveset & SMASK[side] & ~state->occupancy[side];
 
       add_piecewise(state, moveset, index, &moves);
    }
 
    {
-      uint64_t index = bsf(state->game.pieces[ps(side, 0x0)]);
+      uint64_t index = bsf(state->pieces[ps(side, 0x0)]);
       __uint128_t moveset;
-      moveset = _1n(state->game.pieces[ps(side, 0x0)])
-         | _1s(state->game.pieces[ps(side, 0x0)])
-         | _1e(state->game.pieces[ps(side, 0x0)])
-         | _1w(state->game.pieces[ps(side, 0x0)]);
-      moveset = moveset & JMASK[side] & ~state->game.occupancy[side];
+      moveset = _1n(state->pieces[ps(side, 0x0)])
+         | _1s(state->pieces[ps(side, 0x0)])
+         | _1e(state->pieces[ps(side, 0x0)])
+         | _1w(state->pieces[ps(side, 0x0)]);
+      moveset = moveset & JMASK[side] & ~state->occupancy[side];
 
-      __uint128_t fly = (state->game.pieces[ps(black, 0x0)] << 1)
-         - state->game.pieces[ps(red, 0x0)];
-      fly = fly & FMASK[index] & ~state->game.pieces[empty];
-      fly ^= state->game.pieces[ps(red, 0x0)] | state->game.pieces[ps(black, 0x0)];
+      __uint128_t fly = (state->pieces[ps(black, 0x0)] << 1)
+         - state->pieces[ps(red, 0x0)];
+      fly = fly & FMASK[index] & ~state->pieces[empty];
+      fly ^= state->pieces[ps(red, 0x0)] | state->pieces[ps(black, 0x0)];
 
-      moveset = moveset | (fly ? 0 : state->game.pieces[po(side, 0x0)]);
+      moveset = moveset | (fly ? 0 : state->pieces[po(side, 0x0)]);
       add_piecewise(state, moveset, index, &moves);
    }
 
@@ -166,11 +166,11 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
 
 move_array_t generate_captures(transient_t* state, int64_t side) {
    move_array_t moves = {malloc(40 * sizeof(move_t)), 0, 0};
-   if (!state->game.pieces[ps(side, 0x0)]) { return moves; }
+   if (!state->pieces[ps(side, 0x0)]) { return moves; }
 
    __uint128_t C3U128 = 0x3;
 
-   __uint128_t jset = state->game.pieces[ps(side, 0x1)];
+   __uint128_t jset = state->pieces[ps(side, 0x1)];
    while (jset) {
       uint64_t index = bsf(jset);
       jset = jset ^ PMASK[index];
@@ -179,7 +179,7 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
       __uint128_t fset, flow, fcbn;
       __uint128_t moveset;
 
-      __uint128_t outer = (~state->game.pieces[empty] ^ PMASK[index]) | OMASK;
+      __uint128_t outer = (~state->pieces[empty] ^ PMASK[index]) | OMASK;
 
       rlow = outer & LMASK[index];
       rcbn = C3U128 << bsr(rlow);
@@ -191,31 +191,31 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
       fset = fset ^ (fset - fcbn);
 
       moveset = (rset & RMASK[index]) | (fset & FMASK[index]);
-      moveset = moveset & state->game.occupancy[!side];
+      moveset = moveset & state->occupancy[!side];
 
       add_piecewise(state, moveset, index, &moves);
    }
 
-   __uint128_t mset = state->game.pieces[ps(side, 0x2)];
+   __uint128_t mset = state->pieces[ps(side, 0x2)];
    while (mset) {
       uint64_t index = bsf(mset);
       mset = mset ^ PMASK[index];
 
       __uint128_t moveset = 0;
-      __uint128_t lset = PMASK[index] & _1e(state->game.pieces[empty]);
+      __uint128_t lset = PMASK[index] & _1e(state->pieces[empty]);
       moveset = moveset | _2w1n(lset) | _2w1s(lset);
-      __uint128_t rset = PMASK[index] & _1w(state->game.pieces[empty]);
+      __uint128_t rset = PMASK[index] & _1w(state->pieces[empty]);
       moveset = moveset | _2e1n(rset) | _2e1s(rset);
-      __uint128_t nset = PMASK[index] & _1s(state->game.pieces[empty]);
+      __uint128_t nset = PMASK[index] & _1s(state->pieces[empty]);
       moveset = moveset | _2n1w(nset) | _2n1e(nset);
-      __uint128_t sset = PMASK[index] & _1n(state->game.pieces[empty]);
+      __uint128_t sset = PMASK[index] & _1n(state->pieces[empty]);
       moveset = moveset | _2s1w(sset) | _2s1e(sset);
-      moveset = moveset & BMASK & state->game.occupancy[!side];
+      moveset = moveset & BMASK & state->occupancy[!side];
 
       add_piecewise(state, moveset, index, &moves);
    }
 
-   __uint128_t pset = state->game.pieces[ps(side, 0x3)];
+   __uint128_t pset = state->pieces[ps(side, 0x3)];
    while (pset) {
       uint64_t index = bsf(pset);
       pset = pset ^ PMASK[index];
@@ -224,7 +224,7 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
       __uint128_t fset, flow, fcbn;
       __uint128_t moveset;
 
-      __uint128_t occupancy = (~state->game.pieces[empty] ^ PMASK[index]);
+      __uint128_t occupancy = (~state->pieces[empty] ^ PMASK[index]);
       __uint128_t outer = occupancy | OMASK;
 
       rlow = outer & LMASK[index];
@@ -245,40 +245,40 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
       rset = rset & ~(rset - rcbn);
 
       moveset = (rset & RMASK[index]) | (fset & FMASK[index]);
-      moveset = moveset & state->game.occupancy[!side];
+      moveset = moveset & state->occupancy[!side];
 
       add_piecewise(state, moveset, index, &moves);
    }
 
    __uint128_t zset;
-   zset = _1f(state->game.pieces[ps(side, 0x6)], side);
-   zset &= ZMASK[side] & state->game.occupancy[!side];
+   zset = _1f(state->pieces[ps(side, 0x6)], side);
+   zset &= ZMASK[side] & state->occupancy[!side];
    add_shiftwise(state, zset, side ? -WIDTH : WIDTH, &moves);
 
-   zset = _1e(state->game.pieces[ps(side, 0x6)]) & BMASK;
-   zset &= ZMASK[side] & state->game.occupancy[!side];
+   zset = _1e(state->pieces[ps(side, 0x6)]) & BMASK;
+   zset &= ZMASK[side] & state->occupancy[!side];
    add_shiftwise(state, zset, 1, &moves);
 
-   zset = _1w(state->game.pieces[ps(side, 0x6)]) & BMASK;
-   zset &= ZMASK[side] & state->game.occupancy[!side];
+   zset = _1w(state->pieces[ps(side, 0x6)]) & BMASK;
+   zset &= ZMASK[side] & state->occupancy[!side];
    add_shiftwise(state, zset, -1, &moves);
 
-   __uint128_t xset = state->game.pieces[ps(side, 0x5)];
+   __uint128_t xset = state->pieces[ps(side, 0x5)];
    while (xset) {
       uint64_t index = bsf(xset);
       xset = xset ^ PMASK[index];
 
       __uint128_t moveset;
-      moveset = (_2n2w(PMASK[index]) & _1n1w(state->game.pieces[empty]))
-         | (_2n2e(PMASK[index]) & _1n1e(state->game.pieces[empty]))
-         | (_2s2e(PMASK[index]) & _1s1e(state->game.pieces[empty]))
-         | (_2s2w(PMASK[index]) & _1s1w(state->game.pieces[empty]));
-      moveset = moveset & XMASK[side] & state->game.occupancy[!side];
+      moveset = (_2n2w(PMASK[index]) & _1n1w(state->pieces[empty]))
+         | (_2n2e(PMASK[index]) & _1n1e(state->pieces[empty]))
+         | (_2s2e(PMASK[index]) & _1s1e(state->pieces[empty]))
+         | (_2s2w(PMASK[index]) & _1s1w(state->pieces[empty]));
+      moveset = moveset & XMASK[side] & state->occupancy[!side];
 
       add_piecewise(state, moveset, index, &moves);
    }
 
-   __uint128_t sset = state->game.pieces[ps(side, 0x4)];
+   __uint128_t sset = state->pieces[ps(side, 0x4)];
    while (sset) {
       uint64_t index = bsf(sset);
       sset = sset ^ PMASK[index];
@@ -286,25 +286,25 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
       __uint128_t moveset;
       moveset = _1n1w(PMASK[index]) | _1n1e(PMASK[index])
          | _1s1e(PMASK[index]) | _1s1w(PMASK[index]);
-      moveset = moveset & SMASK[side] & state->game.occupancy[!side];
+      moveset = moveset & SMASK[side] & state->occupancy[!side];
 
       add_piecewise(state, moveset, index, &moves);
    }
 
    {
-      uint64_t index = bsf(state->game.pieces[ps(side, 0x0)]);
+      uint64_t index = bsf(state->pieces[ps(side, 0x0)]);
       __uint128_t moveset;
-      moveset = _1n(state->game.pieces[ps(side, 0x0)])
-         | _1s(state->game.pieces[ps(side, 0x0)])
-         | _1e(state->game.pieces[ps(side, 0x0)])
-         | _1w(state->game.pieces[ps(side, 0x0)]);
-      moveset = moveset & JMASK[side] & state->game.occupancy[!side];
+      moveset = _1n(state->pieces[ps(side, 0x0)])
+         | _1s(state->pieces[ps(side, 0x0)])
+         | _1e(state->pieces[ps(side, 0x0)])
+         | _1w(state->pieces[ps(side, 0x0)]);
+      moveset = moveset & JMASK[side] & state->occupancy[!side];
 
-      __uint128_t fly = (state->game.pieces[ps(black, 0x0)] << 1)
-         - state->game.pieces[ps(red, 0x0)];
-      fly = fly & FMASK[index] & ~state->game.pieces[empty];
-      fly ^= state->game.pieces[ps(red, 0x0)] | state->game.pieces[ps(black, 0x0)];
-      moveset = moveset | (fly ? 0 : state->game.pieces[po(side, 0x0)]);
+      __uint128_t fly = (state->pieces[ps(black, 0x0)] << 1)
+         - state->pieces[ps(red, 0x0)];
+      fly = fly & FMASK[index] & ~state->pieces[empty];
+      fly ^= state->pieces[ps(red, 0x0)] | state->pieces[ps(black, 0x0)];
+      moveset = moveset | (fly ? 0 : state->pieces[po(side, 0x0)]);
       add_piecewise(state, moveset, index, &moves);
    }
 
@@ -316,7 +316,7 @@ void add_piecewise(transient_t* state, __uint128_t set, uint64_t from,
    for (; set; set &= set - 1) {
       uint64_t to = bsf(set);
       move_t move = { ._ = {
-         from, to, state->game.board[from], state->game.board[to] } };
+         from, to, state->board[from], state->board[to] } };
       moves->data[moves->count++] = move;
    }
 }
@@ -327,7 +327,7 @@ void add_shiftwise(transient_t* state, __uint128_t set, int64_t shift,
       uint64_t to = bsf(set);
       uint64_t from = to - shift;
       move_t move = { ._ = {
-         from, to, state->game.board[from], state->game.board[to] } };
+         from, to, state->board[from], state->board[to] } };
       moves->data[moves->count++] = move;
    }
 }
