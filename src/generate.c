@@ -121,8 +121,8 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       xset = xset ^ PMASK[index];
 
       __uint128_t moveset;
-      moveset = (_2n2w(PMASK[index]) & _1n1w(state->pieces[empty]))
-         | (_2n2e(PMASK[index]) & _1n1e(state->pieces[empty]))
+      moveset = (i2n2e(index) & _1n1e(state->pieces[empty]))
+         | (i2n2w(index) & _1n1w(state->pieces[empty]))
          | (_2s2e(PMASK[index]) & _1s1e(state->pieces[empty]))
          | (_2s2w(PMASK[index]) & _1s1w(state->pieces[empty]));
       moveset = moveset & XMASK[side] & ~state->occupancy[side];
@@ -265,8 +265,8 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
       xset = xset ^ PMASK[index];
 
       __uint128_t moveset;
-      moveset = (_2n2w(PMASK[index]) & _1n1w(state->pieces[empty]))
-         | (_2n2e(PMASK[index]) & _1n1e(state->pieces[empty]))
+      moveset = (i2n2e(index) & _1n1e(state->pieces[empty]))
+         | (i2n2w(index) & _1n1w(state->pieces[empty]))
          | (_2s2e(PMASK[index]) & _1s1e(state->pieces[empty]))
          | (_2s2w(PMASK[index]) & _1s1w(state->pieces[empty]));
       moveset = moveset & XMASK[side] & state->occupancy[!side];
