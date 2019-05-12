@@ -52,6 +52,18 @@
 #define _2s2e(a)    _1s1e(_1s1e(a))
 #define _2s2w(a)    _2s(_2w(a))
 
+/* offsets */
+
+#define i1n(i)      (PMASK[i + WIDTH])
+#define i1e(i)      (PMASK[i + 1])
+#define i1s(i)      (PMASK[i - WIDTH])
+#define i1w(i)      (PMASK[i - 1])
+
+#define i1n1e(i)    (PMASK[i + WIDTH + 1])
+#define i1n1w(i)    (PMASK[i + WIDTH - 1])
+#define i1s1e(i)    (PMASK[i - WIDTH + 1])
+#define i1s1w(i)    (PMASK[i - WIDTH - 1])
+
 /* search */
 
 #define PLYLIMIT    32

@@ -136,8 +136,7 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       sset = sset ^ PMASK[index];
 
       __uint128_t moveset;
-      moveset = PMASK[index + WIDTH - 1] | PMASK[index + WIDTH + 1]
-         | PMASK[index - WIDTH + 1] | PMASK[index - WIDTH - 1];
+      moveset = i1n1e(index) | i1n1w(index) | i1s1e(index) | i1s1w(index);
       moveset = moveset & SMASK[side] & ~state->occupancy[side];
 
       add_piecewise(state, moveset, index, &moves);
@@ -147,8 +146,7 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       uint64_t index = bsf(state->pieces[ps(side, 0x0)]);
 
       __uint128_t moveset;
-      moveset = PMASK[index + WIDTH] | PMASK[index - WIDTH]
-         | PMASK[index + 1] | PMASK[index - 1];
+      moveset = i1n(index) | i1s(index) | i1e(index) | i1w(index);
       moveset = moveset & JMASK[side] & ~state->occupancy[side];
 
       __uint128_t fly = ((state->pieces[ps(black, 0x0)] << 1)
@@ -282,8 +280,7 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
       sset = sset ^ PMASK[index];
 
       __uint128_t moveset;
-      moveset = PMASK[index + WIDTH - 1] | PMASK[index + WIDTH + 1]
-         | PMASK[index - WIDTH + 1] | PMASK[index - WIDTH - 1];
+      moveset = i1n1e(index) | i1n1w(index) | i1s1e(index) | i1s1w(index);
       moveset = moveset & SMASK[side] & state->occupancy[!side];
 
       add_piecewise(state, moveset, index, &moves);
@@ -293,8 +290,7 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
       uint64_t index = bsf(state->pieces[ps(side, 0x0)]);
 
       __uint128_t moveset;
-      moveset = PMASK[index + WIDTH] | PMASK[index - WIDTH]
-         | PMASK[index + 1] | PMASK[index - 1];
+      moveset = i1n(index) | i1s(index) | i1e(index) | i1w(index);
       moveset = moveset & JMASK[side] & state->occupancy[!side];
 
       __uint128_t fly = ((state->pieces[ps(black, 0x0)] << 1)
