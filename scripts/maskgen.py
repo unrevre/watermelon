@@ -120,8 +120,11 @@ def main():
         # board mask    [BMASK]
         @format(f, '{} BMASK'.format(typename))
         def etch_board_mask(mask):
-            for y in range(HEIGHT):
-                mask.fill(index(0, y), FILES, 1)
+            for i in range(BITS):
+                try:
+                    mask.fill(index(*coordinates(i)), 1, 1)
+                except OutsideBoard:
+                    pass
 
         etch_board_mask(mask)
 
