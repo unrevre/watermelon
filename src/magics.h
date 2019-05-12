@@ -3,9 +3,10 @@
 
 /* structs */
 
-#define BITS        128
 #define PIECES      15
+#define BITS        128
 
+#define PAD         16
 #define FILES       9
 #define RANKS       10
 #define SENTINEL    1
@@ -14,6 +15,7 @@
 #define WIDTH       (FILES + (SENTINEL << 1))
 #define HEIGHT      (RANKS)
 
+#define PADDED      (BITS + PAD)
 #define INDICES     (FILES * RANKS)
 #define POINTS      (WIDTH * HEIGHT + (OFFSET << 1))
 

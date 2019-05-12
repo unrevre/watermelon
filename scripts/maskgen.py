@@ -5,6 +5,9 @@ import re
 import textwrap
 
 BITS = 128
+PAD = 16
+
+PADDED = BITS + PAD
 
 FILES = 9
 RANKS = 10
@@ -140,9 +143,12 @@ def main():
         etch_outer_mask(mask)
 
         # point masks   [PMASK]
-        @format_array(f, '{} PMASK[BITS]{}'.format(typename, attr), BITS)
+        @format_array(f, '{} PMASK[PADDED]{}'.format(typename, attr), PADDED)
         def etch_point_masks(mask, i):
-            mask.fill(i, 1, 1)
+            try:
+                mask.fill(i, 1, 1)
+            except IndexError:
+                pass
 
         etch_point_masks(mask)
 
@@ -234,7 +240,7 @@ def main():
             extern {0} BMASK;
             extern {0} OMASK;
 
-            extern {0} PMASK[BITS];
+            extern {0} PMASK[PADDED];
 
             extern {0} UMASK[POINTS];
             extern {0} LMASK[POINTS];
