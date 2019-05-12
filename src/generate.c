@@ -136,8 +136,8 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       sset = sset ^ PMASK[index];
 
       __uint128_t moveset;
-      moveset = _1n1w(PMASK[index]) | _1n1e(PMASK[index])
-         | _1s1e(PMASK[index]) | _1s1w(PMASK[index]);
+      moveset = PMASK[index + WIDTH - 1] | PMASK[index + WIDTH + 1]
+         | PMASK[index - WIDTH + 1] | PMASK[index - WIDTH - 1];
       moveset = moveset & SMASK[side] & ~state->occupancy[side];
 
       add_piecewise(state, moveset, index, &moves);
@@ -284,8 +284,8 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
       sset = sset ^ PMASK[index];
 
       __uint128_t moveset;
-      moveset = _1n1w(PMASK[index]) | _1n1e(PMASK[index])
-         | _1s1e(PMASK[index]) | _1s1w(PMASK[index]);
+      moveset = PMASK[index + WIDTH - 1] | PMASK[index + WIDTH + 1]
+         | PMASK[index - WIDTH + 1] | PMASK[index - WIDTH - 1];
       moveset = moveset & SMASK[side] & state->occupancy[!side];
 
       add_piecewise(state, moveset, index, &moves);
