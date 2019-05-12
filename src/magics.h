@@ -64,6 +64,12 @@
 #define i1s1e(i)    (PMASK[i - WIDTH + 1])
 #define i1s1w(i)    (PMASK[i - WIDTH - 1])
 
+#define i2n1e(i)    (PMASK[i + (WIDTH << 1) + 1])
+#define i2n1w(i)    (PMASK[i + (WIDTH << 1) - 1])
+#define i2e1n(i)    (PMASK[i + WIDTH + 2])
+#define i2e1s(i)    (PMASK[i - WIDTH + 2])
+#define i2w1n(i)    (PMASK[i + WIDTH - 2])
+
 #define i2n2e(i)    (PMASK[i + (WIDTH << 1) + 2])
 #define i2n2w(i)    (PMASK[i + (WIDTH << 1) - 2])
 
