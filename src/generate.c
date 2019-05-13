@@ -48,14 +48,14 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       mset = mset ^ PMASK[index];
 
       __uint128_t moveset = 0;
-      __uint128_t lset = PMASK[index] & _1e(state->pieces[empty]);
-      moveset = moveset | _2w1n(lset) | _2w1s(lset);
-      __uint128_t rset = PMASK[index] & _1w(state->pieces[empty]);
-      moveset = moveset | _2e1n(rset) | _2e1s(rset);
-      __uint128_t nset = PMASK[index] & _1s(state->pieces[empty]);
-      moveset = moveset | _2n1w(nset) | _2n1e(nset);
-      __uint128_t sset = PMASK[index] & _1n(state->pieces[empty]);
-      moveset = moveset | _2s1w(sset) | _2s1e(sset);
+      __uint128_t lset = PMASK[index] & s1e(state->pieces[empty]);
+      moveset = moveset | s2w1n(lset) | s2w1s(lset);
+      __uint128_t rset = PMASK[index] & s1w(state->pieces[empty]);
+      moveset = moveset | s2e1n(rset) | s2e1s(rset);
+      __uint128_t nset = PMASK[index] & s1s(state->pieces[empty]);
+      moveset = moveset | s2n1w(nset) | s2n1e(nset);
+      __uint128_t sset = PMASK[index] & s1n(state->pieces[empty]);
+      moveset = moveset | s2s1w(sset) | s2s1e(sset);
       moveset = moveset & BMASK & ~state->occupancy[side];
 
       add_piecewise(state, moveset, index, &moves);
@@ -103,15 +103,15 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
    }
 
    __uint128_t zset;
-   zset = _1f(state->pieces[ps(side, 0x6)], side);
+   zset = s1f(state->pieces[ps(side, 0x6)], side);
    zset &= ZMASK[side] & ~state->occupancy[side];
    add_shiftwise(state, zset, side ? -WIDTH : WIDTH, &moves);
 
-   zset = _1e(state->pieces[ps(side, 0x6)]) & BMASK;
+   zset = s1e(state->pieces[ps(side, 0x6)]) & BMASK;
    zset &= ZMASK[side] & ~state->occupancy[side];
    add_shiftwise(state, zset, 1, &moves);
 
-   zset = _1w(state->pieces[ps(side, 0x6)]) & BMASK;
+   zset = s1w(state->pieces[ps(side, 0x6)]) & BMASK;
    zset &= ZMASK[side] & ~state->occupancy[side];
    add_shiftwise(state, zset, -1, &moves);
 
@@ -121,10 +121,10 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
       xset = xset ^ PMASK[index];
 
       __uint128_t moveset;
-      moveset = (i2n2e(index) & _1n1e(state->pieces[empty]))
-         | (i2n2w(index) & _1n1w(state->pieces[empty]))
-         | (_2s2e(PMASK[index]) & _1s1e(state->pieces[empty]))
-         | (_2s2w(PMASK[index]) & _1s1w(state->pieces[empty]));
+      moveset = (i2n2e(index) & s1n1e(state->pieces[empty]))
+         | (i2n2w(index) & s1n1w(state->pieces[empty]))
+         | (s2s2e(PMASK[index]) & s1s1e(state->pieces[empty]))
+         | (s2s2w(PMASK[index]) & s1s1w(state->pieces[empty]));
       moveset = moveset & XMASK[side] & ~state->occupancy[side];
 
       add_piecewise(state, moveset, index, &moves);
@@ -198,14 +198,14 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
       mset = mset ^ PMASK[index];
 
       __uint128_t moveset = 0;
-      __uint128_t lset = PMASK[index] & _1e(state->pieces[empty]);
-      moveset = moveset | _2w1n(lset) | _2w1s(lset);
-      __uint128_t rset = PMASK[index] & _1w(state->pieces[empty]);
-      moveset = moveset | _2e1n(rset) | _2e1s(rset);
-      __uint128_t nset = PMASK[index] & _1s(state->pieces[empty]);
-      moveset = moveset | _2n1w(nset) | _2n1e(nset);
-      __uint128_t sset = PMASK[index] & _1n(state->pieces[empty]);
-      moveset = moveset | _2s1w(sset) | _2s1e(sset);
+      __uint128_t lset = PMASK[index] & s1e(state->pieces[empty]);
+      moveset = moveset | s2w1n(lset) | s2w1s(lset);
+      __uint128_t rset = PMASK[index] & s1w(state->pieces[empty]);
+      moveset = moveset | s2e1n(rset) | s2e1s(rset);
+      __uint128_t nset = PMASK[index] & s1s(state->pieces[empty]);
+      moveset = moveset | s2n1w(nset) | s2n1e(nset);
+      __uint128_t sset = PMASK[index] & s1n(state->pieces[empty]);
+      moveset = moveset | s2s1w(sset) | s2s1e(sset);
       moveset = moveset & BMASK & state->occupancy[!side];
 
       add_piecewise(state, moveset, index, &moves);
@@ -247,15 +247,15 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
    }
 
    __uint128_t zset;
-   zset = _1f(state->pieces[ps(side, 0x6)], side);
+   zset = s1f(state->pieces[ps(side, 0x6)], side);
    zset &= ZMASK[side] & state->occupancy[!side];
    add_shiftwise(state, zset, side ? -WIDTH : WIDTH, &moves);
 
-   zset = _1e(state->pieces[ps(side, 0x6)]) & BMASK;
+   zset = s1e(state->pieces[ps(side, 0x6)]) & BMASK;
    zset &= ZMASK[side] & state->occupancy[!side];
    add_shiftwise(state, zset, 1, &moves);
 
-   zset = _1w(state->pieces[ps(side, 0x6)]) & BMASK;
+   zset = s1w(state->pieces[ps(side, 0x6)]) & BMASK;
    zset &= ZMASK[side] & state->occupancy[!side];
    add_shiftwise(state, zset, -1, &moves);
 
@@ -265,10 +265,10 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
       xset = xset ^ PMASK[index];
 
       __uint128_t moveset;
-      moveset = (i2n2e(index) & _1n1e(state->pieces[empty]))
-         | (i2n2w(index) & _1n1w(state->pieces[empty]))
-         | (_2s2e(PMASK[index]) & _1s1e(state->pieces[empty]))
-         | (_2s2w(PMASK[index]) & _1s1w(state->pieces[empty]));
+      moveset = (i2n2e(index) & s1n1e(state->pieces[empty]))
+         | (i2n2w(index) & s1n1w(state->pieces[empty]))
+         | (s2s2e(PMASK[index]) & s1s1e(state->pieces[empty]))
+         | (s2s2w(PMASK[index]) & s1s1w(state->pieces[empty]));
       moveset = moveset & XMASK[side] & state->occupancy[!side];
 
       add_piecewise(state, moveset, index, &moves);

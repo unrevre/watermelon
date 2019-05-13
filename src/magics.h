@@ -21,36 +21,36 @@
 
 /* shifts */
 
-#define _1n(a)      (a << (WIDTH))
-#define _1e(a)      (a << 1)
-#define _1s(a)      (a >> (WIDTH))
-#define _1w(a)      (a >> 1)
+#define s1n(a)      (a << (WIDTH))
+#define s1e(a)      (a << 1)
+#define s1s(a)      (a >> (WIDTH))
+#define s1w(a)      (a >> 1)
 
-#define _1f(a, s)   ((a << (WIDTH)) >> (s ? (WIDTH << 1) : 0))
+#define s1f(a, s)   ((a << (WIDTH)) >> (s ? (WIDTH << 1) : 0))
 
-#define _1n1e(a)    _1n(_1e(a))
-#define _1n1w(a)    (a << (WIDTH - 1))
-#define _1s1e(a)    (a >> (WIDTH - 1))
-#define _1s1w(a)    _1s(_1w(a))
+#define s1n1e(a)    s1n(s1e(a))
+#define s1n1w(a)    (a << (WIDTH - 1))
+#define s1s1e(a)    (a >> (WIDTH - 1))
+#define s1s1w(a)    s1s(s1w(a))
 
-#define _2n(a)      _1n(_1n(a))
-#define _2e(a)      _1e(_1e(a))
-#define _2s(a)      _1s(_1s(a))
-#define _2w(a)      _1w(_1w(a))
+#define s2n(a)      s1n(s1n(a))
+#define s2e(a)      s1e(s1e(a))
+#define s2s(a)      s1s(s1s(a))
+#define s2w(a)      s1w(s1w(a))
 
-#define _2n1e(a)    _2n(_1e(a))
-#define _2n1w(a)    _1n(_1n1w(a))
-#define _2e1n(a)    _2e(_1n(a))
-#define _2e1s(a)    (a >> (WIDTH - 2))
-#define _2s1e(a)    _1s(_1s1e(a))
-#define _2s1w(a)    _2s(_1w(a))
-#define _2w1n(a)    (a << (WIDTH - 2))
-#define _2w1s(a)    _2w(_1s(a))
+#define s2n1e(a)    s2n(s1e(a))
+#define s2n1w(a)    s1n(s1n1w(a))
+#define s2e1n(a)    s2e(s1n(a))
+#define s2e1s(a)    (a >> (WIDTH - 2))
+#define s2s1e(a)    s1s(s1s1e(a))
+#define s2s1w(a)    s2s(s1w(a))
+#define s2w1n(a)    (a << (WIDTH - 2))
+#define s2w1s(a)    s2w(s1s(a))
 
-#define _2n2e(a)    _2n(_2e(a))
-#define _2n2w(a)    _1n1w(_1n1w(a))
-#define _2s2e(a)    _1s1e(_1s1e(a))
-#define _2s2w(a)    _2s(_2w(a))
+#define s2n2e(a)    s2n(s2e(a))
+#define s2n2w(a)    s1n1w(s1n1w(a))
+#define s2s2e(a)    s1s1e(s1s1e(a))
+#define s2s2w(a)    s2s(s2w(a))
 
 /* offsets */
 
