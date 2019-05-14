@@ -58,8 +58,8 @@ uint32_t in_check(transient_t* state, int64_t side) {
 
    __uint128_t mset = ((i2n1w(index) | i2n1e(index)) & s1n(emask))
       | ((s2s1e(pmask) | s2s1w(pmask)) & s1s(emask))
-      | ((i2e1s(index) | i2e1n(index)) & s1e(emask))
-      | ((i2w1n(index) | s2w1s(pmask)) & s1w(emask));
+      | ((i1s2e(index) | i1n2e(index)) & s1e(emask))
+      | ((i1n2w(index) | s1s2w(pmask)) & s1w(emask));
    mset = mset & state->pieces[po(side, 0x2)];
    if (mset) { return 1; }
 

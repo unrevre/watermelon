@@ -49,9 +49,9 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
 
       __uint128_t moveset = 0;
       __uint128_t lset = PMASK[index] & s1e(state->pieces[empty]);
-      moveset = moveset | s2w1n(lset) | s2w1s(lset);
+      moveset = moveset | s1n2w(lset) | s1s2w(lset);
       __uint128_t rset = PMASK[index] & s1w(state->pieces[empty]);
-      moveset = moveset | s2e1n(rset) | s2e1s(rset);
+      moveset = moveset | s1n2e(rset) | s1s2e(rset);
       __uint128_t nset = PMASK[index] & s1s(state->pieces[empty]);
       moveset = moveset | s2n1w(nset) | s2n1e(nset);
       __uint128_t sset = PMASK[index] & s1n(state->pieces[empty]);
@@ -105,7 +105,7 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
    __uint128_t zset;
    zset = s1f(state->pieces[ps(side, 0x6)], side);
    zset &= ZMASK[side] & ~state->occupancy[side];
-   add_shiftwise(state, zset, side ? -WIDTH : WIDTH, &moves);
+   add_shiftwise(state, zset, d1f(side), &moves);
 
    zset = s1e(state->pieces[ps(side, 0x6)]) & BMASK;
    zset &= ZMASK[side] & ~state->occupancy[side];
@@ -199,9 +199,9 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
 
       __uint128_t moveset = 0;
       __uint128_t lset = PMASK[index] & s1e(state->pieces[empty]);
-      moveset = moveset | s2w1n(lset) | s2w1s(lset);
+      moveset = moveset | s1n2w(lset) | s1s2w(lset);
       __uint128_t rset = PMASK[index] & s1w(state->pieces[empty]);
-      moveset = moveset | s2e1n(rset) | s2e1s(rset);
+      moveset = moveset | s1n2e(rset) | s1s2e(rset);
       __uint128_t nset = PMASK[index] & s1s(state->pieces[empty]);
       moveset = moveset | s2n1w(nset) | s2n1e(nset);
       __uint128_t sset = PMASK[index] & s1n(state->pieces[empty]);
@@ -249,7 +249,7 @@ move_array_t generate_captures(transient_t* state, int64_t side) {
    __uint128_t zset;
    zset = s1f(state->pieces[ps(side, 0x6)], side);
    zset &= ZMASK[side] & state->occupancy[!side];
-   add_shiftwise(state, zset, side ? -WIDTH : WIDTH, &moves);
+   add_shiftwise(state, zset, d1f(side), &moves);
 
    zset = s1e(state->pieces[ps(side, 0x6)]) & BMASK;
    zset &= ZMASK[side] & state->occupancy[!side];
