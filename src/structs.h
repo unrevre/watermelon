@@ -72,7 +72,7 @@ typedef struct {
    int64_t side;
    __uint128_t pieces[PIECES];
    __uint128_t occupancy[2];
-   uint32_t board[BITS];
+   uint32_t board[POINTS];
    jmp_buf env;
 } transient_t;
 
