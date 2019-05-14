@@ -2,7 +2,7 @@
 
 #include "debug.h"
 #include "generate.h"
-#include "inlines.h"
+#include "magics.h"
 #include "memory.h"
 #include "position.h"
 #include "state.h"
