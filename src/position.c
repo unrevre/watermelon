@@ -91,13 +91,12 @@ uint32_t is_valid(transient_t* state, move_t move) {
          int32_t high = from > to ? from : to;
          int32_t low = from > to ? to : from;
          __uint128_t jspan = PMASK[high] - PMASK[low + 1];
-         if (high - low >= WIDTH) { jspan = jspan & FMASK[high]; }
+         if (high - low >= d1r) { jspan = jspan & FMASK[high]; }
          return !(jspan & ~state->pieces[empty]); }
       case 2: ;
          int64_t diff = abs(from - to);
-         int64_t offset = (diff == (WIDTH - 2))
-            ? (WIDTH - 1) : (diff == ((WIDTH << 1) - 1))
-            ? (WIDTH - 1) : (WIDTH + 1);
+         int64_t offset = (diff == d1n2w) ? d1n1w
+            : (diff == d2n1w) ? d1n1w : d1n1e;
          offset = from > to ? offset : -offset;
          return state->board[to + offset] == empty;
       case 3: ;
@@ -105,7 +104,7 @@ uint32_t is_valid(transient_t* state, move_t move) {
          int32_t low = from > to ? to : from;
          int64_t count = move._.pto != empty;
          __uint128_t pspan = PMASK[high] - PMASK[low + 1];
-         if (high - low >= WIDTH) { pspan = pspan & FMASK[high]; }
+         if (high - low >= d1r) { pspan = pspan & FMASK[high]; }
          pspan = pspan & ~state->pieces[empty];
          return popcnt(pspan) == count;
       case 4: return 1;
