@@ -60,8 +60,6 @@ void reset_fen(const char* fen_str) {
          trunk.occupancy[s(piece)] |= PMASK[i]; }
    }
 
-   trunk.pieces[empty] = ~(trunk.occupancy[0] | trunk.occupancy[1]);
-
    trunk.side = (schar == 'b') ? black : red;
 }
 
