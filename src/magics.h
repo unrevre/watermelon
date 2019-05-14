@@ -1,6 +1,8 @@
 #ifndef MAGIC_H
 #define MAGIC_H
 
+#include <stdint.h>
+
 /* structs */
 
 #define PIECES      15
@@ -139,5 +141,25 @@
 
 #define ps(s, p)    ((p << 1) + s)
 #define po(s, p)    ((p << 1) ^ o(s))
+
+/*!
+ * to_external
+ * @ convert internal index for output
+ */
+
+__inline__ int32_t to_external(int32_t index) {
+   int32_t y = (index - OFFSET) / WIDTH;
+   int32_t x = (index - OFFSET) % WIDTH - SENTINEL;
+   return y * FILES + x;
+}
+
+/*!
+ * to_internal
+ * @ convert coordinates to internal index
+ */
+
+__inline__ int32_t to_internal(int32_t x, int32_t y) {
+   return y * WIDTH + x + SENTINEL + OFFSET;
+}
 
 #endif /* MAGIC_H */

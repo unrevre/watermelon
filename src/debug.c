@@ -2,7 +2,6 @@
 
 #include "eval.h"
 #include "fen.h"
-#include "inlines.h"
 #include "magics.h"
 #include "memory.h"
 #include "position.h"
