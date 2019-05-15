@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "generate.h"
 #include "magics.h"
+#include "masks.h"
 #include "memory.h"
 #include "position.h"
 #include "state.h"
@@ -146,6 +147,64 @@ void wmprint_info(interface_t* itf, char const* fmt, ...) {
    va_start(args, fmt);
    itf->print(itf->win_info, 0, fmt, args);
    va_end(args);
+}
+
+/*!
+ * is_index_movable
+ * @ test if piece at index is on side to move
+ */
+
+uint32_t is_index_movable(int64_t index) {
+   return (trunk.board[index] != empty
+      && s(trunk.board[index]) == trunk.side);
+}
+
+/*!
+ * move_for_indices
+ * @ return move if indices constitute a valid move
+ */
+
+move_t move_for_indices(uint32_t from, uint32_t to) {
+   if (is_index_movable(to)) { return (move_t){0}; }
+
+   int64_t side = trunk.side;
+   __uint128_t tmask = PMASK[to];
+
+   int32_t fdiff = (from - OFFSET) % WIDTH - (to - OFFSET) % WIDTH;
+   int32_t fdabs = abs(fdiff);
+   int32_t rdiff = (from - OFFSET) / WIDTH - (to - OFFSET) / WIDTH;
+   int32_t rdabs = abs(rdiff);
+
+   switch (p(trunk.board[from])) {
+      case 0:
+         if ((fdabs + rdabs != 1) || !(tmask & JMASK[side]))
+            return (move_t){0};
+         break;
+      case 1: case 3:
+         if (fdabs && rdabs)
+            return (move_t){0};
+         break;
+      case 2:
+         if (!fdabs || !rdabs || (fdabs + rdabs != 3))
+            return (move_t){0};
+         break;
+      case 4:
+         if (fdabs != 1 || rdabs != 1 || !(tmask & SMASK[side]))
+            return (move_t){0};
+         break;
+      case 5:
+         if (fdabs != 2 || rdabs != 2 || !(tmask & XMASK[side]))
+            return (move_t){0};
+         break;
+      case 6:
+         if ((fdabs + rdabs != 1) || !(tmask & ZMASK[side])
+               || (rdiff == (side ? -1 : 1)))
+            return (move_t){0};
+         break;
+   }
+
+   return (move_t){ ._ = {
+      from, to, trunk.board[from], trunk.board[to] } };
 }
 
 /*!

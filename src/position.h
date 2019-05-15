@@ -33,18 +33,4 @@ uint32_t is_legal(transient_t* state, move_t move);
 
 uint32_t is_repetition(transient_t* state);
 
-/*!
- * is_index_movable
- * @ test if piece at index is on side to move
- */
-
-uint32_t is_index_movable(int64_t index);
-
-/*!
- * move_for_indices
- * @ return move if indices constitute a valid movement
- */
-
-move_t move_for_indices(uint32_t from, uint32_t to);
-
 #endif /* POSITION_H */
