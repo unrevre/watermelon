@@ -10,7 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
+move_array_t generate_pseudolegal(transient_t* state) {
+   int64_t side = state->side;
+
    move_array_t moves = {malloc(111 * sizeof(move_t)), 0, 0};
    if (!state->pieces[ps(side, 0x0)]) { return moves; }
 
@@ -160,7 +162,9 @@ move_array_t generate_pseudolegal(transient_t* state, int64_t side) {
    return moves;
 }
 
-move_array_t generate_captures(transient_t* state, int64_t side) {
+move_array_t generate_captures(transient_t* state) {
+   int64_t side = state->side;
+
    move_array_t moves = {malloc(40 * sizeof(move_t)), 0, 0};
    if (!state->pieces[ps(side, 0x0)]) { return moves; }
 
@@ -351,7 +355,7 @@ move_t next(generator_t* engine, transient_t* state) {
             return engine->move;
       case 1:
          ++(engine->state);
-         engine->moves = generate_pseudolegal(state, state->side);
+         engine->moves = generate_pseudolegal(state);
          sort_moves(&(engine->moves));
       case 2:
          if (engine->index < engine->moves.quiet)

@@ -7,52 +7,42 @@
 
 #include <stdlib.h>
 
-/*!
- * impl_perft
- * @ internal implementation of perft
- */
-
-int64_t impl_perft(int32_t depth, int64_t side) {
-   if (!depth) { return 1; }
-
-   int64_t nmoves = 0;
-   move_array_t moves = generate_pseudolegal(&trunk, side);
-   for (int64_t i = 0; i != moves.count; ++i) {
-      advance_board(moves.data[i], &trunk);
-      if (!in_check(&trunk, side))
-         nmoves += impl_perft(depth - 1, side ^ pass);
-      retract_board(moves.data[i], &trunk);
-   }
-   free(moves.data);
-
-   return nmoves;
-}
-
 int64_t perft(int32_t depth) {
-   return impl_perft(depth, trunk.side);
-}
-
-/*!
- * impl_perft_capture
- * @ internal implementation of perft_capture
- */
-
-int64_t impl_perft_capture(int32_t depth, int64_t side) {
    if (!depth) { return 1; }
 
+   move_array_t moves = generate_pseudolegal(&trunk);
+   trunk.side = o(trunk.side);
+
    int64_t nmoves = 0;
-   move_array_t moves = generate_captures(&trunk, side);
    for (int64_t i = 0; i != moves.count; ++i) {
       advance_board(moves.data[i], &trunk);
-      if (!in_check(&trunk, side))
-         nmoves += impl_perft_capture(depth - 1, side ^ pass);
+      if (!in_check(&trunk, o(trunk.side)))
+         nmoves += perft(depth - 1);
       retract_board(moves.data[i], &trunk);
    }
+
+   trunk.side = o(trunk.side);
    free(moves.data);
 
    return nmoves;
 }
 
 int64_t perft_capture(int32_t depth) {
-   return impl_perft_capture(depth, trunk.side);
+   if (!depth) { return 1; }
+
+   move_array_t moves = generate_captures(&trunk);
+   trunk.side = o(trunk.side);
+
+   int64_t nmoves = 0;
+   for (int64_t i = 0; i != moves.count; ++i) {
+      advance_board(moves.data[i], &trunk);
+      if (!in_check(&trunk, o(trunk.side)))
+         nmoves += perft_capture(depth - 1);
+      retract_board(moves.data[i], &trunk);
+   }
+
+   trunk.side = o(trunk.side);
+   free(moves.data);
+
+   return nmoves;
 }

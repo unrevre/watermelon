@@ -11,14 +11,14 @@
  * # including feijiang as literal move
  */
 
-move_array_t generate_pseudolegal(transient_t* state, int64_t side);
+move_array_t generate_pseudolegal(transient_t* state);
 
 /*!
  * generate_captures
  * @ generate capture moves
  */
 
-move_array_t generate_captures(transient_t* state, int64_t side);
+move_array_t generate_captures(transient_t* state);
 
 /*!
  * add_piecewise
