@@ -75,7 +75,7 @@ void set_timer(double time) {
    search.clock->limit = time;
 }
 
-void init_search(transient_t* state) {
+void set_search(transient_t* state) {
    search.clock->status = 0;
 
    search.nodes = 0;
