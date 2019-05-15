@@ -3,7 +3,6 @@
 #include "debug.h"
 #include "eval.h"
 #include "generate.h"
-#include "inlines.h"
 #include "magics.h"
 #include "memory.h"
 #include "position.h"
