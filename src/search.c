@@ -179,7 +179,7 @@ int32_t quiescence(transient_t* state, int32_t alpha, int32_t beta) {
    if (stand >= beta) { return stand; }
    alpha = stand > alpha ? stand : alpha;
 
-   move_array_t moves = generate_captures(state, state->side);
+   move_array_t moves = generate_captures(state);
    sort_moves(&moves);
    for (int64_t i = 0; i != moves.count; ++i) {
       if (stand + gain(moves.data[i]) + QMARGIN < alpha) {
