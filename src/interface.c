@@ -118,7 +118,7 @@ void close_interface(interface_t* itf) {
    free(itf);
 }
 
-void refresh_all(interface_t* itf) {
+void refresh_interface(interface_t* itf) {
    refresh_windows(itf, 3, itf->win_fen, itf->win_info, itf->win_state);
 }
 

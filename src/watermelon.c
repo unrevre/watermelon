@@ -67,7 +67,7 @@ int watermelon(option_t* options, char const* fen) {
 
    do {
       wmprint_state(itf);
-      refresh_all(itf);
+      refresh_interface(itf);
 
       if (!idle[trunk.side] && !event_loop(itf)) { break; }
 

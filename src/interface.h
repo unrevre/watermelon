@@ -49,11 +49,11 @@ void init_interface(interface_t* itf, uint64_t flags);
 void close_interface(interface_t* itf);
 
 /*!
- * refresh_all
+ * refresh_interface
  * @ refresh all window contents
  */
 
-void refresh_all(interface_t* itf);
+void refresh_interface(interface_t* itf);
 
 /*!
  * wmprint_state

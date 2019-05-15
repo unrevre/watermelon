@@ -41,11 +41,11 @@ void set_state(const char* fen);
 void set_timer(double time);
 
 /*!
- * init_search
+ * set_search
  * @ reset search parameters
  */
 
-void init_search(transient_t* state);
+void set_search(transient_t* state);
 
 /*!
  * advance_board
