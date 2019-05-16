@@ -5,8 +5,6 @@
 #include "state.h"
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 const char fen_side[2] = { 'r', 'b' };
 const char fen_char[15] = "KkRrNnCcAaBbPp ";
