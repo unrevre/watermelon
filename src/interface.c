@@ -1,7 +1,6 @@
 #include "interface.h"
 
 #include "debug.h"
-#include "generate.h"
 #include "magics.h"
 #include "masks.h"
 #include "memory.h"

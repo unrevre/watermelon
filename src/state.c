@@ -2,10 +2,8 @@
 
 #include "debug.h"
 #include "fen.h"
-#include "generate.h"
 #include "masks.h"
 #include "memory.h"
-#include "search.h"
 
 #include <stdlib.h>
 #include <string.h>

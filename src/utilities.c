@@ -3,7 +3,6 @@
 #include <ctype.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
 
 char** slice(char* string) {
    int64_t size = 8;
