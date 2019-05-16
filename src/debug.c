@@ -9,8 +9,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
+#define move_length 14
 #define entry_length 28
 
 transient_t* state = 0;
@@ -54,30 +54,34 @@ char* info_eval(debug_t* info) {
  */
 
 void impl_fen(char* buffer) {
-   memset(buffer, '0', 91);
-
+   char* p = buffer;
    int64_t a = to_internal(0, HEIGHT - 1);
-   int64_t f = 0;
    for (int64_t i = 0; i != RANKS; ++i) {
-      int64_t g = f;
+      char blanks = '0';
       for (int64_t j = 0; j != FILES; ++a, ++j) {
-         if (f == g) { ++f; }
          if (trunk.board[a] == empty) {
-            buffer[g]++;
+            ++blanks;
          } else {
-            if (buffer[g] == '0') { f = g; }
-            buffer[f++] = fen_char[trunk.board[a]];
-            g = f;
+            *p++ = blanks;
+            *p++ = fen_char[trunk.board[a]];
+            blanks = '0';
          }
       }
 
-      buffer[f++] = '/';
+      *p++ = blanks;
+      *p++ = '/';
       a = a - FILES - WIDTH;
    }
 
-   buffer[--f] = ' ';
-   buffer[++f] = fen_side[state->side];
-   buffer[++f] = '\0';
+   --p;
+
+   char* b = buffer;
+   for (char* f = buffer; f != p; ++f, ++b) {
+      *b = *f; if (*f == '0') { --b; } }
+
+   *b++ = ' ';
+   *b++ = fen_side[state->side];
+   *b = '\0';
 }
 
 char* info_fen(debug_t* info) {
@@ -92,22 +96,22 @@ char* info_fen(debug_t* info) {
  */
 
 void impl_game_state(char* buffer) {
+   char* p = buffer;
    int64_t a = to_internal(0, HEIGHT - 1);
-   int64_t g = 0;
    for (int64_t i = 0; i != RANKS; ++i) {
       char filler = (i == 4 || i == 5) ? '-' : ' ';
       for (int64_t j = 0; j != FILES; ++a, ++j) {
-         buffer[g++] = filler;
-         buffer[g++] = trunk.board[a] == empty
+         *p++ = filler;
+         *p++ = trunk.board[a] == empty
             ? filler : fen_char[trunk.board[a]];
       }
 
-      buffer[g++] = filler;
-      buffer[g++] = '\n';
+      *p++ = filler;
+      *p++ = '\n';
       a = a - FILES - WIDTH;
    }
 
-   buffer[g++] = '\0';
+   *p = '\0';
 }
 
 char* info_game_state(debug_t* info) {
@@ -140,7 +144,7 @@ char* info_move(debug_t* info, move_t move) {
 
 void impl_transposition_table_entry(char* buffer, ttentry_t entry) {
    impl_move(buffer, entry._.move);
-   sprintf(buffer + strlen(buffer), " %5i (%x)", entry._.score, entry._.flags);
+   sprintf(buffer + move_length, " %5i (%x)", entry._.score, entry._.flags);
 }
 
 char* info_transposition_table_entry(debug_t* info, ttentry_t entry) {
@@ -160,23 +164,23 @@ void trace_principal_variation(char** buffer) {
 
    move_t next = entry._.move;
    if (next.bits && is_valid(state, next)) {
-      if (is_legal(state, next)) {
-         advance(next, state);
-
+      advance(next, state);
+      if (!in_check(state, o(state->side))) {
          impl_transposition_table_entry(*buffer, entry);
-         strcat(*buffer, "  \n");
+         (*buffer)[entry_length - 4] = ' ';
+         (*buffer)[entry_length - 2] = '\n';
          if (is_repetition(state)) {
             (*buffer)[entry_length - 3] = '%';
             **++buffer = '\0';
          } else {
+            (*buffer)[entry_length - 3] = ' ';
             trace_principal_variation(++buffer);
          }
-
-         retract(next, state);
       } else if (state->ply) {
          --buffer;
          (*buffer)[entry_length - 3] = '#';
       }
+      retract(next, state);
    }
 }
 
