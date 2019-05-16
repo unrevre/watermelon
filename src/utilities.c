@@ -1,6 +1,5 @@
 #include "utilities.h"
 
-#include <ctype.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -13,8 +12,7 @@ char** slice(char* string) {
 
    for (char* p = string; *p != '\0'; ++p) {
       if (state == 0) {
-         if (isspace(*p)) {
-            continue; }
+         if (*p == ' ' || *p == '\n') { continue; }
 
          int64_t quote = *p == '"';
          state = quote + 1;
@@ -26,7 +24,7 @@ char** slice(char* string) {
          }
       } else {
          if (*p == '\0' || (state == 2 && *p == '"')
-               || (state == 1 && isspace(*p))) {
+               || (state == 1 && (*p == ' ' || *p == '\n'))) {
             state = 0;
             *p = '\0';
          }
