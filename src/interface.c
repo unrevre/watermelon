@@ -20,7 +20,6 @@
  */
 
 int wmprintf(WINDOW* w __attribute__((unused)),
-             uint64_t clear __attribute__((unused)),
              char const* fmt, va_list args) {
    return vprintf(fmt, args);
 }
@@ -30,9 +29,7 @@ int wmprintf(WINDOW* w __attribute__((unused)),
  * @ wrapper for mvwprintw
  */
 
-int wmprintw(WINDOW* w, uint64_t clear, char const* fmt, va_list args) {
-   if (clear) { wmove(w, 0, 0); }
-
+int wmprintw(WINDOW* w, char const* fmt, va_list args) {
    return vwprintw(w, fmt, args);
 }
 
@@ -41,11 +38,10 @@ int wmprintw(WINDOW* w, uint64_t clear, char const* fmt, va_list args) {
  * @ wrapper for print functions
  */
 
-void wmprint(interface_t* itf, WINDOW* w, int64_t clear, char const* fmt,
-             ...) {
+void wmprint(interface_t* itf, WINDOW* w, char const* fmt, ...) {
    va_list args;
    va_start(args, fmt);
-   itf->print(w, clear, fmt, args);
+   itf->print(w, fmt, args);
    va_end(args);
 
    fflush(stdout);
@@ -129,12 +125,17 @@ void refresh_state(interface_t* itf) {
 void wmprint_state(interface_t* itf) {
    if (flag(itf, ITF_QUIET) && !flag(itf, ITF_CURSES)) { return; }
 
-   wmprint(itf, itf->win_fen, 1, "%s\n", info_fen(itf->info));
-   wmprint(itf, itf->win_state, 1, "%s", info_game_state(itf->info));
+   if (flag(itf, ITF_CURSES)) {
+      wmove(itf->win_fen, 0, 0);
+      wmove(itf->win_state, 0, 0);
+   }
+
+   wmprint(itf, itf->win_fen, "%s\n", info_fen(itf->info));
+   wmprint(itf, itf->win_state, "%s", info_game_state(itf->info));
 }
 
 void wmprint_search(interface_t* itf, move_t move) {
-   wmprint(itf, itf->win_info, 0, "%s\n", info_move(itf->info, move));
+   wmprint(itf, itf->win_info, "%s\n", info_move(itf->info, move));
    if (flag(itf, ITF_QUIET)) { return; }
 
    wmprint_info(itf, "\n");
@@ -148,7 +149,7 @@ void wmprint_info(interface_t* itf, char const* fmt, ...) {
 
    va_list args;
    va_start(args, fmt);
-   itf->print(itf->win_info, 0, fmt, args);
+   itf->print(itf->win_info, fmt, args);
    va_end(args);
 }
 
@@ -328,7 +329,7 @@ int64_t event_loop(interface_t* itf) {
          int64_t retval = -1;
          switch (cmd) {
             case cmd_eval:
-               wmprint(itf, itf->win_info, 0, "%s\n\n", info_eval(itf->info));
+               wmprint(itf, itf->win_info, "%s\n\n", info_eval(itf->info));
                break;
             case cmd_leap:
                retval = 1;
