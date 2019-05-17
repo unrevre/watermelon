@@ -51,25 +51,6 @@ void wmprint(interface_t* itf, WINDOW* w, int64_t clear, char const* fmt,
    fflush(stdout);
 }
 
-/*!
- * refresh_windows
- * @ refresh window contents
- */
-
-void refresh_windows(interface_t* itf, int64_t count, ...) {
-   if (flag(itf, ITF_CURSES)) {
-      wmove(itf->win_state, itf->y, itf->x);
-
-      va_list args;
-      va_start(args, count);
-      for (int64_t i = 0; i < count; ++i) {
-         wnoutrefresh(va_arg(args, WINDOW*)); }
-      va_end(args);
-
-      doupdate();
-   }
-}
-
 void init_interface(interface_t* itf, uint64_t flags) {
    itf->flags = flags;
    itf->print = flag(itf, ITF_CURSES) ? wmprintw : wmprintf;
@@ -106,9 +87,9 @@ void init_interface(interface_t* itf, uint64_t flags) {
 
 void close_interface(interface_t* itf) {
    wmprint_info(itf, " - exit -\n");
-   refresh_windows(itf, 1, itf->win_info);
 
    if (flag(itf, ITF_CURSES)) {
+      wrefresh(itf->win_info);
       getch();
       endwin();
    }
@@ -118,7 +99,31 @@ void close_interface(interface_t* itf) {
 }
 
 void refresh_interface(interface_t* itf) {
-   refresh_windows(itf, 3, itf->win_fen, itf->win_info, itf->win_state);
+   if (flag(itf, ITF_CURSES)) {
+      wmove(itf->win_state, itf->y, itf->x);
+      wnoutrefresh(itf->win_fen);
+      wnoutrefresh(itf->win_info);
+      wnoutrefresh(itf->win_state);
+
+      doupdate();
+   }
+}
+
+void refresh_board(interface_t* itf) {
+   if (flag(itf, ITF_CURSES)) {
+      wmove(itf->win_state, itf->y, itf->x);
+      wrefresh(itf->win_state);
+   }
+}
+
+void refresh_state(interface_t* itf) {
+   if (flag(itf, ITF_CURSES)) {
+      wmove(itf->win_state, itf->y, itf->x);
+      wnoutrefresh(itf->win_fen);
+      wnoutrefresh(itf->win_state);
+
+      doupdate();
+   }
 }
 
 void wmprint_state(interface_t* itf) {
@@ -133,9 +138,8 @@ void wmprint_search(interface_t* itf, move_t move) {
    if (flag(itf, ITF_QUIET)) { return; }
 
    wmprint_info(itf, "\n");
-   char** pv = info_principal_variation(itf->info);
-   for (int64_t i = 0; i < PLYLIMIT && pv[i][0]; ++i)
-      wmprint_info(itf, "%s", pv[i]);
+   for (char** pv = info_principal_variation(itf->info); **pv; ++pv)
+      wmprint_info(itf, "%s", *pv);
    wmprint_info(itf, "\n");
 }
 
@@ -232,7 +236,7 @@ void fetch(interface_t* itf) {
          advance_history(move);
          advance_game(move);
          wmprint_state(itf);
-         refresh_windows(itf, 2, itf->win_fen, itf->win_state);
+         refresh_state(itf);
          itf->index = -1;
       }
    }
@@ -255,7 +259,8 @@ int64_t event_loop(interface_t* itf) {
          switch (getch()) {
             case 'e':
                wmprint_info(itf, "%s\n\n", info_eval(itf->info));
-               refresh_windows(itf, 1, itf->win_info);
+               if (flag(itf, ITF_CURSES)) {
+                  wrefresh(itf->win_info); }
                break;
             case 'f':
                fetch(itf);
@@ -268,19 +273,19 @@ int64_t event_loop(interface_t* itf) {
                break;
             case 'h':
                itf->x = itf->x > 1 ? itf->x - 2 : 1;
-               refresh_windows(itf, 1, itf->win_state);
+               refresh_board(itf);
                break;
             case 'j':
                itf->y = itf->y < 9 ? itf->y + 1 : 9;
-               refresh_windows(itf, 1, itf->win_state);
+               refresh_board(itf);
                break;
             case 'k':
                itf->y = itf->y > 0 ? itf->y - 1 : 0;
-               refresh_windows(itf, 1, itf->win_state);
+               refresh_board(itf);
                break;
             case 'l':
                itf->x = itf->x < 17 ? itf->x + 2 : 17;
-               refresh_windows(itf, 1, itf->win_state);
+               refresh_board(itf);
                break;
             case 'n':
                itf->index = -1;
@@ -290,19 +295,19 @@ int64_t event_loop(interface_t* itf) {
             case 'r':
                redo_history();
                wmprint_state(itf);
-               refresh_windows(itf, 2, itf->win_fen, itf->win_state);
+               refresh_state(itf);
                itf->index = -1;
                break;
             case 'u':
                undo_history();
                wmprint_state(itf);
-               refresh_windows(itf, 2, itf->win_fen, itf->win_state);
+               refresh_state(itf);
                itf->index = -1;
                break;
             case '~':
                set_state(0);
                wmprint_state(itf);
-               refresh_windows(itf, 2, itf->win_fen, itf->win_state);
+               refresh_state(itf);
                itf->index = -1;
                break;
          }
