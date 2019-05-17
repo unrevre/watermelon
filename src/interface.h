@@ -20,7 +20,7 @@
 
 typedef struct {
    uint64_t flags;
-   int (*print) (WINDOW*, uint64_t, char const*, va_list);
+   int (*print) (WINDOW*, char const*, va_list);
    int32_t x;
    int32_t y;
    int64_t index;
