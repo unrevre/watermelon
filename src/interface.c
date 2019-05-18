@@ -43,8 +43,6 @@ void wmprint(interface_t* itf, WINDOW* w, char const* fmt, ...) {
    va_start(args, fmt);
    itf->print(w, fmt, args);
    va_end(args);
-
-   fflush(stdout);
 }
 
 void init_interface(interface_t* itf, uint64_t flags) {
@@ -52,7 +50,7 @@ void init_interface(interface_t* itf, uint64_t flags) {
    itf->print = flag(itf, ITF_CURSES) ? wmprintw : wmprintf;
    itf->x = 1;
    itf->y = 0;
-   itf->index = -1;
+   itf->index = 0;
 
    itf->info = malloc(sizeof(debug_t));
    init_debug(itf->info);
@@ -123,34 +121,36 @@ void refresh_state(interface_t* itf) {
 }
 
 void wmprint_state(interface_t* itf) {
-   if (flag(itf, ITF_QUIET) && !flag(itf, ITF_CURSES)) { return; }
-
    if (flag(itf, ITF_CURSES)) {
       wmove(itf->win_fen, 0, 0);
       wmove(itf->win_state, 0, 0);
    }
 
-   wmprint(itf, itf->win_fen, "%s\n", info_fen(itf->info));
-   wmprint(itf, itf->win_state, "%s", info_game_state(itf->info));
+   if (flag(itf, ITF_CURSES) || !flag(itf, ITF_QUIET)) {
+      wmprint(itf, itf->win_fen, "%s\n", info_fen(itf->info));
+      wmprint(itf, itf->win_state, "%s", info_game_state(itf->info));
+   }
 }
 
 void wmprint_search(interface_t* itf, move_t move) {
    wmprint(itf, itf->win_info, "%s\n", info_move(itf->info, move));
-   if (flag(itf, ITF_QUIET)) { return; }
+   if (!flag(itf, ITF_QUIET)) {
+      wmprint_info(itf, "\n");
+      for (char** pv = info_principal_variation(itf->info); **pv; ++pv)
+         wmprint_info(itf, "%s", *pv);
+      wmprint_info(itf, "\n");
+   }
 
-   wmprint_info(itf, "\n");
-   for (char** pv = info_principal_variation(itf->info); **pv; ++pv)
-      wmprint_info(itf, "%s", *pv);
-   wmprint_info(itf, "\n");
+   fflush(stdout);
 }
 
 void wmprint_info(interface_t* itf, char const* fmt, ...) {
-   if (flag(itf, ITF_QUIET)) { return; }
-
-   va_list args;
-   va_start(args, fmt);
-   itf->print(itf->win_info, fmt, args);
-   va_end(args);
+   if (!flag(itf, ITF_QUIET)) {
+      va_list args;
+      va_start(args, fmt);
+      itf->print(itf->win_info, fmt, args);
+      va_end(args);
+   }
 }
 
 /*!
@@ -221,7 +221,7 @@ void fetch(interface_t* itf) {
    getyx(itf->win_state, y, x);
    int64_t index = to_internal(x / 2, RANKS - 1 - y);
 
-   if (itf->index == -1) {
+   if (itf->index == 0) {
       if (is_index_movable(index)) {
          wchgat(itf->win_state, 1, A_BOLD, 0, NULL);
          wrefresh(itf->win_state);
@@ -230,7 +230,7 @@ void fetch(interface_t* itf) {
    } else if (itf->index == index) {
       wchgat(itf->win_state, 1, A_NORMAL, 0, NULL);
       wrefresh(itf->win_state);
-      itf->index = -1;
+      itf->index = 0;
    } else {
       move_t move = move_for_indices(itf->index, index);
       if (move.bits && is_legal(&trunk, move)) {
@@ -238,13 +238,13 @@ void fetch(interface_t* itf) {
          advance_game(move);
          wmprint_state(itf);
          refresh_state(itf);
-         itf->index = -1;
+         itf->index = 0;
       }
    }
 }
 
 #define cmds(macro)                       \
-   macro(eval), macro(leap),              \
+   macro(eval),                           \
    macro(move), macro(next), macro(quit), \
    macro(redo), macro(undo), macro(zero)
 
@@ -267,9 +267,9 @@ int64_t event_loop(interface_t* itf) {
                fetch(itf);
                break;
             case 'g':
-               if (itf->index != -1)
+               if (itf->index != 0)
                   fetch(itf);
-               if (itf->index == -1)
+               if (itf->index == 0)
                   return 1;
                break;
             case 'h':
@@ -289,7 +289,7 @@ int64_t event_loop(interface_t* itf) {
                refresh_board(itf);
                break;
             case 'n':
-               itf->index = -1;
+               itf->index = 0;
                return 1;
             case 'q':
                return 0;
@@ -297,19 +297,19 @@ int64_t event_loop(interface_t* itf) {
                redo_history();
                wmprint_state(itf);
                refresh_state(itf);
-               itf->index = -1;
+               itf->index = 0;
                break;
             case 'u':
                undo_history();
                wmprint_state(itf);
                refresh_state(itf);
-               itf->index = -1;
+               itf->index = 0;
                break;
             case '~':
                set_state(0);
                wmprint_state(itf);
                refresh_state(itf);
-               itf->index = -1;
+               itf->index = 0;
                break;
          }
       } else {
@@ -331,7 +331,7 @@ int64_t event_loop(interface_t* itf) {
             case cmd_eval:
                wmprint(itf, itf->win_info, "%s\n\n", info_eval(itf->info));
                break;
-            case cmd_leap:
+            case cmd_next:
                retval = 1;
             case cmd_move:
                if (tokens[1] && tokens[2]) {
@@ -344,13 +344,10 @@ int64_t event_loop(interface_t* itf) {
                      advance_history(move);
                      advance_game(move);
                      wmprint_state(itf);
-                     break;
+                  } else {
+                     wmprint_info(itf, " - invalid move -\n");
                   }
                }
-               wmprint_info(itf, " - invalid move -\n");
-               break;
-            case cmd_next:
-               retval = 1;
                break;
             case cmd_quit:
                retval = 0;
