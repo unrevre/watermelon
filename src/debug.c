@@ -169,7 +169,8 @@ void trace_principal_variation(char** buffer) {
          impl_transposition_table_entry(*buffer, entry);
          (*buffer)[entry_length - 4] = ' ';
          (*buffer)[entry_length - 2] = '\n';
-         if (is_repetition(state)) {
+
+         if (entry._.depth < probe_hash_for_entry(state)._.depth) {
             (*buffer)[entry_length - 3] = '%';
             **++buffer = '\0';
          } else {
