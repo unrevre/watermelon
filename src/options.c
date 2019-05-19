@@ -15,10 +15,11 @@ static void sink(int64_t start, int64_t end, char const* argv[]) {
    argv[end] = a;
 }
 
-int parse_opts(int argc, char const* argv[], int64_t nopts, option_t* opts) {
+int parse_opts(int64_t argc, char const* argv[], int64_t nopts,
+               option_t* opts) {
    int positional = 1;
 
-   for (int i = 1; i < argc; ++i) {
+   for (int64_t i = 1; i < argc; ++i) {
       if (argv[i][0] != '-' || argv[i][1] == '\0') {
          sink(i, positional++, argv);
          continue;

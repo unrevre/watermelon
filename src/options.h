@@ -21,6 +21,7 @@ typedef struct {
  * @ parse command line options
  */
 
-int parse_opts(int argc, char const* argv[], int64_t nopts, option_t* opts);
+int parse_opts(int64_t argc, char const* argv[], int64_t nopts,
+               option_t* opts);
 
 #endif /* OPTIONS_H */
