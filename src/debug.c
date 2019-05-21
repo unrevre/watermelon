@@ -160,7 +160,7 @@ char* info_transposition_table_entry(debug_t* info, ttentry_t entry) {
 
 void trace_principal_variation(char** buffer) {
    **buffer = '\0';
-   ttentry_t entry = probe_hash_for_entry(state);
+   ttentry_t entry = entry_for_state(state);
 
    move_t next = entry._.move;
    if (next.bits && is_valid(state, next)) {
@@ -170,7 +170,7 @@ void trace_principal_variation(char** buffer) {
          (*buffer)[entry_length - 4] = ' ';
          (*buffer)[entry_length - 2] = '\n';
 
-         if (entry._.depth < probe_hash_for_entry(state)._.depth) {
+         if (entry._.depth < entry_for_state(state)._.depth) {
             (*buffer)[entry_length - 3] = '%';
             **++buffer = '\0';
          } else {

@@ -102,7 +102,7 @@ int32_t probe_hash(transient_t* state, int32_t depth, int32_t* alpha,
    return -INFINITY;
 }
 
-ttentry_t probe_hash_for_entry(transient_t* state) {
+ttentry_t entry_for_state(transient_t* state) {
    for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t index = (state->hash & HASHMASK) ^ t;
       if (matching(ttable + index, state->hash)
@@ -111,6 +111,17 @@ ttentry_t probe_hash_for_entry(transient_t* state) {
    }
 
    return (ttentry_t){0};
+}
+
+move_t move_for_state(transient_t* state) {
+   for (uint32_t t = 0; t != BASKETS; ++t) {
+      uint32_t index = (state->hash & HASHMASK) ^ t;
+      if (matching(ttable + index, state->hash)
+            && ttable[index]._.flags == exact) {
+         return ttable[index]._.move; }
+   }
+
+   return (move_t){0};
 }
 
 void advance_history(move_t move) {
