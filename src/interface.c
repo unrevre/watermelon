@@ -219,7 +219,7 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
 void fetch(interface_t* itf) {
    int32_t x; int32_t y;
    getyx(itf->win_state, y, x);
-   int64_t index = to_internal(x / 2, RANKS - 1 - y);
+   int64_t index = index_for(x / 2, RANKS - 1 - y);
 
    if (itf->index == 0) {
       if (is_index_movable(index)) {
@@ -335,11 +335,8 @@ int64_t event_loop(interface_t* itf) {
                retval = 1;
             case cmd_move:
                if (tokens[1] && tokens[2]) {
-                  move_t move = move_for_indices(
-                     to_internal(atoi(tokens[1]) % FILES,
-                                 atoi(tokens[1]) / FILES),
-                     to_internal(atoi(tokens[2]) % FILES,
-                                 atoi(tokens[2]) / FILES));
+                  move_t move = move_for_indices(to_internal(atoi(tokens[1])),
+                                                 to_internal(atoi(tokens[2])));
                   if (move.bits && is_legal(&trunk, move)) {
                      advance_history(move);
                      advance_game(move);
