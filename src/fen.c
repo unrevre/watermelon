@@ -29,7 +29,7 @@ void reset_fen(const char* fen_str) {
       trunk.board[i] = empty;
 
    char* fstr_p = fstr;
-   for (int64_t i = to_internal(0, HEIGHT - 1); *fstr_p; ++fstr_p, ++i) {
+   for (int64_t i = index_for(0, HEIGHT - 1); *fstr_p; ++fstr_p, ++i) {
       int64_t p = 0;
 
       switch (*fstr_p) {

@@ -154,12 +154,21 @@ __inline__ int32_t to_external(int32_t index) {
 }
 
 /*!
- * to_internal
+ * index_for
  * @ convert coordinates to internal index
  */
 
-__inline__ int32_t to_internal(int32_t x, int32_t y) {
+__inline__ int32_t index_for(int32_t x, int32_t y) {
    return y * WIDTH + x + SENTINEL + OFFSET;
+}
+
+/*!
+ * to_internal
+ * @ convert external index to internal index
+ */
+
+__inline__ int32_t to_internal(int32_t index) {
+   return index_for(index % FILES, index / FILES);
 }
 
 #endif /* MAGIC_H */

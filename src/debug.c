@@ -55,7 +55,7 @@ char* info_eval(debug_t* info) {
 
 void impl_fen(char* buffer) {
    char* p = buffer;
-   int64_t a = to_internal(0, HEIGHT - 1);
+   int64_t a = index_for(0, HEIGHT - 1);
    for (int64_t i = 0; i != RANKS; ++i) {
       char blanks = '0';
       for (int64_t j = 0; j != FILES; ++a, ++j) {
@@ -97,7 +97,7 @@ char* info_fen(debug_t* info) {
 
 void impl_game_state(char* buffer) {
    char* p = buffer;
-   int64_t a = to_internal(0, HEIGHT - 1);
+   int64_t a = index_for(0, HEIGHT - 1);
    for (int64_t i = 0; i != RANKS; ++i) {
       char filler = (i == 4 || i == 5) ? '-' : ' ';
       for (int64_t j = 0; j != FILES; ++a, ++j) {
