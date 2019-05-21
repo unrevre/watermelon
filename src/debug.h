@@ -6,6 +6,16 @@
 #include <stdint.h>
 
 /*!
+ * debug_t
+ * @ string buffers for informative/debugging purposes
+ */
+
+typedef struct {
+   char* buffer;
+   char** buffers;
+} debug_t;
+
+/*!
  * init_debug
  * @ initialise buffers
  */
