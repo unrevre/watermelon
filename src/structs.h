@@ -89,16 +89,6 @@ typedef struct {
 } generator_t;
 
 /*!
- * debug_t
- * @ string buffers for informative/debugging purposes
- */
-
-typedef struct {
-   char* buffer;
-   char** buffers;
-} debug_t;
-
-/*!
  * wmclock_t
  * @ struct for time management
  */

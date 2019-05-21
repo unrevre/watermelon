@@ -1,6 +1,5 @@
 #include "interface.h"
 
-#include "debug.h"
 #include "magics.h"
 #include "masks.h"
 #include "memory.h"
