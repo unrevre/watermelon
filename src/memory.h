@@ -41,12 +41,18 @@ int32_t probe_hash(transient_t* state, int32_t depth, int32_t* alpha,
                    int32_t* beta, move_t* move);
 
 /*!
- * probe_hash_for_entry
- * @ probe transposition table for current position and return first matching
- * entry
+ * entry_for_state
+ * @ probe transposition table for entry corresponding to current state
  */
 
-ttentry_t probe_hash_for_entry(transient_t* state);
+ttentry_t entry_for_state(transient_t* state);
+
+/*!
+ * move_for_state
+ * @ probe transposition table for hash move corresponding to current state
+ */
+
+move_t move_for_state(transient_t* state);
 
 /*!
  * advance_history
