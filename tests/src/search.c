@@ -19,8 +19,8 @@ int main(int argc, char* argv[]) {
    init_debug(info);
 
    printf("%s\n", info_fen(info));
-   move_t move = iter_dfs(atoi(argv[1]));
-   printf("%s\n\n", info_move(info, move));
+   iter_dfs(atoi(argv[1]));
+   printf("%s\n\n", info_move(info, move_for_state(&trunk)));
 
    char** buffers = info_principal_variation(info);
    for (int64_t i = 0; i < PLYLIMIT && buffers[i][0]; ++i)
