@@ -72,10 +72,11 @@ int watermelon(option_t* options, char const* fen) {
       if (!idle[trunk.side] && !event_loop(itf)) { break; }
 
       clock_t cpu_time = clock();
-      move = iter_dfs(depth);
+      iter_dfs(depth);
       cpu_time = clock() - cpu_time;
-
       wmprint_info(itf, "cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
+
+      move = move_for_state(&trunk);
       wmprint_search(itf, move);
    } while (!once && is_legal(&trunk, move)
       && (advance_history(move), advance_game(move), 1));

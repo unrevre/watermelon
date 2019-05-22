@@ -10,7 +10,7 @@
  * @ iterative deepening
  */
 
-move_t iter_dfs(int32_t depth);
+void iter_dfs(int32_t depth);
 
 /*!
  * negamax
