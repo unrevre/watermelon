@@ -1,5 +1,6 @@
 #include "search.h"
 
+#include "core.h"
 #include "debug.h"
 #include "eval.h"
 #include "generate.h"
@@ -7,7 +8,6 @@
 #include "memory.h"
 #include "position.h"
 #include "state.h"
-#include "timer.h"
 
 #include <setjmp.h>
 #include <stdlib.h>
@@ -23,13 +23,9 @@
 #define longjmp   _longjmp
 #endif
 
-void iter_dfs(int32_t depth) {
-   transient_t* state = malloc(sizeof(transient_t));
-
-   set_search(state);
-   start(search.clock);
-
+void iter_dfs(transient_t* state, int32_t depth) {
    int32_t score = 0;
+
    for (int32_t d = 1; d != depth; ++d) {
       if (setjmp(state->env)) { break; }
 
@@ -53,9 +49,6 @@ void iter_dfs(int32_t depth) {
       if (abs(score) >= INFINITY - d) { break; }
       if (tick(search.clock)) { break; }
    }
-
-   tree_debug_state(&trunk);
-   free(state);
 }
 
 int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,

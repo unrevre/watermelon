@@ -5,7 +5,6 @@
 
 #include <setjmp.h>
 #include <stdint.h>
-#include <time.h>
 
 /*!
  * move_t
@@ -87,28 +86,5 @@ typedef struct {
    move_array_t moves;
    move_t move;
 } generator_t;
-
-/*!
- * wmclock_t
- * @ struct for time management
- */
-
-typedef struct {
-   uint64_t status;
-   double limit;
-   time_t ref;
-} wmclock_t;
-
-/*!
- * search_t
- * @ search status information
- */
-
-typedef struct {
-   wmclock_t* clock;
-   uint64_t nodes;
-   uint64_t qnodes;
-   uint64_t tthits;
-} search_t;
 
 #endif /* STRUCTS_H */

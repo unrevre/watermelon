@@ -1,6 +1,6 @@
+#include "../../src/core.h"
 #include "../../src/debug.h"
 #include "../../src/memory.h"
-#include "../../src/search.h"
 #include "../../src/state.h"
 
 #define __STDC_FORMAT_MACROS
@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
    init_debug(info);
 
    printf("%s\n", info_fen(info));
-   iter_dfs(atoi(argv[1]));
+   smp_search(atoi(argv[1]));
    printf("%s\n\n", info_move(info, move_for_state(&trunk)));
 
    char** buffers = info_principal_variation(info);

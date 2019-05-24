@@ -1,7 +1,5 @@
 #include "timer.h"
 
-#include <time.h>
-
 void start(wmclock_t* clock) {
    clock->ref = time(NULL);
 }

@@ -9,7 +9,6 @@
 extern uint32_t PSHASH[PIECES][BITS];
 extern uint32_t MVHASH;
 
-extern search_t search;
 extern transient_t trunk;
 
 /*!
@@ -39,13 +38,6 @@ void set_state(const char* fen);
  */
 
 void set_timer(double time);
-
-/*!
- * set_search
- * @ reset search parameters
- */
-
-void set_search(transient_t* state);
 
 /*!
  * advance_board
