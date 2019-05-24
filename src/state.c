@@ -1,6 +1,6 @@
 #include "state.h"
 
-#include "debug.h"
+#include "core.h"
 #include "fen.h"
 #include "masks.h"
 #include "memory.h"
@@ -12,7 +12,6 @@ uint32_t PSHASH[PIECES][BITS] __attribute__((aligned(64)));
 uint32_t STHASH;
 uint32_t MVHASH;
 
-search_t search;
 transient_t trunk;
 
 /*!
@@ -71,19 +70,6 @@ void set_state(const char* fen) {
 
 void set_timer(double time) {
    search.clock->limit = time;
-}
-
-void set_search(transient_t* state) {
-   search.clock->status = 0;
-
-   search.nodes = 0;
-   search.qnodes = 0;
-   search.tthits = 0;
-
-   memcpy(state, &trunk, sizeof(transient_t));
-   state->ply = 0;
-
-   tree_debug_state(state);
 }
 
 /*!

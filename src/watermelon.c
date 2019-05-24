@@ -1,9 +1,9 @@
+#include "core.h"
 #include "debug.h"
 #include "interface.h"
 #include "memory.h"
 #include "options.h"
 #include "position.h"
-#include "search.h"
 #include "state.h"
 
 #include <inttypes.h>
@@ -72,7 +72,7 @@ int watermelon(option_t* options, char const* fen) {
       if (!idle[trunk.side] && !event_loop(itf)) { break; }
 
       clock_t cpu_time = clock();
-      iter_dfs(depth);
+      smp_search(depth);
       cpu_time = clock() - cpu_time;
       wmprint_info(itf, "cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
 
