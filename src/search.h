@@ -10,7 +10,7 @@
  * @ iterative deepening
  */
 
-void iter_dfs(transient_t* state, int32_t depth);
+void iter_dfs(transient_t* state);
 
 /*!
  * negamax

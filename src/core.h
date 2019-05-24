@@ -12,6 +12,8 @@
 
 typedef struct {
    wmclock_t* clock;
+   uint32_t target;
+   uint32_t depth;
    uint64_t nodes;
    uint64_t qnodes;
    uint64_t tthits;
@@ -25,5 +27,12 @@ extern search_t search;
  */
 
 void smp_search(int32_t depth);
+
+/*!
+ * smp_depth
+ * @ return depth for next iteration of search
+ */
+
+int32_t smp_depth(void);
 
 #endif /* CORE_H */
