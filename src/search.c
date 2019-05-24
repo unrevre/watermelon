@@ -23,10 +23,11 @@
 #define longjmp   _longjmp
 #endif
 
-void iter_dfs(transient_t* state, int32_t depth) {
+void iter_dfs(transient_t* state) {
    int32_t score = 0;
 
-   for (int32_t d = 1; d != depth; ++d) {
+   int32_t depth;
+   while ((depth = smp_depth())) {
       if (setjmp(state->env)) { break; }
 
       int32_t delta = 2;
@@ -37,7 +38,7 @@ void iter_dfs(transient_t* state, int32_t depth) {
 
          tree_root_entry();
          tree_node_entry(alpha, beta);
-         score = negamax(d, state, alpha, beta, 1);
+         score = negamax(depth, state, alpha, beta, 1);
          tree_node_exit(alpha, beta, score);
          tree_root_exit();
 
@@ -46,7 +47,7 @@ void iter_dfs(transient_t* state, int32_t depth) {
          delta = delta << 2;
       }
 
-      if (abs(score) >= INFINITY - d) { break; }
+      if (abs(score) >= INFINITY - depth) { break; }
       if (tick(search.clock)) { break; }
    }
 }
