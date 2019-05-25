@@ -9,6 +9,24 @@
 
 search_t search;
 
+void initialise(const char* fen) {
+   init_hashes();
+
+   set_state(fen);
+
+   search.clock = malloc(sizeof(wmclock_t));
+   search.clock->status = 1;
+   search.clock->limit = -1.;
+}
+
+void terminate(void) {
+   free(search.clock);
+}
+
+void set_limit(double limit) {
+   search.clock->limit = limit;
+}
+
 void smp_search(int32_t depth) {
    search.clock->status = 0;
 

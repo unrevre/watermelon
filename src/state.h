@@ -12,18 +12,11 @@ extern uint32_t MVHASH;
 extern transient_t trunk;
 
 /*!
- * initialise
- * @ initialise global state variables
+ * init_hashes
+ * @ initialise zobrist hashes
  */
 
-void initialise(const char* fen);
-
-/*!
- * terminate
- * @ destroy global state variables
- */
-
-void terminate(void);
+void init_hashes(void);
 
 /*!
  * set_state
@@ -31,13 +24,6 @@ void terminate(void);
  */
 
 void set_state(const char* fen);
-
-/*!
- * set_timer
- * @ set move time limit
- */
-
-void set_timer(double time);
 
 /*!
  * advance_board

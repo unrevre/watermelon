@@ -22,6 +22,27 @@ typedef struct {
 extern search_t search;
 
 /*!
+ * initialise
+ * @ initialise global state variables
+ */
+
+void initialise(const char* fen);
+
+/*!
+ * terminate
+ * @ destroy global state variables
+ */
+
+void terminate(void);
+
+/*!
+ * set_limit
+ * @ set move time limit
+ */
+
+void set_limit(double limit);
+
+/*!
  * smp_search
  * @ main search function
  */
