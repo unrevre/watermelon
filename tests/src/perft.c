@@ -1,5 +1,5 @@
+#include "../../src/core.h"
 #include "../../src/perf.h"
-#include "../../src/state.h"
 
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>

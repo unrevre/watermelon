@@ -58,7 +58,7 @@ int watermelon(option_t* options, char const* fen) {
    free(options);
 
    initialise(fen);
-   set_timer(time);
+   set_limit(time);
 
    interface_t* itf = malloc(sizeof(interface_t));
    init_interface(itf, set(ITF_CURSES, curses) | set(ITF_QUIET, quiet));

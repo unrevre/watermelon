@@ -1,6 +1,5 @@
 #include "state.h"
 
-#include "core.h"
 #include "fen.h"
 #include "masks.h"
 #include "memory.h"
@@ -13,11 +12,6 @@ uint32_t STHASH;
 uint32_t MVHASH;
 
 transient_t trunk;
-
-/*!
- * init_hashes
- * @ initialise zobrist hashes
- */
 
 void init_hashes(void) {
    srand(0x91);
@@ -46,30 +40,12 @@ void reset_hashes(void) {
    htable[0] = trunk.hash;
 }
 
-void initialise(const char* fen) {
-   init_hashes();
-
-   search.clock = malloc(sizeof(wmclock_t));
-   search.clock->status = 1;
-   search.clock->limit = -1.;
-
-   set_state(fen);
-}
-
-void terminate(void) {
-   free(search.clock);
-}
-
 void set_state(const char* fen) {
    memset(&trunk, 0, sizeof(transient_t));
 
    reset_fen(fen);
    reset_hashes();
    reset_tables();
-}
-
-void set_timer(double time) {
-   search.clock->limit = time;
 }
 
 /*!
