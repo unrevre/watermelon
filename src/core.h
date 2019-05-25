@@ -3,7 +3,17 @@
 
 #include "timer.h"
 
+#include <pthread.h>
 #include <stdint.h>
+
+/*!
+ * worker_t
+ * @ worker thread info
+ */
+
+typedef struct {
+   pthread_t thread;
+} worker_t;
 
 /*!
  * search_t
@@ -18,6 +28,16 @@ typedef struct {
    uint64_t qnodes;
    uint64_t tthits;
 } search_t;
+
+/*!
+ * settings_t
+ * @ search settings info
+ */
+
+typedef struct {
+   int64_t threads;
+   double limit;
+} settings_t;
 
 extern search_t search;
 
@@ -41,6 +61,13 @@ void terminate(void);
  */
 
 void set_limit(double limit);
+
+/*!
+ * set_threads
+ * @ set number of threads
+ */
+
+void set_threads(int64_t threads);
 
 /*!
  * smp_search
