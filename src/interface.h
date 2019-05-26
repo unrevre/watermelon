@@ -78,6 +78,13 @@ void wmprint_search(interface_t* itf, move_t move);
 void wmprint_info(interface_t* itf, char const* fmt, ...);
 
 /*!
+ * advance_if_legal
+ * @ helper function - test legality and advance game, history
+ */
+
+int64_t advance_if_legal(move_t move);
+
+/*!
  * event_loop
  * @ event loop handling key events in curses mode
  */

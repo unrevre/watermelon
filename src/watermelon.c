@@ -3,7 +3,6 @@
 #include "interface.h"
 #include "memory.h"
 #include "options.h"
-#include "position.h"
 #include "state.h"
 
 #include <inttypes.h>
@@ -78,8 +77,7 @@ int watermelon(option_t* options, char const* fen) {
 
       move = move_for_state(&trunk);
       wmprint_search(itf, move);
-   } while (!once && is_legal(&trunk, move)
-      && (advance_history(move), advance_game(move), 1));
+   } while (!once && advance_if_legal(move));
 
    close_interface(itf);
    terminate();
