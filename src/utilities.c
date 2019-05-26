@@ -38,9 +38,10 @@ char** slice(char* string) {
 }
 
 char** append(char** slices, char* string) {
-   int64_t count = 0;
-   for (char** t = slices; *t != 0; ++t, ++count);
+   char** t = slices;
+   for (; *t != 0; ++t);
 
+   int64_t count = t - slices;
    slices = realloc(slices, count + 2);
    slices[count++] = string;
    slices[count] = 0;
