@@ -1,9 +1,12 @@
 #ifndef GENERATE_H
 #define GENERATE_H
 
+#include "magics.h"
 #include "structs.h"
 
 #include <stdint.h>
+
+extern killer_t ktable[PLYLIMIT];
 
 /*!
  * generate_pseudolegal

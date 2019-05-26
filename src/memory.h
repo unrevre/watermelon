@@ -11,14 +11,6 @@
 #define HASHMASK  (HASHSIZE - 0x1)
 
 extern ttentry_t ttable[HASHSIZE];
-extern killer_t ktable[PLYLIMIT];
-
-/*!
- * reset_tables
- * @ reset tranposition/killer move tables
- */
-
-void reset_tables(void);
 
 /*!
  * store_hash

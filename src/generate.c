@@ -1,13 +1,13 @@
 #include "generate.h"
 
 #include "inlines.h"
-#include "magics.h"
 #include "masks.h"
-#include "memory.h"
 #include "position.h"
 
 #include <stdlib.h>
 #include <string.h>
+
+killer_t ktable[PLYLIMIT] __attribute__((aligned(64)));
 
 move_array_t generate_pseudolegal(transient_t* state) {
    int64_t side = state->side;
