@@ -151,6 +151,11 @@ void wmprint_info(interface_t* itf, char const* fmt, ...) {
    }
 }
 
+int64_t advance_if_legal(move_t move) {
+   return is_legal(&trunk, move)
+      && (advance_history(move), advance_game(move), 1);
+}
+
 /*!
  * is_index_movable
  * @ test if piece at index is on side to move
@@ -231,9 +236,7 @@ void fetch(interface_t* itf) {
       itf->index = 0;
    } else {
       move_t move = move_for_indices(itf->index, index);
-      if (move.bits && is_legal(&trunk, move)) {
-         advance_history(move);
-         advance_game(move);
+      if (move.bits && advance_if_legal(move)) {
          wmprint_state(itf);
          refresh_state(itf);
          itf->index = 0;
@@ -335,9 +338,7 @@ int64_t event_loop(interface_t* itf) {
                if (tokens[1] && tokens[2]) {
                   move_t move = move_for_indices(to_internal(atoi(tokens[1])),
                                                  to_internal(atoi(tokens[2])));
-                  if (move.bits && is_legal(&trunk, move)) {
-                     advance_history(move);
-                     advance_game(move);
+                  if (move.bits && advance_if_legal(move)) {
                      wmprint_state(itf);
                   } else {
                      wmprint_info(itf, " - invalid move -\n");
