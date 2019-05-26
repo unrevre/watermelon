@@ -2,7 +2,6 @@
 
 #include "fen.h"
 #include "masks.h"
-#include "memory.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -48,7 +47,6 @@ void set_state(const char* fen) {
 
    reset_fen(fen);
    reset_hashes();
-   reset_tables();
 
    memset(history, 0, STEPLIMIT * sizeof(move_t));
    memset(htable, 0, STEPLIMIT * sizeof(uint32_t));

@@ -1,6 +1,8 @@
 #include "core.h"
 
 #include "debug.h"
+#include "generate.h"
+#include "memory.h"
 #include "search.h"
 #include "state.h"
 
@@ -18,6 +20,9 @@ void initialise(const char* fen) {
    init_hashes();
 
    set_state(fen);
+
+   memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
+   memset(ktable, 0, PLYLIMIT * sizeof(killer_t));
 
    search.clock = malloc(sizeof(wmclock_t));
    search.clock->status = 1;
