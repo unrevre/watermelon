@@ -142,6 +142,10 @@
 #define ps(s, p)    ((p << 1) + s)
 #define po(s, p)    ((p << 1) ^ o(s))
 
+/* history */
+
+#define STEPLIMIT 0x100
+
 /*!
  * to_external
  * @ convert internal index for output

@@ -16,14 +16,10 @@
 #define lower     0x2
 #define upper     0x3
 
-move_t history[STEPLIMIT];
-uint32_t htable[STEPLIMIT];
 ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
 killer_t ktable[PLYLIMIT] __attribute__((aligned(64)));
 
 void reset_tables(void) {
-   memset(history, 0, STEPLIMIT * sizeof(move_t));
-   memset(htable, 0, STEPLIMIT * sizeof(uint32_t));
    memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
    memset(ktable, 0, PLYLIMIT * sizeof(killer_t));
 }
@@ -123,25 +119,4 @@ move_t move_for_state(transient_t* state) {
    }
 
    return (move_t){0};
-}
-
-void advance_history(move_t move) {
-   int32_t step = trunk.ply;
-   move_t future = history[step];
-   if (future.bits && move.bits != future.bits)
-      while (history[++step].bits)
-         history[step] = (move_t){0};
-
-   history[trunk.ply] = move;
-}
-
-void undo_history(void) {
-   if (trunk.ply) { retract_game(history[trunk.ply - 1]); }
-}
-
-void redo_history(void) {
-   if (history[trunk.ply].bits) {
-      advance_history(history[trunk.ply]);
-      advance_game(history[trunk.ply]);
-   }
 }

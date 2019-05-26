@@ -11,6 +11,9 @@ extern uint32_t MVHASH;
 
 extern transient_t trunk;
 
+extern move_t history[STEPLIMIT];
+extern uint32_t htable[STEPLIMIT];
+
 /*!
  * init_hashes
  * @ initialise zobrist hashes
@@ -66,5 +69,26 @@ void advance_game(move_t move);
  */
 
 void retract_game(move_t move);
+
+/*!
+ * advance_history
+ * @ advance move history records
+ */
+
+void advance_history(move_t move);
+
+/*!
+ * undo_history
+ * @ undo last move
+ */
+
+void undo_history(void);
+
+/*!
+ * redo_history
+ * @ redo last undone move
+ */
+
+void redo_history(void);
 
 #endif /* STATE_H */

@@ -1,6 +1,5 @@
 #include "../../src/fen.h"
 #include "../../src/magics.h"
-#include "../../src/memory.h"
 #include "../../src/utilities.h"
 
 #include <stdint.h>
