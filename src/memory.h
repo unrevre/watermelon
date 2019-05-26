@@ -6,14 +6,10 @@
 
 #include <stdint.h>
 
-#define STEPLIMIT 0x100
-
 #define HASHBITS 24
 #define HASHSIZE (0x1 << HASHBITS)
 #define HASHMASK  (HASHSIZE - 0x1)
 
-extern move_t history[STEPLIMIT];
-extern uint32_t htable[STEPLIMIT];
 extern ttentry_t ttable[HASHSIZE];
 extern killer_t ktable[PLYLIMIT];
 
@@ -53,26 +49,5 @@ ttentry_t entry_for_state(transient_t* state);
  */
 
 move_t move_for_state(transient_t* state);
-
-/*!
- * advance_history
- * @ advance move history records
- */
-
-void advance_history(move_t move);
-
-/*!
- * undo_history
- * @ undo last move
- */
-
-void undo_history(void);
-
-/*!
- * redo_history
- * @ redo last undone move
- */
-
-void redo_history(void);
 
 #endif /* MEMORY_H */

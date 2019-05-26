@@ -13,6 +13,9 @@ uint32_t MVHASH;
 
 transient_t trunk;
 
+move_t history[STEPLIMIT];
+uint32_t htable[STEPLIMIT];
+
 void init_hashes(void) {
    srand(0x91);
 
@@ -46,6 +49,9 @@ void set_state(const char* fen) {
    reset_fen(fen);
    reset_hashes();
    reset_tables();
+
+   memset(history, 0, STEPLIMIT * sizeof(move_t));
+   memset(htable, 0, STEPLIMIT * sizeof(uint32_t));
 }
 
 /*!
@@ -125,4 +131,25 @@ void advance_game(move_t move) {
 void retract_game(move_t move) {
    retract_state(move, &trunk);
    retract_board(move, &trunk);
+}
+
+void advance_history(move_t move) {
+   int32_t step = trunk.ply;
+   move_t future = history[step];
+   if (future.bits && move.bits != future.bits)
+      while (history[++step].bits)
+         history[step] = (move_t){0};
+
+   history[trunk.ply] = move;
+}
+
+void undo_history(void) {
+   if (trunk.ply) { retract_game(history[trunk.ply - 1]); }
+}
+
+void redo_history(void) {
+   if (history[trunk.ply].bits) {
+      advance_history(history[trunk.ply]);
+      advance_game(history[trunk.ply]);
+   }
 }

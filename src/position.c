@@ -3,7 +3,6 @@
 #include "inlines.h"
 #include "magics.h"
 #include "masks.h"
-#include "memory.h"
 #include "state.h"
 
 #include <stdlib.h>
