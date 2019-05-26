@@ -1,7 +1,6 @@
 #include "fen.h"
 
 #include "magics.h"
-#include "masks.h"
 #include "state.h"
 
 #include <stdio.h>
@@ -49,8 +48,8 @@ void reset_fen(const char* fen_str) {
          case 'k': case 'K': ;
             int64_t side = *fstr_p > 'Z';
             uint32_t piece = ps(side, p);
-            trunk.pieces[piece] |= PMASK[i];
-            trunk.occupancy[side] |= PMASK[i];
+            trunk.pieces[piece] |= ((__uint128_t)0x1) << i;
+            trunk.occupancy[side] |= ((__uint128_t)0x1) << i;
             trunk.board[i] = piece;
       }
    }
