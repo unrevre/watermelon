@@ -8,7 +8,6 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 enum options {
    opt_afk,
@@ -17,6 +16,7 @@ enum options {
    opt_once,
    opt_quiet,
    opt_side,
+   opt_threads,
    opt_time,
    nopts
 };
@@ -46,6 +46,7 @@ int watermelon(option_t* options, char const* fen) {
    int64_t once = options[opt_once].active;
    int64_t quiet = options[opt_quiet].active;
    char const* side = options[opt_side].opt_str;
+   int64_t threads = atoi(options[opt_threads].opt_str);
    double time = atof(options[opt_time].opt_str);
 
    int64_t idle[2] = {0, 0};
@@ -58,6 +59,7 @@ int watermelon(option_t* options, char const* fen) {
 
    initialise(fen);
    set_limit(time);
+   set_threads(threads);
 
    interface_t* itf = malloc(sizeof(interface_t));
    init_interface(itf, set(ITF_CURSES, curses) | set(ITF_QUIET, quiet));
@@ -70,10 +72,7 @@ int watermelon(option_t* options, char const* fen) {
 
       if (!idle[trunk.side] && !event_loop(itf)) { break; }
 
-      clock_t cpu_time = clock();
       smp_search(depth);
-      cpu_time = clock() - cpu_time;
-      wmprint_info(itf, "cpu_time: %fs\n\n", (float)cpu_time / CLOCKS_PER_SEC);
 
       move = move_for_state(&trunk);
       wmprint_search(itf, move);
@@ -98,6 +97,7 @@ option_t* set_options(int64_t nopts) {
    options[opt_once] = (option_t){ "1", "once", 0, 0, 0 };
    options[opt_quiet] = (option_t) { "q", "quiet", 0, 0, 0 };
    options[opt_side] = (option_t){ "s", "side", "none", 0, 1 };
+   options[opt_threads] = (option_t){ "j", "threads", "1", 0, 1 };
    options[opt_time] = (option_t){ "t", "time", "144", 0, 1 };
 
    return options;
