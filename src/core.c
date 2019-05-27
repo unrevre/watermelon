@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_THREADS  1
+#define MAX_THREADS  4
 
 settings_t settings;
 
@@ -59,8 +59,10 @@ void smp_search(int32_t depth) {
    search.clock->status = 0;
    search.clock->limit = settings.limit;
 
+   pthread_mutex_init(&search.lock, NULL);
+
    search.target = depth;
-   search.depth = 0;
+   search.depth = 1;
    search.nodes = 0;
    search.qnodes = 0;
    search.tthits = 0;
@@ -81,10 +83,17 @@ void smp_search(int32_t depth) {
    for (int64_t i = 1; i != settings.threads; ++i)
       pthread_join(workers[i].thread, NULL);
 
+   pthread_mutex_destroy(&search.lock);
+
    tree_debug_state(&trunk);
    free(state);
 }
 
 int32_t smp_depth(void) {
-   return ++search.depth % search.target;
+   pthread_mutex_lock(&search.lock);
+   int32_t depth = search.depth;
+   search.depth = search.depth ? ++search.depth % search.target : 0;
+   pthread_mutex_unlock(&search.lock);
+
+   return depth;
 }

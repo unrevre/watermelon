@@ -22,6 +22,7 @@ typedef struct {
 
 typedef struct {
    wmclock_t* clock;
+   pthread_mutex_t lock;
    uint32_t target;
    uint32_t depth;
    uint64_t nodes;
