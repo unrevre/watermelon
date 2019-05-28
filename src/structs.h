@@ -72,6 +72,7 @@ typedef struct {
    __uint128_t pieces[PIECES];
    __uint128_t occupancy[2];
    uint32_t board[POINTS];
+   uint32_t hashes[STEPLIMIT];
    jmp_buf env;
 } transient_t;
 
