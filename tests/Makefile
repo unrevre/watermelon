@@ -3,7 +3,7 @@ CFLAGS += -O3 -pthread -flto -std=gnu99 -march=native -Wall -Wextra \
 	  -fno-exceptions -fno-strict-aliasing -fno-stack-protector \
 	  -fomit-frame-pointer -fno-asynchronous-unwind-tables
 
-ifeq ($(CC), gcc)
+ifneq (,$(findstring gcc,$(CC)))
 	CFLAGS += -Wno-implicit-fallthrough
 endif
 
@@ -15,18 +15,22 @@ BINDIR = ./bin
 BLDDIR = ./build
 SRCDIR = ./src
 
-BIN = watermelon
-
 SRCS = $(wildcard $(SRCDIR)/*.c)
 DEPS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.d,$(SRCS))
 TEST = $(patsubst $(SRCDIR)/%.c,$(BINDIR)/%,$(SRCS))
 
-MAIN = $(filter-out ../$(SRCDIR)/$(BIN).c,$(wildcard ../$(SRCDIR)/*.c))
-OBJS = $(patsubst ../$(SRCDIR)/%.c,../$(BLDDIR)/%.o,$(MAIN))
+PDIR = ./../
+PSRCDIR = $(PDIR)/$(SRCDIR)
+PBLDDIR = $(PDIR)/$(BLDDIR)
+
+MAIN = watermelon
+
+PSRCS = $(filter-out $(PSRCDIR)/$(MAIN).c,$(wildcard $(PSRCDIR)/*.c))
+POBJS = $(patsubst $(PSRCDIR)/%.c,$(PBLDDIR)/%.o,$(PSRCS))
 
 tests: mkdir $(TEST)
 
-$(BINDIR)/%: $(SRCDIR)/%.c $(OBJS)
+$(BINDIR)/%: $(SRCDIR)/%.c $(POBJS)
 	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
 
 mkdir:
