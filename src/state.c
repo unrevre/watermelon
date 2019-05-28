@@ -13,7 +13,6 @@ uint32_t MVHASH;
 transient_t trunk;
 
 move_t history[STEPLIMIT];
-uint32_t htable[STEPLIMIT];
 
 void init_hashes(void) {
    srand(0x91);
@@ -39,17 +38,15 @@ void reset_hashes(void) {
          trunk.hash ^= PSHASH[trunk.board[i]][i];
 
    trunk.hash ^= STHASH;
-   htable[0] = trunk.hash;
+   trunk.hashes[0] = trunk.hash;
 }
 
 void set_state(const char* fen) {
    memset(&trunk, 0, sizeof(transient_t));
+   memset(history, 0, STEPLIMIT * sizeof(move_t));
 
    reset_fen(fen);
    reset_hashes();
-
-   memset(history, 0, STEPLIMIT * sizeof(move_t));
-   memset(htable, 0, STEPLIMIT * sizeof(uint32_t));
 }
 
 /*!
@@ -111,7 +108,7 @@ void retract_board(move_t move, transient_t* state) {
 
 void advance(move_t move, transient_t* state) {
    advance_state(move, state);
-   htable[trunk.ply + state->ply] = state->hash;
+   state->hashes[trunk.ply + state->ply] = state->hash;
    advance_board(move, state);
 }
 
@@ -122,7 +119,7 @@ void retract(move_t move, transient_t* state) {
 
 void advance_game(move_t move) {
    advance_state(move, &trunk);
-   htable[trunk.ply] = trunk.hash;
+   trunk.hashes[trunk.ply] = trunk.hash;
    advance_board(move, &trunk);
 }
 
