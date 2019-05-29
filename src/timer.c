@@ -10,7 +10,3 @@ int64_t tick(wmclock_t* clock) {
    clock->status = difftime(time(NULL), clock->ref) > clock->limit;
    return clock->status;
 }
-
-void drop(wmclock_t* clock) {
-   clock->status = 1;
-}
