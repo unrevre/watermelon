@@ -158,8 +158,7 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
 
    if (engine.state > 1) { free(engine.moves.data); }
 
-   if (!search.clock->status) {
-      store_hash(state, depth, alpha_parent, beta, best, store); }
+   store_hash(state, depth, alpha_parent, beta, best, store);
 
    return best;
 }
