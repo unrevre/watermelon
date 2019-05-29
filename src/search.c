@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "eval.h"
 #include "generate.h"
+#include "inlines.h"
 #include "magics.h"
 #include "memory.h"
 #include "position.h"
@@ -48,16 +49,16 @@ void iter_dfs(transient_t* state) {
       }
 
       if (abs(score) >= INFINITY - depth) { break; }
-      if (tick(search.clock)) { break; }
    }
+
+   atomdecl(&working);
 }
 
 int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
                 uint32_t principal) {
-   ++search.nodes;
+   debug_variable_increment(1, &search.nodes);
 
-   if (!(search.nodes & TIME_RES)) { tick(search.clock); }
-   if (search.clock->status) { longjmp(state->env, TIMEOUT); }
+   if (!search.status) { longjmp(state->env, TIMEOUT); }
 
    alpha = alpha < INFMINUS + state->ply ? INFMINUS + state->ply : alpha;
    beta = beta > INFPLUS - state->ply ? INFPLUS - state->ply : beta;

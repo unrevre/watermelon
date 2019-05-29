@@ -21,6 +21,7 @@ typedef struct {
  */
 
 typedef struct {
+   uint64_t status;
    wmclock_t* clock;
    pthread_mutex_t lock;
    uint32_t target;
@@ -41,6 +42,7 @@ typedef struct {
 } settings_t;
 
 extern search_t search;
+extern uint32_t working;
 
 /*!
  * initialise
