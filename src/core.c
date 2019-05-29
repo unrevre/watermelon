@@ -15,6 +15,7 @@ settings_t settings;
 
 search_t search;
 worker_t workers[MAX_THREADS];
+uint32_t working;
 
 void initialise(const char* fen) {
    init_hashes();
@@ -24,8 +25,8 @@ void initialise(const char* fen) {
    memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
    memset(ktable, 0, PLYLIMIT * sizeof(killer_t));
 
+   search.status = 0;
    search.clock = malloc(sizeof(wmclock_t));
-   search.clock->status = 1;
 
    settings.threads = 1;
    settings.limit = -1.;
@@ -61,43 +62,45 @@ void* smp_worker(void* worker __attribute__((unused))) {
 }
 
 void smp_search(int32_t depth) {
-   search.clock->status = 0;
-   search.clock->limit = settings.limit;
+   debug_variable_reset(3, &search.nodes, &search.qnodes, &search.tthits);
 
-   pthread_mutex_init(&search.lock, NULL);
+   search.status = 1;
+   search.clock->limit = settings.limit;
 
    search.target = depth;
    search.depth = 1;
-   search.nodes = 0;
-   search.qnodes = 0;
-   search.tthits = 0;
 
-   transient_t* state = malloc(sizeof(transient_t));
-   tree_debug_state(state);
+   working = settings.threads;
 
-   memcpy(state, &trunk, sizeof(transient_t));
-   state->ply = 0;
-
+   pthread_mutex_init(&search.lock, NULL);
    start(search.clock);
 
-   for (int64_t i = 1; i != settings.threads; ++i)
+   for (int64_t i = 0; i != settings.threads; ++i)
       pthread_create(&workers[i].thread, NULL, smp_worker, &workers[i]);
 
-   iter_dfs(state);
+   struct timespec interval;
+   interval.tv_sec = 0;
+   interval.tv_nsec = 40000000L;
 
-   for (int64_t i = 1; i != settings.threads; ++i)
+   while (search.status) {
+      pthread_mutex_lock(&search.lock);
+      if (!working || tick(search.clock))
+         search.status = 0;
+      pthread_mutex_unlock(&search.lock);
+
+      nanosleep(&interval, NULL);
+   }
+
+   for (int64_t i = 0; i != settings.threads; ++i)
       pthread_join(workers[i].thread, NULL);
 
    pthread_mutex_destroy(&search.lock);
-
-   tree_debug_state(&trunk);
-   free(state);
 }
 
 int32_t smp_depth(void) {
    pthread_mutex_lock(&search.lock);
    int32_t depth = search.depth;
-   search.depth = search.depth ? ++search.depth % search.target : 0;
+   search.depth = search.depth ? (search.depth + 1) % search.target : 0;
    pthread_mutex_unlock(&search.lock);
 
    return depth;

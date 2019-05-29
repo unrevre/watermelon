@@ -68,4 +68,20 @@ __inline__ uint32_t popcnt(__uint128_t bits) {
    return __builtin_popcountll(bits >> 64) + __builtin_popcountll(bits);
 }
 
+/*!
+ * atomdecl
+ * @ atomic decrement of variable
+ */
+
+__inline__ void atomdecl(uint32_t* m) {
+   int32_t dec = -1;
+   asm ("                  \n\
+        lock; xaddl %0, %1 \n\
+        "
+        : "+r" (dec), "+m" (*m)
+        :
+        : "memory"
+   );
+}
+
 #endif /* INLINES_H */

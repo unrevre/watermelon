@@ -4,15 +4,12 @@
 #include <stdint.h>
 #include <time.h>
 
-#define TIME_RES  0xFFF
-
 /*!
  * wmclock_t
  * @ struct for time management
  */
 
 typedef struct {
-   uint64_t status;
    double limit;
    time_t ref;
 } wmclock_t;
