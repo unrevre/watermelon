@@ -31,11 +31,4 @@ void start(wmclock_t* clock);
 
 int64_t tick(wmclock_t* clock);
 
-/*!
- * drop
- * @ force stop timer
- */
-
-void drop(wmclock_t* clock);
-
 #endif /* TIMER_H */
