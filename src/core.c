@@ -43,6 +43,11 @@ void set_threads(int64_t threads) {
    settings.threads = threads < MAX_THREADS ? threads : MAX_THREADS;
 }
 
+/*!
+ * smp_worker
+ * @ worker function for multithreaded search
+ */
+
 void* smp_worker(void* worker __attribute__((unused))) {
    transient_t* state = malloc(sizeof(transient_t));
 
