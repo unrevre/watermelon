@@ -26,14 +26,13 @@ void initialise(const char* fen) {
    memset(ktable, 0, PLYLIMIT * sizeof(killer_t));
 
    search.status = 0;
-   search.clock = malloc(sizeof(wmclock_t));
 
    settings.threads = 1;
    settings.limit = -1.;
 }
 
 void terminate(void) {
-   free(search.clock);
+   ;
 }
 
 void set_limit(double limit) {
@@ -65,15 +64,14 @@ void smp_search(int32_t depth) {
    debug_variable_reset(3, &search.nodes, &search.qnodes, &search.tthits);
 
    search.status = 1;
-   search.clock->limit = settings.limit;
-
+   search.ref = time(NULL);
+   search.limit = settings.limit;
    search.target = depth;
    search.depth = 1;
 
    working = settings.threads;
 
    pthread_mutex_init(&search.lock, NULL);
-   start(search.clock);
 
    for (int64_t i = 0; i != settings.threads; ++i)
       pthread_create(&workers[i].thread, NULL, smp_worker, &workers[i]);
@@ -84,7 +82,8 @@ void smp_search(int32_t depth) {
 
    while (search.status) {
       pthread_mutex_lock(&search.lock);
-      if (!working || tick(search.clock))
+      if (!working || (search.limit > 0 && difftime(
+            time(NULL), search.ref) > search.limit))
          search.status = 0;
       pthread_mutex_unlock(&search.lock);
 
