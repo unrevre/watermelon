@@ -25,12 +25,11 @@
 #endif
 
 void iter_dfs(transient_t* state) {
-   int32_t score = 0;
-
    int32_t depth;
    while ((depth = smp_depth())) {
       if (setjmp(state->env)) { break; }
 
+      int32_t score = 0;
       int32_t delta = 2;
 
       for (;;) {
