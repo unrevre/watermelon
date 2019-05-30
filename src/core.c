@@ -11,8 +11,6 @@
 
 #define MAX_THREADS  4
 
-settings_t settings;
-
 search_t search;
 worker_t workers[MAX_THREADS];
 uint32_t working;
@@ -26,9 +24,8 @@ void initialise(const char* fen) {
    memset(ktable, 0, PLYLIMIT * sizeof(killer_t));
 
    search.status = 0;
-
-   settings.threads = 1;
-   settings.limit = -1.;
+   search.threads = 1;
+   search.limit = -1.;
 }
 
 void terminate(void) {
@@ -36,11 +33,11 @@ void terminate(void) {
 }
 
 void set_limit(double limit) {
-   settings.limit = limit;
+   search.limit = limit;
 }
 
 void set_threads(int64_t threads) {
-   settings.threads = threads < MAX_THREADS ? threads : MAX_THREADS;
+   search.threads = threads < MAX_THREADS ? threads : MAX_THREADS;
 }
 
 /*!
@@ -65,15 +62,13 @@ void smp_search(int32_t depth) {
 
    search.status = 1;
    search.ref = time(NULL);
-   search.limit = settings.limit;
    search.target = depth;
    search.depth = 1;
 
-   working = settings.threads;
-
    pthread_mutex_init(&search.lock, NULL);
 
-   for (int64_t i = 0; i != settings.threads; ++i)
+   working = search.threads;
+   for (int64_t i = 0; i != search.threads; ++i)
       pthread_create(&workers[i].thread, NULL, smp_worker, &workers[i]);
 
    struct timespec interval;
@@ -90,7 +85,7 @@ void smp_search(int32_t depth) {
       nanosleep(&interval, NULL);
    }
 
-   for (int64_t i = 0; i != settings.threads; ++i)
+   for (int64_t i = 0; i != search.threads; ++i)
       pthread_join(workers[i].thread, NULL);
 
    pthread_mutex_destroy(&search.lock);

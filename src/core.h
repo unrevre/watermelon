@@ -21,6 +21,7 @@ typedef struct {
 
 typedef struct {
    uint64_t status;
+   int64_t threads;
    double limit;
    time_t ref;
    pthread_mutex_t lock;
@@ -30,16 +31,6 @@ typedef struct {
    uint64_t qnodes;
    uint64_t tthits;
 } search_t;
-
-/*!
- * settings_t
- * @ search settings info
- */
-
-typedef struct {
-   int64_t threads;
-   double limit;
-} settings_t;
 
 extern search_t search;
 extern uint32_t working;
