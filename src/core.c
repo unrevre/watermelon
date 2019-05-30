@@ -13,7 +13,10 @@
 
 search_t search;
 worker_t workers[MAX_THREADS];
-uint32_t working;
+
+uint64_t nodes;
+uint64_t qnodes;
+uint64_t tthits;
 
 void initialise(const char* fen) {
    init_hashes();
@@ -58,16 +61,16 @@ void* smp_worker(void* worker __attribute__((unused))) {
 }
 
 void smp_search(int32_t depth) {
-   debug_variable_reset(3, &search.nodes, &search.qnodes, &search.tthits);
+   debug_variable_reset(3, &nodes, &qnodes, &tthits);
 
    search.status = 1;
    search.ref = time(NULL);
    search.target = depth;
    search.depth = 1;
+   search.count = search.threads;
 
    pthread_mutex_init(&search.lock, NULL);
 
-   working = search.threads;
    for (int64_t i = 0; i != search.threads; ++i)
       pthread_create(&workers[i].thread, NULL, smp_worker, &workers[i]);
 
@@ -77,7 +80,7 @@ void smp_search(int32_t depth) {
 
    while (search.status) {
       pthread_mutex_lock(&search.lock);
-      if (!working || (search.limit > 0 && difftime(
+      if (!search.count || (search.limit > 0 && difftime(
             time(NULL), search.ref) > search.limit))
          search.status = 0;
       pthread_mutex_unlock(&search.lock);

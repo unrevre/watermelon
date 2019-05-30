@@ -83,7 +83,7 @@ int watermelon(option_t* options, char const* fen) {
 
    debug_printf("alpha-beta nodes | quiescence nodes |  hash table hits |\n");
    debug_printf("%16"PRIu64" | %16"PRIu64" | %16"PRIu64" |\n\n",
-                search.nodes, search.qnodes, search.tthits);
+                nodes, qnodes, tthits);
 
    return 0;
 }

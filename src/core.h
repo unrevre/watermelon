@@ -27,13 +27,14 @@ typedef struct {
    pthread_mutex_t lock;
    uint32_t target;
    uint32_t depth;
-   uint64_t nodes;
-   uint64_t qnodes;
-   uint64_t tthits;
+   uint32_t count;
 } search_t;
 
 extern search_t search;
-extern uint32_t working;
+
+extern uint64_t nodes;
+extern uint64_t qnodes;
+extern uint64_t tthits;
 
 /*!
  * initialise

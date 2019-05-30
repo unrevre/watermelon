@@ -51,12 +51,12 @@ void iter_dfs(transient_t* state) {
       if (abs(score) >= INFINITY - depth) { break; }
    }
 
-   atomdecl(&working);
+   atomdecl(&search.count);
 }
 
 int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
                 uint32_t principal) {
-   debug_variable_increment(1, &search.nodes);
+   debug_variable_increment(1, &nodes);
 
    if (!search.status) { longjmp(state->env, TIMEOUT); }
 
@@ -165,7 +165,7 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
 }
 
 int32_t quiescence(transient_t* state, int32_t alpha, int32_t beta) {
-   debug_variable_increment(1, &search.qnodes);
+   debug_variable_increment(1, &qnodes);
 
    int32_t stand = eval(state, state->side);
    if (stand >= beta) { return stand; }
