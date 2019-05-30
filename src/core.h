@@ -32,10 +32,6 @@ typedef struct {
 
 extern search_t search;
 
-extern uint64_t nodes;
-extern uint64_t qnodes;
-extern uint64_t tthits;
-
 /*!
  * initialise
  * @ initialise global state variables

@@ -7,6 +7,7 @@
 #include "position.h"
 #include "state.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -192,62 +193,41 @@ char** info_principal_variation(debug_t* info) {
 }
 
 #ifdef DEBUG
-#define __STDC_FORMAT_MACROS
-#include <stdarg.h>
+uint64_t nodes;
+uint64_t qnodes;
+uint64_t tthits;
 
-void debug_variable_reset(int64_t count, ...) {
-   va_list args;
-   va_start(args, count);
-   for (int64_t i = 0; i < count; ++i)
-      *(va_arg(args, uint64_t*)) = 0;
-   va_end(args);
+void debug_counter_reset(void) {
+   nodes = qnodes = tthits = 0;
 }
-
-void debug_variable_increment(int64_t count, ...) {
-   va_list args;
-   va_start(args, count);
-   for (int64_t i = 0; i < count; ++i)
-      ++(*(va_arg(args, uint64_t*)));
-   va_end(args);
-}
-
-void debug_printf(char const* fmt, ...) {
-   va_list args;
-   va_start(args, fmt);
-   vprintf(fmt, args);
-   va_end(args);
-}
+#endif /* DEBUG */
 
 #ifdef TREE
+#include <stdarg.h>
+
 void tree_debug_state(transient_t* external) {
    state = external;
 }
 
-void tree_root_entry(void) {
-   printf("╻\n");
-}
-
-void tree_root_exit(void) {
-   printf("╹\n");
-}
+#define tree_node_depth(depth) do { \
+   for (int32_t t = 0; t != depth; ++t) { printf("│"); } } while (0)
 
 void tree_node_entry(int32_t alpha, int32_t beta) {
-   for (int32_t t = 0; t < state->ply; ++t) { printf("│"); }
+   tree_node_depth(state->ply);
    char buffer[102]; impl_fen(buffer); printf("├┬╸%s\n", buffer);
-   for (int32_t t = 0; t < state->ply + 1; ++t) { printf("│"); }
+   tree_node_depth(state->ply);
    printf("├╸      [%5i, %5i]\n", alpha, beta);
 }
 
-void tree_node_message(char const* fmt, ...) {
-   for (int32_t t = 0; t < state->ply + 1; ++t) { printf("│"); }
-   printf("├╸"); va_list args; va_start(args, fmt); vprintf(fmt, args);
-}
-
 void tree_node_exit(int32_t alpha, int32_t beta, int32_t score) {
-   for (int32_t t = 0; t < state->ply + 1; ++t) { printf("│"); }
+   tree_node_depth(state->ply + 1);
    char buffer[102]; impl_fen(buffer); printf("├╸%s\n", buffer);
-   for (int32_t t = 0; t < state->ply + 1; ++t) { printf("│"); }
+   tree_node_depth(state->ply + 1);
    printf("└╸%5i [%5i, %5i]\n", -score, -beta, -alpha);
 }
+
+void tree_node_message(char const* fmt, ...) {
+   tree_node_depth(state->ply + 1); printf("├╸");
+   va_list args; va_start(args, fmt); printf(fmt, args); va_end(args);
+}
 #endif /* TREE */
-#endif /* DEBUG */
