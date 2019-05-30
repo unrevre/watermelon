@@ -73,7 +73,7 @@ int32_t probe_hash(transient_t* state, int32_t depth, int32_t* alpha,
          *move = entry._.move;
 
          if (entry._.depth < depth) { break; }
-         debug_variable_increment(1, &search.tthits);
+         debug_variable_increment(1, &tthits);
 
          int32_t score = entry._.score;
          int32_t adjust = score < -INFLIMIT ? state->ply : 0;
