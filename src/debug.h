@@ -3,8 +3,6 @@
 
 #include "structs.h"
 
-#include <stdint.h>
-
 /*!
  * debug_t
  * @ string buffers for informative/debugging purposes
@@ -72,41 +70,43 @@ char* info_transposition_table_entry(debug_t* info, ttentry_t entry);
 char** info_principal_variation(debug_t* info);
 
 #ifdef DEBUG
-/*!
- * debug_variable_reset
- * @ reset debug variable(s)
- */
+#include <stdint.h>
+#include <stdio.h>
 
-void debug_variable_reset(int64_t count, ...);
-
-/*!
- * debug_variable_increment
- * @ increment debug variable(s)
- */
-
-void debug_variable_increment(int64_t count, ...);
+extern uint64_t nodes;
+extern uint64_t qnodes;
+extern uint64_t tthits;
 
 /*!
- * debug_variable_values
- * @ print value of debug variable(s)
+ * debug_counter_reset
+ * @ reset counter variables
  */
 
-void debug_variable_values(int64_t count, ...);
+void debug_counter_reset(void);
+
+/*!
+ * debug_counter_increment
+ * @ increment counter variable
+ */
+
+#define debug_counter_increment(counter) ++counter
 
 /*!
  * debug_printf
  * @ wrapper for printf with debug target
  */
 
-void debug_printf(char const* fmt, ...);
+#define debug_printf(...) printf(__VA_ARGS__)
 #else
-#define debug_variable_reset(count, ...)
-#define debug_variable_increment(count, ...)
-#define debug_variable_values(count, ...)
-#define debug_printf(fmt, ...)
+#define debug_counter_reset(...)
+#define debug_counter_increment(...)
+#define debug_printf(...)
 #endif /* DEBUG */
 
 #ifdef TREE
+#include <stdint.h>
+#include <stdio.h>
+
 /*!
  * tree_debug_state
  * @ callback-like function to redirect transient state variables
@@ -119,14 +119,14 @@ void tree_debug_state(transient_t* external);
  * @ print tree root character (entry)
  */
 
-void tree_root_entry(void);
+#define tree_root_entry() do { printf("╻\n"); } while (0)
 
 /*!
  * tree_root_exit
  * @ print tree root character (exit)
  */
 
-void tree_root_exit(void);
+#define tree_root_exit() do { printf("╹\n"); } while (0)
 
 /*!
  * tree_node_entry
@@ -136,25 +136,25 @@ void tree_root_exit(void);
 void tree_node_entry(int32_t alpha, int32_t beta);
 
 /*!
- * tree_node_message
- * @ print message at node in tree format
- */
-
-void tree_node_message(char const* fmt, ...);
-
-/*!
  * tree_node_exit
  * @ print node status (on exit) in tree format
  */
 
 void tree_node_exit(int32_t alpha, int32_t beta, int32_t score);
+
+/*!
+ * tree_node_message
+ * @ print message at node in tree format
+ */
+
+void tree_node_message(char const* fmt, ...);
 #else
 #define tree_debug_state(...)
 #define tree_root_entry(...)
 #define tree_root_exit(...)
 #define tree_node_entry(...)
-#define tree_node_message(...)
 #define tree_node_exit(...)
+#define tree_node_message(...)
 #endif /* TREE */
 
 #endif /* DEBUG_H */

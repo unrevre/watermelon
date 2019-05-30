@@ -14,10 +14,6 @@
 search_t search;
 worker_t workers[MAX_THREADS];
 
-uint64_t nodes;
-uint64_t qnodes;
-uint64_t tthits;
-
 void initialise(const char* fen) {
    init_hashes();
 
@@ -61,7 +57,7 @@ void* smp_worker(void* worker __attribute__((unused))) {
 }
 
 void smp_search(int32_t depth) {
-   debug_variable_reset(3, &nodes, &qnodes, &tthits);
+   debug_counter_reset();
 
    search.status = 1;
    search.ref = time(NULL);
