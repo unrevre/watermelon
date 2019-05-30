@@ -1,10 +1,9 @@
 #ifndef CORE_H
 #define CORE_H
 
-#include "timer.h"
-
 #include <pthread.h>
 #include <stdint.h>
+#include <time.h>
 
 /*!
  * worker_t
@@ -22,7 +21,8 @@ typedef struct {
 
 typedef struct {
    uint64_t status;
-   wmclock_t* clock;
+   double limit;
+   time_t ref;
    pthread_mutex_t lock;
    uint32_t target;
    uint32_t depth;
