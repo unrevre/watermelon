@@ -69,16 +69,15 @@ __inline__ uint32_t popcnt(__uint128_t bits) {
 }
 
 /*!
- * atomdecl
- * @ atomic decrement of variable
+ * atomaddl
+ * @ atomic addition operation
  */
 
-__inline__ void atomdecl(uint32_t* m) {
-   int32_t dec = -1;
+__inline__ void atomaddl(uint32_t* m, int32_t val) {
    asm ("                  \n\
         lock; xaddl %0, %1 \n\
         "
-        : "+r" (dec), "+m" (*m)
+        : "+r" (val), "+m" (*m)
         :
         : "memory"
    );
