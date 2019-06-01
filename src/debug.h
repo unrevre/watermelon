@@ -99,7 +99,7 @@ void debug_counter_reset(void);
  * @ wrapper for printf with debug target
  */
 
-#define debug_printf(...) printf(__VA_ARGS__)
+#define debug_printf(...) do { printf(__VA_ARGS__); } while (0)
 #else
 #define debug_counter_reset(...)
 #define debug_counter_increment(...)
