@@ -159,7 +159,7 @@ char* info_transposition_table_entry(debug_t* info, ttentry_t entry) {
  * @ recursively trace principal variation line
  */
 
-void trace_principal_variation(char** buffer) {
+void trace_principal_variation(char** buffer, int64_t depth) {
    **buffer = '\0';
    ttentry_t entry = entry_for_state(state);
 
@@ -176,9 +176,9 @@ void trace_principal_variation(char** buffer) {
             **++buffer = '\0';
          } else {
             (*buffer)[entry_length - 3] = ' ';
-            trace_principal_variation(++buffer);
+            trace_principal_variation(++buffer, ++depth);
          }
-      } else if (state->ply) {
+      } else if (depth) {
          --buffer;
          (*buffer)[entry_length - 3] = '#';
       }
@@ -187,7 +187,7 @@ void trace_principal_variation(char** buffer) {
 }
 
 char** info_principal_variation(debug_t* info) {
-   trace_principal_variation(info->buffers);
+   trace_principal_variation(info->buffers, 0);
 
    return info->buffers;
 }
