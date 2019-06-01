@@ -70,6 +70,8 @@ char* info_transposition_table_entry(debug_t* info, ttentry_t entry);
 char** info_principal_variation(debug_t* info);
 
 #ifdef DEBUG
+#include "inlines.h"
+
 #include <stdint.h>
 #include <stdio.h>
 
@@ -89,7 +91,8 @@ void debug_counter_reset(void);
  * @ increment counter variable
  */
 
-#define debug_counter_increment(counter) ++counter
+#define debug_counter_increment(counter) do { \
+   atomaddq(&counter, 1); } while (0)
 
 /*!
  * debug_printf
