@@ -70,12 +70,27 @@ __inline__ uint32_t popcnt(__uint128_t bits) {
 
 /*!
  * atomaddl
- * @ atomic addition operation
+ * @ atomic addition operation (long)
  */
 
 __inline__ void atomaddl(uint32_t* m, int32_t val) {
    asm ("                  \n\
         lock; xaddl %0, %1 \n\
+        "
+        : "+r" (val), "+m" (*m)
+        :
+        : "memory"
+   );
+}
+
+/*!
+ * atomaddq
+ * @ atomic addition operation (quadword)
+ */
+
+__inline__ void atomaddq(uint64_t* m, int64_t val) {
+   asm ("                  \n\
+        lock; xaddq %0, %1 \n\
         "
         : "+r" (val), "+m" (*m)
         :
