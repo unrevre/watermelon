@@ -50,7 +50,7 @@ void iter_dfs(transient_t* state) {
       if (abs(score) >= INFINITY - depth) { break; }
    }
 
-   atomdecl(&search.count);
+   atomaddl(&search.count, -1);
 }
 
 int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
