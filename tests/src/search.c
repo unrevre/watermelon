@@ -3,7 +3,6 @@
 #include "../../src/memory.h"
 #include "../../src/state.h"
 
-#define __STDC_FORMAT_MACROS
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,9 +21,8 @@ int main(int argc, char* argv[]) {
    smp_search(atoi(argv[1]));
    printf("%s\n\n", info_move(info, move_for_state(&trunk)));
 
-   char** buffers = info_principal_variation(info);
-   for (int64_t i = 0; i < PLYLIMIT && buffers[i][0]; ++i)
-      printf("%s", buffers[i]);
+   for (char** pv = info_principal_variation(info); **pv; ++pv)
+      printf("%s", *pv);
    printf("\n");
 
    free_debug(info);
