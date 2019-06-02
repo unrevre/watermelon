@@ -50,17 +50,6 @@ typedef union {
 } ttentry_t;
 
 /*!
- * killer_t
- * @ killer move struct
- */
-
-typedef struct {
-   move_t first;
-   move_t second;
-   int64_t count;
-} killer_t;
-
-/*!
  * transient_t
  * @ transient variable struct
  */
@@ -75,17 +64,5 @@ typedef struct {
    uint32_t hashes[STEPLIMIT];
    jmp_buf env;
 } transient_t;
-
-/*!
- * generator_t
- * @ move ordering controller
- */
-
-typedef struct {
-   int64_t state;
-   int64_t index;
-   move_array_t moves;
-   move_t move;
-} generator_t;
 
 #endif /* STRUCTS_H */

@@ -1,7 +1,6 @@
 #include "core.h"
 
 #include "debug.h"
-#include "generate.h"
 #include "memory.h"
 #include "search.h"
 #include "state.h"

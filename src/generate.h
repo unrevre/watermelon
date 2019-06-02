@@ -1,12 +1,9 @@
 #ifndef GENERATE_H
 #define GENERATE_H
 
-#include "magics.h"
 #include "structs.h"
 
 #include <stdint.h>
-
-extern killer_t ktable[PLYLIMIT];
 
 /*!
  * generate_pseudolegal
@@ -50,12 +47,5 @@ void add_shiftwise(transient_t* state, __uint128_t set, int64_t shift,
  */
 
 void sort_moves(move_array_t* moves);
-
-/*!
- * next
- * @ iterate through moves to be searched
- */
-
-move_t next(generator_t* engine, transient_t* state);
 
 #endif /* GENERATE_H */

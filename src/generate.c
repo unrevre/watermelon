@@ -1,13 +1,11 @@
 #include "generate.h"
 
 #include "inlines.h"
+#include "magics.h"
 #include "masks.h"
-#include "position.h"
 
 #include <stdlib.h>
 #include <string.h>
-
-killer_t ktable[PLYLIMIT] __attribute__((aligned(64)));
 
 move_array_t generate_pseudolegal(transient_t* state) {
    int64_t side = state->side;
@@ -344,39 +342,4 @@ void sort_moves(move_array_t* moves) {
       sorted[indices[p(moves->data[i]._.pto)]++] = moves->data[i];
 
    memcpy(moves->data, sorted, moves->count * sizeof(move_t));
-}
-
-move_t next(generator_t* engine, transient_t* state) {
-   switch (engine->state) {
-      case 0:
-         ++(engine->state);
-         if (engine->move.bits)
-            return engine->move;
-      case 1:
-         ++(engine->state);
-         engine->moves = generate_pseudolegal(state);
-         sort_moves(&(engine->moves));
-      case 2:
-         if (engine->index < engine->moves.quiet)
-            return engine->moves.data[engine->index++];
-      case 3:
-         ++(engine->state);
-         ++(engine->state);
-         move_t first = ktable[state->ply].first;
-         if (first.bits && is_valid(state, first))
-            return first;
-      case 4:
-         ++(engine->state);
-         move_t second = ktable[state->ply].second;
-         if (second.bits && is_valid(state, second))
-            return second;
-      case 5:
-         ++(engine->state);
-      case 6:
-         if (engine->index < engine->moves.count)
-            return engine->moves.data[engine->index++];
-      default:
-         return (move_t){0};
-         break;
-   }
 }
