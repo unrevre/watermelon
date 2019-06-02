@@ -1,6 +1,5 @@
 #include "memory.h"
 
-#include "core.h"
 #include "debug.h"
 #include "position.h"
 #include "state.h"
