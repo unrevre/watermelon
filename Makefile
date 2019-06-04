@@ -1,5 +1,16 @@
+MAIN = watermelon
+BIN ?= $(MAIN)
+
+ASMDIR = ./asm
+BINDIR = ./bin
+BLDDIR = ./build
+SRCDIR = ./src
+SVCDIR = ./services
+TSTDIR = ./tests
+WMNDIR = ./watermelon
+
 CC = clang
-CFLAGS += -O3 -pthread -flto -std=gnu99 -march=native -Wall -Wextra \
+CFLAGS += -std=gnu99 -march=native -Wall -Wextra \
 	  -fno-exceptions -fno-strict-aliasing -fno-stack-protector \
 	  -fomit-frame-pointer -fno-asynchronous-unwind-tables
 
@@ -7,46 +18,44 @@ ifneq (,$(findstring gcc,$(CC)))
 	CFLAGS += -Wno-implicit-fallthrough
 endif
 
-ASMFLAGS := $(filter-out -flto,$(CFLAGS))
-
 LIBS += -lncurses
 
-MAKE = make
-
-ASMDIR = ./asm
-BINDIR = ./bin
-BLDDIR = ./build
-SRCDIR = ./src
-TSTDIR = ./tests
-
-MAIN = watermelon
-BIN ?= $(MAIN)
-
-SRCS = $(filter-out $(SRCDIR)/$(MAIN).c,$(wildcard $(SRCDIR)/*.c))
+SRCS = $(wildcard $(SRCDIR)/*.c)
 ASML = $(patsubst $(SRCDIR)/%.c,$(ASMDIR)/%.S,$(SRCS))
 DEPS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.d,$(SRCS))
 OBJS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.o,$(SRCS))
 
-all: binary tests
+SVCS = $(wildcard $(SVCDIR)/*.c)
+DEPS += $(patsubst $(SVCDIR)/%.c,$(BLDDIR)/%.d,$(SVCS))
+OBJS += $(patsubst $(SVCDIR)/%.c,$(BLDDIR)/%.o,$(SVCS))
+
+all: mkdir objects binary tests
 
 debug: CFLAGS += -DDEBUG
-debug: binary
+debug: mkdir objects binary
 
 tree: CFLAGS += -DDEBUG -DTREE
-tree: binary
+tree: mkdir objects binary
 
-binary: mkdir $(BINDIR)/$(BIN)
-
-$(BINDIR)/$(BIN): $(SRCDIR)/$(MAIN).c $(OBJS)
-	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
+objects: $(OBJS)
 
 $(BLDDIR)/%.o: $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) -MMD -c $< -o $@
+	$(CC) $(CFLAGS) -O3 -pthread -flto -MMD -c $< -o $@
+
+$(BLDDIR)/%.o: $(SVCDIR)/%.c
+	$(CC) $(CFLAGS) -Os -I$(SRCDIR) -MMD -c $< -o $@
+
+binary: $(BINDIR)/$(BIN)
+
+$(BINDIR)/$(BIN): $(WMNDIR)/$(MAIN).c $(OBJS)
+	$(CC) $(CFLAGS) -O3 -pthread -I$(SRCDIR) -I$(SVCDIR) $^ $(LIBS) -o $@
 
 asm: mkdir $(ASML)
 
 $(ASMDIR)/%.S: $(SRCDIR)/%.c
-	$(CC) $(ASMFLAGS) -S $< -o $@
+	$(CC) $(CFLAGS) -O3 -S $< -o $@
+
+MAKE = make
 
 tests: $(OBJS)
 	$(MAKE) -C $(TSTDIR)
@@ -60,6 +69,6 @@ clean:
 	$(RM) $(BINDIR)/* $(BLDDIR)/* $(ASMDIR)/*
 	$(MAKE) -C $(TSTDIR) clean
 
-.PHONY: all debug tree binary asm tests mkdir clean
+.PHONY: all debug tree objects binary asm tests mkdir clean
 
 -include $(DEPS) $(TDEPS)

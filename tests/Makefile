@@ -1,5 +1,15 @@
+BINDIR = ./bin
+BLDDIR = ./build
+SRCDIR = ./src
+SVCDIR = ./services
+
+PDIR = ./../
+PBLDDIR = $(PDIR)/$(BLDDIR)
+PSRCDIR = $(PDIR)/$(SRCDIR)
+PSVCDIR = $(PDIR)/$(SVCDIR)
+
 CC = gcc
-CFLAGS += -O3 -pthread -flto -std=gnu99 -march=native -Wall -Wextra \
+CFLAGS += -std=gnu99 -march=native -Wall -Wextra \
 	  -fno-exceptions -fno-strict-aliasing -fno-stack-protector \
 	  -fomit-frame-pointer -fno-asynchronous-unwind-tables
 
@@ -9,29 +19,16 @@ endif
 
 LIBS += -lncurses
 
-MAKE = make
-
-BINDIR = ./bin
-BLDDIR = ./build
-SRCDIR = ./src
-
 SRCS = $(wildcard $(SRCDIR)/*.c)
+BINS = $(patsubst $(SRCDIR)/%.c,$(BINDIR)/%,$(SRCS))
 DEPS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.d,$(SRCS))
-TEST = $(patsubst $(SRCDIR)/%.c,$(BINDIR)/%,$(SRCS))
 
-PDIR = ./../
-PSRCDIR = $(PDIR)/$(SRCDIR)
-PBLDDIR = $(PDIR)/$(BLDDIR)
+OBJS = $(wildcard $(PBLDDIR)/*.o)
 
-MAIN = watermelon
+tests: mkdir $(BINS)
 
-PSRCS = $(filter-out $(PSRCDIR)/$(MAIN).c,$(wildcard $(PSRCDIR)/*.c))
-POBJS = $(patsubst $(PSRCDIR)/%.c,$(PBLDDIR)/%.o,$(PSRCS))
-
-tests: mkdir $(TEST)
-
-$(BINDIR)/%: $(SRCDIR)/%.c $(POBJS)
-	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
+$(BINDIR)/%: $(SRCDIR)/%.c $(OBJS)
+	$(CC) $(CFLAGS) -O3 -pthread -I$(PSRCDIR) -I$(PSVCDIR) $^ $(LIBS) -o $@
 
 mkdir:
 	@mkdir -p $(BINDIR)
