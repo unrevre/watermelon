@@ -9,9 +9,10 @@ PSRCDIR = $(PDIR)/$(SRCDIR)
 PSVCDIR = $(PDIR)/$(SVCDIR)
 
 CC = gcc
-CFLAGS += -std=gnu99 -march=native -Wall -Wextra \
+CFLAGS += -std=c99 -march=native -Wall -Wextra \
 	  -fno-exceptions -fno-strict-aliasing -fno-stack-protector \
 	  -fomit-frame-pointer -fno-asynchronous-unwind-tables
+	  -D_POSIX_C_SOURCE=199309L
 
 ifneq (,$(findstring gcc,$(CC)))
 	CFLAGS += -Wno-implicit-fallthrough
