@@ -14,17 +14,17 @@ __inline__ uint64_t bsf(__uint128_t bits) {
 
    uint64_t clobber;
    uint64_t index;
-   asm ("                  \n\
-        movq   $64, %0     \n\
-        bsfq   %3, %1      \n\
-        cmovnz %1, %0      \n\
-        addq   $64, %0     \n\
-        bsfq   %2, %1      \n\
-        cmovnz %1, %0      \n\
-        "
-        : "=&r" (index), "=&r" (clobber)
-        : "r" (low), "r" (high)
-        :
+   __asm__ ("                  \n\
+            movq   $64, %0     \n\
+            bsfq   %3, %1      \n\
+            cmovnz %1, %0      \n\
+            addq   $64, %0     \n\
+            bsfq   %2, %1      \n\
+            cmovnz %1, %0      \n\
+            "
+            : "=&r" (index), "=&r" (clobber)
+            : "r" (low), "r" (high)
+            :
    );
 
    return index;
@@ -41,18 +41,18 @@ __inline__ uint64_t bsr(__uint128_t bits) {
 
    uint64_t clobber;
    uint64_t index;
-   asm ("                  \n\
-        movq   $128, %1    \n\
-        bsrq   %2, %0      \n\
-        cmovnz %0, %1      \n\
-        xorq   $64, %1     \n\
-        bsrq   %3, %0      \n\
-        cmovz  %1, %0      \n\
-        xorq   $64, %0     \n\
-        "
-        : "=&r" (index), "=&r" (clobber)
-        : "r" (low), "r" (high)
-        :
+   __asm__ ("                  \n\
+            movq   $128, %1    \n\
+            bsrq   %2, %0      \n\
+            cmovnz %0, %1      \n\
+            xorq   $64, %1     \n\
+            bsrq   %3, %0      \n\
+            cmovz  %1, %0      \n\
+            xorq   $64, %0     \n\
+            "
+            : "=&r" (index), "=&r" (clobber)
+            : "r" (low), "r" (high)
+            :
    );
 
    return index;
@@ -74,12 +74,12 @@ __inline__ uint32_t popcnt(__uint128_t bits) {
  */
 
 __inline__ void atomaddl(uint32_t* m, int32_t val) {
-   asm ("                  \n\
-        lock; xaddl %0, %1 \n\
-        "
-        : "+r" (val), "+m" (*m)
-        :
-        : "memory"
+   __asm__ ("                  \n\
+            lock; xaddl %0, %1 \n\
+            "
+            : "+r" (val), "+m" (*m)
+            :
+            : "memory"
    );
 }
 
@@ -89,12 +89,12 @@ __inline__ void atomaddl(uint32_t* m, int32_t val) {
  */
 
 __inline__ void atomaddq(uint64_t* m, int64_t val) {
-   asm ("                  \n\
-        lock; xaddq %0, %1 \n\
-        "
-        : "+r" (val), "+m" (*m)
-        :
-        : "memory"
+   __asm__ ("                  \n\
+            lock; xaddq %0, %1 \n\
+            "
+            : "+r" (val), "+m" (*m)
+            :
+            : "memory"
    );
 }
 
