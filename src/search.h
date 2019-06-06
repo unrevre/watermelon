@@ -1,6 +1,7 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 
+#include "magics.h"
 #include "structs.h"
 
 #include <stdint.h>
