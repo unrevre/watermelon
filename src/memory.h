@@ -8,7 +8,7 @@
 
 #define HASHBITS 24
 #define HASHSIZE (0x1 << HASHBITS)
-#define HASHMASK  (HASHSIZE - 0x1)
+#define HASHMASK (HASHSIZE - 0x1)
 
 extern ttentry_t ttable[HASHSIZE];
 
