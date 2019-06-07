@@ -1,6 +1,5 @@
-#include "../../src/core.h"
-
-#include "../../services/perf.h"
+#include "core.h"
+#include "perf.h"
 
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>

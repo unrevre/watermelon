@@ -1,7 +1,7 @@
-#include "../../src/core.h"
-#include "../../src/debug.h"
-#include "../../src/memory.h"
-#include "../../src/state.h"
+#include "core.h"
+#include "debug.h"
+#include "memory.h"
+#include "state.h"
 
 #include <stdio.h>
 #include <stdlib.h>

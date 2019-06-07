@@ -1,7 +1,6 @@
-#include "../../src/fen.h"
-#include "../../src/magics.h"
-
-#include "../../services/utilities.h"
+#include "fen.h"
+#include "magics.h"
+#include "utilities.h"
 
 #include <stdint.h>
 #include <stdio.h>
