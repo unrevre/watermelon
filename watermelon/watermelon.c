@@ -67,15 +67,14 @@ int watermelon(struct option_t* options, char const* fen) {
    union move_t move;
 
    do {
-      wmprint_state(itf);
-      refresh_interface(itf);
+      refresh_state(itf);
 
       if (!idle[trunk.side] && !event_loop(itf)) { break; }
 
       smp_search(depth);
 
       move = move_for_state(&trunk);
-      wmprint_search(itf, move);
+      refresh_search(itf, move);
    } while (!once && advance_if_legal(move));
 
    close_interface(itf);

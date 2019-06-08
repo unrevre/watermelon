@@ -43,6 +43,20 @@ void wmprint(struct interface_t* itf, WINDOW* w, char const* fmt, ...) {
    va_end(args);
 }
 
+/*!
+ * wmprint_info
+ * @ helper function - print into info window
+ */
+
+void wmprint_info(struct interface_t* itf, char const* fmt, ...) {
+   if (!flag(itf, ITF_QUIET)) {
+      va_list args;
+      va_start(args, fmt);
+      itf->print(itf->win_info, fmt, args);
+      va_end(args);
+   }
+}
+
 void init_interface(struct interface_t* itf, uint64_t flags) {
    itf->flags = flags;
    itf->print = flag(itf, ITF_CURSES) ? wmprintw : wmprintf;
@@ -90,17 +104,6 @@ void close_interface(struct interface_t* itf) {
    free(itf);
 }
 
-void refresh_interface(struct interface_t* itf) {
-   if (flag(itf, ITF_CURSES)) {
-      wmove(itf->win_state, itf->y, itf->x);
-      wnoutrefresh(itf->win_fen);
-      wnoutrefresh(itf->win_info);
-      wnoutrefresh(itf->win_state);
-
-      doupdate();
-   }
-}
-
 void refresh_board(struct interface_t* itf) {
    if (flag(itf, ITF_CURSES)) {
       wmove(itf->win_state, itf->y, itf->x);
@@ -110,16 +113,6 @@ void refresh_board(struct interface_t* itf) {
 
 void refresh_state(struct interface_t* itf) {
    if (flag(itf, ITF_CURSES)) {
-      wmove(itf->win_state, itf->y, itf->x);
-      wnoutrefresh(itf->win_fen);
-      wnoutrefresh(itf->win_state);
-
-      doupdate();
-   }
-}
-
-void wmprint_state(struct interface_t* itf) {
-   if (flag(itf, ITF_CURSES)) {
       wmove(itf->win_fen, 0, 0);
       wmove(itf->win_state, 0, 0);
    }
@@ -128,10 +121,19 @@ void wmprint_state(struct interface_t* itf) {
       wmprint(itf, itf->win_fen, "%s\n", info_fen(itf->info));
       wmprint(itf, itf->win_state, "%s", info_game_state(itf->info));
    }
+
+   if (flag(itf, ITF_CURSES)) {
+      wmove(itf->win_state, itf->y, itf->x);
+      wnoutrefresh(itf->win_fen);
+      wnoutrefresh(itf->win_state);
+
+      doupdate();
+   }
 }
 
-void wmprint_search(struct interface_t* itf, union move_t move) {
+void refresh_search(struct interface_t* itf, union move_t move) {
    wmprint(itf, itf->win_info, "%s\n", info_move(itf->info, move));
+
    if (!flag(itf, ITF_QUIET)) {
       wmprint_info(itf, "\n");
       for (char** pv = info_principal_variation(itf->info); **pv; ++pv)
@@ -140,14 +142,10 @@ void wmprint_search(struct interface_t* itf, union move_t move) {
    }
 
    fflush(stdout);
-}
 
-void wmprint_info(struct interface_t* itf, char const* fmt, ...) {
-   if (!flag(itf, ITF_QUIET)) {
-      va_list args;
-      va_start(args, fmt);
-      itf->print(itf->win_info, fmt, args);
-      va_end(args);
+   if (flag(itf, ITF_CURSES)) {
+      wmove(itf->win_state, itf->y, itf->x);
+      wrefresh(itf->win_info);
    }
 }
 
@@ -237,7 +235,6 @@ void fetch(struct interface_t* itf) {
    } else {
       union move_t move = move_for_indices(itf->index, index);
       if (move.bits && advance_if_legal(move)) {
-         wmprint_state(itf);
          refresh_state(itf);
          itf->index = 0;
       }
@@ -292,13 +289,11 @@ int64_t event_loop(struct interface_t* itf) {
                return 0;
             case 'r':
                redo_history();
-               wmprint_state(itf);
                refresh_state(itf);
                itf->index = 0;
                break;
             case 'u':
                undo_history();
-               wmprint_state(itf);
                refresh_state(itf);
                itf->index = 0;
                break;
@@ -322,7 +317,7 @@ int64_t event_loop(struct interface_t* itf) {
                      to_internal(atoi(tokens[1])),
                      to_internal(atoi(tokens[2])));
                   if (move.bits && advance_if_legal(move)) {
-                     wmprint_state(itf);
+                     refresh_state(itf);
                   } else {
                      wmprint_info(itf, " - invalid move -\n");
                   }
@@ -334,11 +329,11 @@ int64_t event_loop(struct interface_t* itf) {
                return 0;
             case cmd_redo:
                redo_history();
-               wmprint_state(itf);
+               refresh_state(itf);
                break;
             case cmd_undo:
                undo_history();
-               wmprint_state(itf);
+               refresh_state(itf);
                break;
             default:
                wmprint_info(itf, " - unknown command: %s\n", tokens[0]);
