@@ -130,7 +130,7 @@ void wmprint_state(struct interface_t* itf) {
    }
 }
 
-void wmprint_search(struct interface_t* itf, move_t move) {
+void wmprint_search(struct interface_t* itf, union move_t move) {
    wmprint(itf, itf->win_info, "%s\n", info_move(itf->info, move));
    if (!flag(itf, ITF_QUIET)) {
       wmprint_info(itf, "\n");
@@ -151,7 +151,7 @@ void wmprint_info(struct interface_t* itf, char const* fmt, ...) {
    }
 }
 
-int64_t advance_if_legal(move_t move) {
+int64_t advance_if_legal(union move_t move) {
    return is_legal(&trunk, move)
       && (advance_history(move), advance_game(move), 1);
 }
@@ -171,8 +171,8 @@ uint32_t is_index_movable(int64_t index) {
  * @ return move if indices constitute a valid move
  */
 
-move_t move_for_indices(uint32_t from, uint32_t to) {
-   if (is_index_movable(to)) { return (move_t){0}; }
+union move_t move_for_indices(uint32_t from, uint32_t to) {
+   if (is_index_movable(to)) { return (union move_t){0}; }
 
    int64_t side = trunk.side;
    __uint128_t tmask = PMASK[to];
@@ -185,32 +185,32 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
    switch (p(trunk.board[from])) {
       case 0:
          if ((fdabs + rdabs != 1) || !(tmask & JMASK[side]))
-            return (move_t){0};
+            return (union move_t){0};
          break;
       case 1: case 3:
          if (fdabs && rdabs)
-            return (move_t){0};
+            return (union move_t){0};
          break;
       case 2:
          if (!fdabs || !rdabs || (fdabs + rdabs != 3))
-            return (move_t){0};
+            return (union move_t){0};
          break;
       case 4:
          if (fdabs != 1 || rdabs != 1 || !(tmask & SMASK[side]))
-            return (move_t){0};
+            return (union move_t){0};
          break;
       case 5:
          if (fdabs != 2 || rdabs != 2 || !(tmask & XMASK[side]))
-            return (move_t){0};
+            return (union move_t){0};
          break;
       case 6:
          if ((fdabs + rdabs != 1) || !(tmask & ZMASK[side])
                || (rdiff == (side ? -1 : 1)))
-            return (move_t){0};
+            return (union move_t){0};
          break;
    }
 
-   return (move_t){ ._ = {
+   return (union move_t){ ._ = {
       from, to, trunk.board[from], trunk.board[to] } };
 }
 
@@ -235,7 +235,7 @@ void fetch(struct interface_t* itf) {
       wrefresh(itf->win_state);
       itf->index = 0;
    } else {
-      move_t move = move_for_indices(itf->index, index);
+      union move_t move = move_for_indices(itf->index, index);
       if (move.bits && advance_if_legal(move)) {
          wmprint_state(itf);
          refresh_state(itf);
@@ -336,8 +336,9 @@ int64_t event_loop(struct interface_t* itf) {
                retval = 1;
             case cmd_move:
                if (tokens[1] && tokens[2]) {
-                  move_t move = move_for_indices(to_internal(atoi(tokens[1])),
-                                                 to_internal(atoi(tokens[2])));
+                  union move_t move = move_for_indices(
+                     to_internal(atoi(tokens[1])),
+                     to_internal(atoi(tokens[2])));
                   if (move.bits && advance_if_legal(move)) {
                      wmprint_state(itf);
                   } else {

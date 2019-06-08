@@ -53,14 +53,15 @@ char* info_game_state(struct debug_t* info);
  * @ return string of move details
  */
 
-char* info_move(struct debug_t* info, move_t move);
+char* info_move(struct debug_t* info, union move_t move);
 
 /*!
  * info_transposition_table_entry
  * @ return string of transposition table entry details
  */
 
-char* info_transposition_table_entry(struct debug_t* info, ttentry_t entry);
+char* info_transposition_table_entry(struct debug_t* info,
+                                     union ttentry_t entry);
 
 /*!
  * info_principal_variation
@@ -115,7 +116,7 @@ void debug_counter_reset(void);
  * @ callback-like function to redirect transient state variables
  */
 
-void tree_debug_state(transient_t* external);
+void tree_debug_state(struct transient_t* external);
 
 /*!
  * tree_root_entry

@@ -14,19 +14,19 @@
 #define lower     0x2
 #define upper     0x3
 
-ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
+union ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
 
 /*!
  * matching
  * @ helper function to check hash signatures
  */
 
-static inline int64_t matching(ttentry_t* entry, uint32_t hash) {
+static inline int64_t matching(union ttentry_t* entry, uint32_t hash) {
    return (entry->_.hash ^ entry->_.move.bits >> HASHBITS) == hash >> HASHBITS;
 }
 
-void store_hash(transient_t* state, int32_t depth, int32_t alpha, int32_t beta,
-                int32_t score, move_t move) {
+void store_hash(struct transient_t* state, int32_t depth, int32_t alpha,
+                int32_t beta, int32_t score, union move_t move) {
    int32_t flags = abs(score) > INFLIMIT ? exact : 0;
    flags = flags ? flags : score <= alpha ? upper : 0;
    flags = flags ? flags : score >= beta ? lower : exact;
@@ -34,7 +34,7 @@ void store_hash(transient_t* state, int32_t depth, int32_t alpha, int32_t beta,
    int32_t adjust = score < -INFLIMIT ? -state->ply : 0;
    score += score > INFLIMIT ? state->ply : adjust;
 
-   ttentry_t new = {
+   union ttentry_t new = {
       ._ = {
          (state->hash ^ move.bits) >> HASHBITS,
          flags,
@@ -62,10 +62,10 @@ void store_hash(transient_t* state, int32_t depth, int32_t alpha, int32_t beta,
    ttable[replace] = new;
 }
 
-int32_t probe_hash(transient_t* state, int32_t depth, int32_t* alpha,
-                   int32_t* beta, move_t* move) {
+int32_t probe_hash(struct transient_t* state, int32_t depth, int32_t* alpha,
+                   int32_t* beta, union move_t* move) {
    for (uint32_t t = 0; t < BASKETS; ++t) {
-      ttentry_t entry = ttable[(state->hash & HASHMASK) ^ t];
+      union ttentry_t entry = ttable[(state->hash & HASHMASK) ^ t];
       if (matching(&entry, state->hash)) {
          if (!is_valid(state, entry._.move)) { break; }
          *move = entry._.move;
@@ -91,7 +91,7 @@ int32_t probe_hash(transient_t* state, int32_t depth, int32_t* alpha,
    return -INFINITY;
 }
 
-ttentry_t entry_for_state(transient_t* state) {
+union ttentry_t entry_for_state(struct transient_t* state) {
    for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t index = (state->hash & HASHMASK) ^ t;
       if (matching(ttable + index, state->hash)
@@ -99,10 +99,10 @@ ttentry_t entry_for_state(transient_t* state) {
          return ttable[index]; }
    }
 
-   return (ttentry_t){0};
+   return (union ttentry_t){0};
 }
 
-move_t move_for_state(transient_t* state) {
+union move_t move_for_state(struct transient_t* state) {
    for (uint32_t t = 0; t != BASKETS; ++t) {
       uint32_t index = (state->hash & HASHMASK) ^ t;
       if (matching(ttable + index, state->hash)
@@ -110,5 +110,5 @@ move_t move_for_state(transient_t* state) {
          return ttable[index]._.move; }
    }
 
-   return (move_t){0};
+   return (union move_t){0};
 }

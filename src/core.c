@@ -18,7 +18,7 @@ void initialise(const char* fen) {
 
    set_state(fen);
 
-   memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
+   memset(ttable, 0, HASHSIZE * sizeof(union ttentry_t));
    memset(ktable, 0, PLYLIMIT * sizeof(struct killer_t));
 
    search.status = 0;
@@ -44,9 +44,9 @@ void set_threads(int64_t threads) {
  */
 
 void* smp_worker(void* worker __attribute__((unused))) {
-   transient_t* state = malloc(sizeof(transient_t));
+   struct transient_t* state = malloc(sizeof(struct transient_t));
 
-   memcpy(state, &trunk, sizeof(transient_t));
+   memcpy(state, &trunk, sizeof(struct transient_t));
    state->ply = 0;
 
    iter_dfs(state);

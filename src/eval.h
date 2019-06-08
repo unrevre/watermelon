@@ -10,13 +10,13 @@
  * @ evaluate position
  */
 
-int32_t eval(transient_t* state, int32_t side);
+int32_t eval(struct transient_t* state, int32_t side);
 
 /*!
  * gain
  * @ evaluate material gain of a capture move
  */
 
-int32_t gain(move_t move);
+int32_t gain(union move_t move);
 
 #endif /* EVAL_H */

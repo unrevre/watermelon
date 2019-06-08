@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 
-uint32_t in_check(transient_t* state, int64_t side) {
+uint32_t in_check(struct transient_t* state, int64_t side) {
    uint64_t index = bsf(state->pieces[ps(side, 0x0)]);
 
    __uint128_t pmask = PMASK[index];
@@ -69,7 +69,7 @@ uint32_t in_check(transient_t* state, int64_t side) {
    return 0;
 }
 
-uint32_t is_valid(transient_t* state, move_t move) {
+uint32_t is_valid(struct transient_t* state, union move_t move) {
    int64_t side = state->side;
    if (!state->pieces[ps(side, 0x0)]) { return 0; }
    if (side != s(move._.pfrom)) { return 0; }
@@ -114,7 +114,7 @@ uint32_t is_valid(transient_t* state, move_t move) {
    __builtin_unreachable();
 }
 
-uint32_t is_legal(transient_t* state, move_t move) {
+uint32_t is_legal(struct transient_t* state, union move_t move) {
    if (!is_valid(state, move)) { return 0; }
 
    advance_board(move, state);
@@ -124,7 +124,7 @@ uint32_t is_legal(transient_t* state, move_t move) {
    return legal;
 }
 
-uint32_t is_repetition(transient_t* state) {
+uint32_t is_repetition(struct transient_t* state) {
    int32_t step = trunk.ply + state->ply;
    return step > 4 ? *((uint64_t*)(state->hashes + step - 1))
       == *((uint64_t*)(state->hashes + step - 5)) : 0;

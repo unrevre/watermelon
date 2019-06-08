@@ -25,7 +25,7 @@
 
 struct killer_t ktable[PLYLIMIT] __attribute__((aligned(64)));
 
-void iter_dfs(transient_t* state) {
+void iter_dfs(struct transient_t* state) {
    int32_t depth;
    while ((depth = smp_depth())) {
       if (setjmp(state->env)) { break; }
@@ -54,8 +54,8 @@ void iter_dfs(transient_t* state) {
    atomaddl(&search.count, -1);
 }
 
-int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
-                uint32_t principal) {
+int32_t negamax(int32_t depth, struct transient_t* state, int32_t alpha,
+                int32_t beta, uint32_t principal) {
    debug_counter_increment(nodes);
 
    if (!search.status) { longjmp(state->env, TIMEOUT); }
@@ -67,7 +67,7 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
    if (is_repetition(state)) { return DRAW; }
 
    int32_t alpha_parent = alpha;
-   move_t store = (move_t){0};
+   union move_t store = (union move_t){0};
 
    int32_t hash_score = probe_hash(state, depth, &alpha, &beta, &store);
    if (!principal && hash_score != -INFINITY) {
@@ -83,7 +83,7 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
 
    if (!principal && state->ply > 1 && depth > 4
          && !in_check(state, state->side)) {
-      move_t null = { ._ = { 0x7f, 0x7f, empty, empty } };
+      union move_t null = { ._ = { 0x7f, 0x7f, empty, empty } };
 
       advance(null, state);
       __builtin_prefetch(&ttable[state->hash & (HASHMASK ^ 0x3)], 1, 3);
@@ -99,7 +99,7 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
    struct generator_t engine = { 0, 0, { 0, 0, 0 }, store };
 
    int32_t best = base;
-   move_t move;
+   union move_t move;
 
    int32_t reduced = depth;
 
@@ -144,7 +144,7 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
             killers->count--;
             if (killers->count < 1) {
                killers->first = killers->second;
-               killers->second = (move_t){0};
+               killers->second = (union move_t){0};
                killers->count = 0;
             }
             break;
@@ -164,14 +164,14 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
    return best;
 }
 
-int32_t quiescence(transient_t* state, int32_t alpha, int32_t beta) {
+int32_t quiescence(struct transient_t* state, int32_t alpha, int32_t beta) {
    debug_counter_increment(qnodes);
 
    int32_t stand = eval(state, state->side);
    if (stand >= beta) { return stand; }
    alpha = stand > alpha ? stand : alpha;
 
-   move_array_t moves = generate_captures(state);
+   struct move_array_t moves = generate_captures(state);
    sort_moves(&moves);
    for (int64_t i = 0; i != moves.count; ++i) {
       if (stand + gain(moves.data[i]) + QMARGIN < alpha) {
@@ -192,7 +192,7 @@ int32_t quiescence(transient_t* state, int32_t alpha, int32_t beta) {
    return alpha;
 }
 
-move_t next(struct generator_t* engine, transient_t* state) {
+union move_t next(struct generator_t* engine, struct transient_t* state) {
    switch (engine->state) {
       case 0:
          ++(engine->state);
@@ -208,12 +208,12 @@ move_t next(struct generator_t* engine, transient_t* state) {
       case 3:
          ++(engine->state);
          ++(engine->state);
-         move_t first = ktable[state->ply].first;
+         union move_t first = ktable[state->ply].first;
          if (first.bits && is_valid(state, first))
             return first;
       case 4:
          ++(engine->state);
-         move_t second = ktable[state->ply].second;
+         union move_t second = ktable[state->ply].second;
          if (second.bits && is_valid(state, second))
             return second;
       case 5:
@@ -222,7 +222,7 @@ move_t next(struct generator_t* engine, transient_t* state) {
          if (engine->index < engine->moves.count)
             return engine->moves.data[engine->index++];
       default:
-         return (move_t){0};
+         return (union move_t){0};
          break;
    }
 }
