@@ -260,8 +260,7 @@ int64_t event_loop(struct interface_t* itf) {
          switch (getch()) {
             case 'e':
                wmprint_info(itf, "%s\n\n", info_eval(itf->info));
-               if (flag(itf, ITF_CURSES)) {
-                  wrefresh(itf->win_info); }
+               wrefresh(itf->win_info);
                break;
             case 'f':
                fetch(itf);
@@ -269,9 +268,7 @@ int64_t event_loop(struct interface_t* itf) {
             case 'g':
                if (itf->index != 0)
                   fetch(itf);
-               if (itf->index == 0)
-                  return 1;
-               break;
+               return 1;
             case 'h':
                itf->x = itf->x > 1 ? itf->x - 2 : 1;
                refresh_board(itf);
@@ -310,10 +307,10 @@ int64_t event_loop(struct interface_t* itf) {
          char* buffer = fgets(itf->info->buffer, 128, stdin);
          char** tokens = slice(itf->info->buffers, buffer);
 
-         int64_t cmd = -1;
-         for (int64_t i = 0; i < ncmds; ++i) {
-            if (!strcmp(tokens[0], commands[i])) {
-               cmd = i; } }
+         int64_t cmd;
+         for (cmd = 0; cmd < ncmds; ++cmd) {
+            if (!strcmp(tokens[0], commands[cmd])) {
+               break; } }
 
          switch (cmd) {
             case cmd_eval:
