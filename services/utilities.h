@@ -6,7 +6,7 @@
  * @ slice string into tokens, respecting double quotes
  */
 
-char** slice(char* string);
+char** slice(char** slices, char* string);
 
 /*!
  * append

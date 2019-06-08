@@ -25,8 +25,8 @@ int main(int argc, char* argv[]) {
    }
 
    char* fen = (argc == 3) ? 0 : argv[3];
-   serve(append(slice(argv[1]), fen), red);
-   serve(append(slice(argv[2]), fen), black);
+   serve(append(slice(malloc(8 * sizeof(char*)), argv[1]), fen), red);
+   serve(append(slice(malloc(8 * sizeof(char*)), argv[2]), fen), black);
 
    printf("served!\n");
    printf("  pids: %i, %i\n\n", childpid[0], childpid[1]);
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
    for (int64_t i = 0; i < STEPLIMIT; ++i, side = o(side)) {
       taste(side, buffer);
 
-      char** tokens = slice(buffer);
+      char** tokens = slice(malloc(8 * sizeof(char*)), buffer);
       vet(tokens[0], "move");
 
       sprintf(buffer, "move %s %s\n", tokens[1] , tokens[2]);
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
    sprintf(buffer, "eval\n");
    taste(red, buffer);
 
-   char** tokens = slice(buffer);
+   char** tokens = slice(malloc(8 * sizeof(char*)), buffer);
    vet(tokens[0], "eval");
 
    int64_t adv = atoi(tokens[1]);
