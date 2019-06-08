@@ -9,9 +9,9 @@
 extern uint32_t PSHASH[PIECES][BITS];
 extern uint32_t MVHASH;
 
-extern transient_t trunk;
+extern struct transient_t trunk;
 
-extern move_t history[STEPLIMIT];
+extern union move_t history[STEPLIMIT];
 extern uint32_t htable[STEPLIMIT];
 
 /*!
@@ -33,49 +33,49 @@ void set_state(const char* fen);
  * @ advance move (update piece bitboards and board array)
  */
 
-void advance_board(move_t move, transient_t* state);
+void advance_board(union move_t move, struct transient_t* state);
 
 /*!
  * retract_board
  * @ retract move (update piece bitboards and board array)
  */
 
-void retract_board(move_t move, transient_t* state);
+void retract_board(union move_t move, struct transient_t* state);
 
 /*!
  * advance
  * @ advance move
  */
 
-void advance(move_t move, transient_t* state);
+void advance(union move_t move, struct transient_t* state);
 
 /*!
  * retract
  * @ retract move
  */
 
-void retract(move_t move, transient_t* state);
+void retract(union move_t move, struct transient_t* state);
 
 /*!
  * advance_game
  * @ advance move and reset search state
  */
 
-void advance_game(move_t move);
+void advance_game(union move_t move);
 
 /*!
  * retract_game
  * @ retract move and reset search state
  */
 
-void retract_game(move_t move);
+void retract_game(union move_t move);
 
 /*!
  * advance_history
  * @ advance move history records
  */
 
-void advance_history(move_t move);
+void advance_history(union move_t move);
 
 /*!
  * undo_history

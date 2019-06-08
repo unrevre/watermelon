@@ -11,7 +11,7 @@
  * @ move representation
  */
 
-typedef union {
+union move_t {
    uint32_t bits;
    struct {
       uint8_t from;
@@ -19,25 +19,25 @@ typedef union {
       uint8_t pfrom;
       uint8_t pto;
    } __attribute__((packed)) _;
-} move_t;
+};
 
 /*!
  * move_array_t
  * @ generated moves struct
  */
 
-typedef struct {
-   move_t* data;
+struct move_array_t {
+   union move_t* data;
    int64_t count;
    int64_t quiet;
-} move_array_t;
+};
 
 /*!
  * ttentry_t
  * @ transposition table entry struct
  */
 
-typedef union {
+union ttentry_t {
    uint64_t bits;
    struct {
       uint8_t hash  : 8;
@@ -45,16 +45,16 @@ typedef union {
       uint8_t depth : 6;
       int16_t score : 14;
       uint8_t age   : 2;
-      move_t move;
+      union move_t move;
    } __attribute__((packed)) _;
-} ttentry_t;
+};
 
 /*!
  * transient_t
  * @ transient variable struct
  */
 
-typedef struct {
+struct transient_t {
    uint32_t hash;
    int32_t ply;
    int64_t side;
@@ -63,6 +63,6 @@ typedef struct {
    uint32_t board[POINTS];
    uint32_t hashes[STEPLIMIT];
    jmp_buf env;
-} transient_t;
+};
 
 #endif /* STRUCTS_H */

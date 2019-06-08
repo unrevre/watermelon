@@ -28,8 +28,8 @@ int main(int argc, char* argv[]) {
 
    printf("%s\n", info_fen(info));
 
-   transient_t* state = malloc(sizeof(transient_t));
-   memcpy(state, &trunk, sizeof(transient_t));
+   struct transient_t* state = malloc(sizeof(struct transient_t));
+   memcpy(state, &trunk, sizeof(struct transient_t));
    state->ply = 0;
 
    clock_t cpu = clock();

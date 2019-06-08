@@ -10,9 +10,9 @@ uint32_t PSHASH[PIECES][BITS] __attribute__((aligned(64)));
 uint32_t STHASH;
 uint32_t MVHASH;
 
-transient_t trunk;
+struct transient_t trunk;
 
-move_t history[STEPLIMIT];
+union move_t history[STEPLIMIT];
 
 void init_hashes(void) {
    srand(0x91);
@@ -42,8 +42,8 @@ void reset_hashes(void) {
 }
 
 void set_state(const char* fen) {
-   memset(&trunk, 0, sizeof(transient_t));
-   memset(history, 0, STEPLIMIT * sizeof(move_t));
+   memset(&trunk, 0, sizeof(struct transient_t));
+   memset(history, 0, STEPLIMIT * sizeof(union move_t));
 
    reset_fen(fen);
    reset_hashes();
@@ -54,7 +54,7 @@ void set_state(const char* fen) {
  * @ advance move (update state variables)
  */
 
-void advance_state(move_t move, transient_t* state) {
+void advance_state(union move_t move, struct transient_t* state) {
    ++state->ply;
    state->side = !state->side;
 
@@ -69,7 +69,7 @@ void advance_state(move_t move, transient_t* state) {
  * @ retract move (update state variables)
  */
 
-void retract_state(move_t move, transient_t* state) {
+void retract_state(union move_t move, struct transient_t* state) {
    --state->ply;
    state->side = !state->side;
 
@@ -79,7 +79,7 @@ void retract_state(move_t move, transient_t* state) {
    state->hash ^= MVHASH;
 }
 
-void advance_board(move_t move, transient_t* state) {
+void advance_board(union move_t move, struct transient_t* state) {
    state->pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
    state->pieces[move._.pto] ^= PMASK[move._.to];
    state->pieces[empty] ^= PMASK[move._.from];
@@ -92,7 +92,7 @@ void advance_board(move_t move, transient_t* state) {
    state->board[move._.to] = move._.pfrom;
 }
 
-void retract_board(move_t move, transient_t* state) {
+void retract_board(union move_t move, struct transient_t* state) {
    state->pieces[move._.pfrom] ^= PMASK[move._.from] ^ PMASK[move._.to];
    state->pieces[move._.pto] ^= PMASK[move._.to];
    state->pieces[empty] ^= PMASK[move._.from];
@@ -106,34 +106,34 @@ void retract_board(move_t move, transient_t* state) {
    state->board[move._.to] = move._.pto;
 }
 
-void advance(move_t move, transient_t* state) {
+void advance(union move_t move, struct transient_t* state) {
    advance_state(move, state);
    state->hashes[trunk.ply + state->ply] = state->hash;
    advance_board(move, state);
 }
 
-void retract(move_t move, transient_t* state) {
+void retract(union move_t move, struct transient_t* state) {
    retract_state(move, state);
    retract_board(move, state);
 }
 
-void advance_game(move_t move) {
+void advance_game(union move_t move) {
    advance_state(move, &trunk);
    trunk.hashes[trunk.ply] = trunk.hash;
    advance_board(move, &trunk);
 }
 
-void retract_game(move_t move) {
+void retract_game(union move_t move) {
    retract_state(move, &trunk);
    retract_board(move, &trunk);
 }
 
-void advance_history(move_t move) {
+void advance_history(union move_t move) {
    int32_t step = trunk.ply;
-   move_t future = history[step];
+   union move_t future = history[step];
    if (future.bits && move.bits != future.bits)
       while (history[++step].bits)
-         history[step] = (move_t){0};
+         history[step] = (union move_t){0};
 
    history[trunk.ply] = move;
 }

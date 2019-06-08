@@ -7,10 +7,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-move_array_t generate_pseudolegal(transient_t* state) {
+struct move_array_t generate_pseudolegal(struct transient_t* state) {
    int64_t side = state->side;
 
-   move_array_t moves = {malloc(111 * sizeof(move_t)), 0, 0};
+   struct move_array_t moves = {malloc(111 * sizeof(union move_t)), 0, 0};
    if (!state->pieces[ps(side, 0x0)]) { return moves; }
 
    __uint128_t C3U128 = 0x3;
@@ -159,10 +159,10 @@ move_array_t generate_pseudolegal(transient_t* state) {
    return moves;
 }
 
-move_array_t generate_captures(transient_t* state) {
+struct move_array_t generate_captures(struct transient_t* state) {
    int64_t side = state->side;
 
-   move_array_t moves = {malloc(40 * sizeof(move_t)), 0, 0};
+   struct move_array_t moves = {malloc(40 * sizeof(union move_t)), 0, 0};
    if (!state->pieces[ps(side, 0x0)]) { return moves; }
 
    __uint128_t C3U128 = 0x3;
@@ -305,31 +305,31 @@ move_array_t generate_captures(transient_t* state) {
    return moves;
 }
 
-void add_piecewise(transient_t* state, __uint128_t set, uint64_t from,
-                   move_array_t* moves) {
+void add_piecewise(struct transient_t* state, __uint128_t set, uint64_t from,
+                   struct move_array_t* moves) {
    for (; set; set &= set - 1) {
       uint64_t to = bsf(set);
-      move_t move = { ._ = {
+      union move_t move = { ._ = {
          from, to, state->board[from], state->board[to] } };
       moves->data[moves->count++] = move;
    }
 }
 
-void add_shiftwise(transient_t* state, __uint128_t set, int64_t shift,
-                   move_array_t* moves) {
+void add_shiftwise(struct transient_t* state, __uint128_t set, int64_t shift,
+                   struct move_array_t* moves) {
    for (; set; set &= set - 1) {
       uint64_t to = bsf(set);
       uint64_t from = to - shift;
-      move_t move = { ._ = {
+      union move_t move = { ._ = {
          from, to, state->board[from], state->board[to] } };
       moves->data[moves->count++] = move;
    }
 }
 
-void sort_moves(move_array_t* moves) {
+void sort_moves(struct move_array_t* moves) {
    if (!moves->count) { return; }
 
-   move_t sorted[111];
+   union move_t sorted[111];
 
    int64_t indices[9] = {0};
    int64_t* counts = &indices[1];
@@ -341,5 +341,5 @@ void sort_moves(move_array_t* moves) {
    for (int64_t i = 0; i != moves->count; ++i)
       sorted[indices[p(moves->data[i]._.pto)]++] = moves->data[i];
 
-   memcpy(moves->data, sorted, moves->count * sizeof(move_t));
+   memcpy(moves->data, sorted, moves->count * sizeof(union move_t));
 }

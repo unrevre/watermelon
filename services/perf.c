@@ -10,7 +10,7 @@
 int64_t perft(int32_t depth) {
    if (!depth) { return 1; }
 
-   move_array_t moves = generate_pseudolegal(&trunk);
+   struct move_array_t moves = generate_pseudolegal(&trunk);
    trunk.side = o(trunk.side);
 
    int64_t nmoves = 0;
@@ -30,7 +30,7 @@ int64_t perft(int32_t depth) {
 int64_t perft_capture(int32_t depth) {
    if (!depth) { return 1; }
 
-   move_array_t moves = generate_captures(&trunk);
+   struct move_array_t moves = generate_captures(&trunk);
    trunk.side = o(trunk.side);
 
    int64_t nmoves = 0;

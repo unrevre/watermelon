@@ -68,7 +68,7 @@ void wmprint_state(struct interface_t* itf);
  * @ helper function - print search results (move, trace)
  */
 
-void wmprint_search(struct interface_t* itf, move_t move);
+void wmprint_search(struct interface_t* itf, union move_t move);
 
 /*!
  * wmprint_info
@@ -82,7 +82,7 @@ void wmprint_info(struct interface_t* itf, char const* fmt, ...);
  * @ helper function - test legality and advance game, history
  */
 
-int64_t advance_if_legal(move_t move);
+int64_t advance_if_legal(union move_t move);
 
 /*!
  * event_loop

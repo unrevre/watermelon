@@ -14,7 +14,7 @@
 #define move_length 14
 #define entry_length 28
 
-transient_t* state = 0;
+struct transient_t* state = 0;
 
 void init_debug(struct debug_t* info) {
    info->buffer = calloc(256, sizeof(char));
@@ -126,13 +126,13 @@ char* info_game_state(struct debug_t* info) {
  * @ internal implementation for 'info_move'
  */
 
-void impl_move(char* buffer, move_t move) {
+void impl_move(char* buffer, union move_t move) {
    sprintf(buffer, "move %2i %2i %c/%c",
            to_external(move._.from), to_external(move._.to),
            fen_char[move._.pfrom], fen_char[move._.pto]);
 }
 
-char* info_move(struct debug_t* info, move_t move) {
+char* info_move(struct debug_t* info, union move_t move) {
    impl_move(info->buffer, move);
 
    return info->buffer;
@@ -143,12 +143,13 @@ char* info_move(struct debug_t* info, move_t move) {
  * @ internal implementation for 'info_transposition_table_entry'
  */
 
-void impl_transposition_table_entry(char* buffer, ttentry_t entry) {
+void impl_transposition_table_entry(char* buffer, union ttentry_t entry) {
    impl_move(buffer, entry._.move);
    sprintf(buffer + move_length, " %5i (%x)", entry._.score, entry._.flags);
 }
 
-char* info_transposition_table_entry(struct debug_t* info, ttentry_t entry) {
+char* info_transposition_table_entry(struct debug_t* info,
+                                     union ttentry_t entry) {
    impl_transposition_table_entry(info->buffer, entry);
 
    return info->buffer;
@@ -161,9 +162,9 @@ char* info_transposition_table_entry(struct debug_t* info, ttentry_t entry) {
 
 void trace_principal_variation(char** buffer, int64_t depth) {
    **buffer = '\0';
-   ttentry_t entry = entry_for_state(state);
+   union ttentry_t entry = entry_for_state(state);
 
-   move_t next = entry._.move;
+   union move_t next = entry._.move;
    if (next.bits && is_valid(state, next)) {
       advance(next, state);
       if (!in_check(state, o(state->side))) {
@@ -205,7 +206,7 @@ void debug_counter_reset(void) {
 #ifdef TREE
 #include <stdarg.h>
 
-void tree_debug_state(transient_t* external) {
+void tree_debug_state(struct transient_t* external) {
    state = external;
 }
 

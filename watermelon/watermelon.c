@@ -64,7 +64,7 @@ int watermelon(struct option_t* options, char const* fen) {
    struct interface_t* itf = malloc(sizeof(struct interface_t));
    init_interface(itf, set(ITF_CURSES, curses) | set(ITF_QUIET, quiet));
 
-   move_t move;
+   union move_t move;
 
    do {
       wmprint_state(itf);
