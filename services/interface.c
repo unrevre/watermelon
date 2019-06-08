@@ -245,9 +245,8 @@ void fetch(struct interface_t* itf) {
 }
 
 #define cmds(macro)                       \
-   macro(eval),                           \
-   macro(move), macro(next), macro(quit), \
-   macro(redo), macro(undo), macro(zero)
+   macro(eval), macro(move), macro(next), \
+   macro(quit), macro(redo), macro(undo)
 
 #define list(command)   cmd_##command
 #define string(command) #command
@@ -306,12 +305,6 @@ int64_t event_loop(struct interface_t* itf) {
                refresh_state(itf);
                itf->index = 0;
                break;
-            case '~':
-               set_state(0);
-               wmprint_state(itf);
-               refresh_state(itf);
-               itf->index = 0;
-               break;
          }
       } else {
          char* buffer = fgets(itf->info->buffer, 128, stdin);
@@ -355,10 +348,6 @@ int64_t event_loop(struct interface_t* itf) {
                break;
             case cmd_undo:
                undo_history();
-               wmprint_state(itf);
-               break;
-            case cmd_zero:
-               set_state(tokens[1]);
                wmprint_state(itf);
                break;
             default:
