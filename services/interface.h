@@ -50,32 +50,18 @@ void init_interface(struct interface_t* itf, uint64_t flags);
 void close_interface(struct interface_t* itf);
 
 /*!
- * refresh_interface
- * @ refresh all window contents
+ * refresh_state
+ * @ helper function - update game state info
  */
 
-void refresh_interface(struct interface_t* itf);
+void refresh_state(struct interface_t* itf);
 
 /*!
- * wmprint_state
- * @ helper function - print game state info
+ * refresh_search
+ * @ helper function - update search results (move, trace)
  */
 
-void wmprint_state(struct interface_t* itf);
-
-/*!
- * wmprint_search
- * @ helper function - print search results (move, trace)
- */
-
-void wmprint_search(struct interface_t* itf, union move_t move);
-
-/*!
- * wmprint_info
- * @ helper function - print into info window
- */
-
-void wmprint_info(struct interface_t* itf, char const* fmt, ...);
+void refresh_search(struct interface_t* itf, union move_t move);
 
 /*!
  * advance_if_legal
