@@ -19,63 +19,63 @@
  * @ interface struct
  */
 
-typedef struct {
+struct interface_t {
    uint64_t flags;
    int (*print) (WINDOW*, char const*, va_list);
    int32_t x;
    int32_t y;
    int64_t index;
 
-   debug_t* info;
+   struct debug_t* info;
 
    WINDOW* win_state;
    WINDOW* win_info;
    WINDOW* win_fen;
    WINDOW* border_state;
    WINDOW* border_info;
-} interface_t;
+};
 
 /*!
  * init_interface
  * @ initialise ncurses interface
  */
 
-void init_interface(interface_t* itf, uint64_t flags);
+void init_interface(struct interface_t* itf, uint64_t flags);
 
 /*!
  * close_interface
  * @ exit ncurses interface and clean up
  */
 
-void close_interface(interface_t* itf);
+void close_interface(struct interface_t* itf);
 
 /*!
  * refresh_interface
  * @ refresh all window contents
  */
 
-void refresh_interface(interface_t* itf);
+void refresh_interface(struct interface_t* itf);
 
 /*!
  * wmprint_state
  * @ helper function - print game state info
  */
 
-void wmprint_state(interface_t* itf);
+void wmprint_state(struct interface_t* itf);
 
 /*!
  * wmprint_search
  * @ helper function - print search results (move, trace)
  */
 
-void wmprint_search(interface_t* itf, move_t move);
+void wmprint_search(struct interface_t* itf, move_t move);
 
 /*!
  * wmprint_info
  * @ helper function - print into info window
  */
 
-void wmprint_info(interface_t* itf, char const* fmt, ...);
+void wmprint_info(struct interface_t* itf, char const* fmt, ...);
 
 /*!
  * advance_if_legal
@@ -89,6 +89,6 @@ int64_t advance_if_legal(move_t move);
  * @ event loop handling key events in curses mode
  */
 
-int64_t event_loop(interface_t* itf);
+int64_t event_loop(struct interface_t* itf);
 
 #endif /* INTERFACE_H */

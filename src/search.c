@@ -23,7 +23,7 @@
 #define longjmp   _longjmp
 #endif
 
-killer_t ktable[PLYLIMIT] __attribute__((aligned(64)));
+struct killer_t ktable[PLYLIMIT] __attribute__((aligned(64)));
 
 void iter_dfs(transient_t* state) {
    int32_t depth;
@@ -96,7 +96,7 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
    }
 
    int32_t base = INFMINUS + state->ply;
-   generator_t engine = { 0, 0, { 0, 0, 0 }, store };
+   struct generator_t engine = { 0, 0, { 0, 0, 0 }, store };
 
    int32_t best = base;
    move_t move;
@@ -135,7 +135,7 @@ int32_t negamax(int32_t depth, transient_t* state, int32_t alpha, int32_t beta,
       alpha = score > alpha ? score : alpha;
       if (alpha < beta) { continue; }
 
-      killer_t* killers = &ktable[state->ply];
+      struct killer_t* killers = &ktable[state->ply];
       switch (engine.state) {
          case 4:
             killers->count++;
@@ -192,7 +192,7 @@ int32_t quiescence(transient_t* state, int32_t alpha, int32_t beta) {
    return alpha;
 }
 
-move_t next(generator_t* engine, transient_t* state) {
+move_t next(struct generator_t* engine, transient_t* state) {
    switch (engine->state) {
       case 0:
          ++(engine->state);

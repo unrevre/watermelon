@@ -8,66 +8,66 @@
  * @ string buffers for informative/debugging purposes
  */
 
-typedef struct {
+struct debug_t {
    char* buffer;
    char** buffers;
-} debug_t;
+};
 
 /*!
  * init_debug
  * @ initialise buffers
  */
 
-void init_debug(debug_t* info);
+void init_debug(struct debug_t* info);
 
 /*!
  * free_debug
  * @ free allocated memory
  */
 
-void free_debug(debug_t* info);
+void free_debug(struct debug_t* info);
 
 /*!
  * info_eval
  * @ return internal evaluation of current game state
  */
 
-char* info_eval(debug_t* info);
+char* info_eval(struct debug_t* info);
 
 /*!
  * info_fen
  * @ return fen string of current game state
  */
 
-char* info_fen(debug_t* info);
+char* info_fen(struct debug_t* info);
 
 /*!
  * info_game_state
  * @ return string of current game state
  */
 
-char* info_game_state(debug_t* info);
+char* info_game_state(struct debug_t* info);
 
 /*!
  * info_move
  * @ return string of move details
  */
 
-char* info_move(debug_t* info, move_t move);
+char* info_move(struct debug_t* info, move_t move);
 
 /*!
  * info_transposition_table_entry
  * @ return string of transposition table entry details
  */
 
-char* info_transposition_table_entry(debug_t* info, ttentry_t entry);
+char* info_transposition_table_entry(struct debug_t* info, ttentry_t entry);
 
 /*!
  * info_principal_variation
  * @ trace and return array of strings of principal variation
  */
 
-char** info_principal_variation(debug_t* info);
+char** info_principal_variation(struct debug_t* info);
 
 #ifdef DEBUG
 #include "inlines.h"
