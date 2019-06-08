@@ -3,10 +3,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-char** slice(char* string) {
-   int64_t size = 8;
-   char** slices = malloc(size * sizeof(char*));
-
+char** slice(char** slices, char* string) {
    int64_t state = 0;
    int64_t count = 0;
 
@@ -17,11 +14,6 @@ char** slice(char* string) {
          int64_t quote = *p == '"';
          state = quote + 1;
          slices[count++] = p + quote;
-
-         if (count == size) {
-            size = size * 2;
-            slices = realloc(slices, size);
-         }
       } else {
          if (*p == '\0' || (state == 2 && *p == '"')
                || (state == 1 && (*p == ' ' || *p == '\n'))) {
@@ -31,7 +23,6 @@ char** slice(char* string) {
       }
    }
 
-   slices = realloc(slices, count + 1);
    slices[count] = 0;
 
    return slices;
@@ -42,7 +33,6 @@ char** append(char** slices, char* string) {
    for (; *t != 0; ++t);
 
    int64_t count = t - slices;
-   slices = realloc(slices, count + 2);
    slices[count++] = string;
    slices[count] = 0;
 

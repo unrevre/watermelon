@@ -308,25 +308,17 @@ int64_t event_loop(struct interface_t* itf) {
          }
       } else {
          char* buffer = fgets(itf->info->buffer, 128, stdin);
-         char** tokens = slice(buffer);
-
-         if (!tokens[0]) {
-            free(tokens);
-            continue;
-         }
+         char** tokens = slice(itf->info->buffers, buffer);
 
          int64_t cmd = -1;
          for (int64_t i = 0; i < ncmds; ++i) {
             if (!strcmp(tokens[0], commands[i])) {
                cmd = i; } }
 
-         int64_t retval = -1;
          switch (cmd) {
             case cmd_eval:
                wmprint(itf, itf->win_info, "%s\n\n", info_eval(itf->info));
                break;
-            case cmd_next:
-               retval = 1;
             case cmd_move:
                if (tokens[1] && tokens[2]) {
                   union move_t move = move_for_indices(
@@ -339,9 +331,10 @@ int64_t event_loop(struct interface_t* itf) {
                   }
                }
                break;
+            case cmd_next:
+               return 1;
             case cmd_quit:
-               retval = 0;
-               break;
+               return 0;
             case cmd_redo:
                redo_history();
                wmprint_state(itf);
@@ -354,11 +347,6 @@ int64_t event_loop(struct interface_t* itf) {
                wmprint_info(itf, " - unknown command: %s\n", tokens[0]);
                break;
          }
-
-         free(tokens);
-
-         if (retval != -1) {
-            return retval; }
       }
    }
 }
