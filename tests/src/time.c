@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
    search.depth = 1;
    search.count = 1;
 
-   debug_t* info = malloc(sizeof(debug_t));
+   struct debug_t* info = malloc(sizeof(struct debug_t));
    init_debug(info);
 
    printf("%s\n", info_fen(info));

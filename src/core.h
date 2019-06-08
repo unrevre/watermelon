@@ -10,16 +10,16 @@
  * @ worker thread info
  */
 
-typedef struct {
+struct worker_t {
    pthread_t thread;
-} worker_t;
+};
 
 /*!
  * search_t
  * @ search status information
  */
 
-typedef struct {
+struct search_t {
    uint64_t status;
    int64_t threads;
    double limit;
@@ -28,9 +28,9 @@ typedef struct {
    uint32_t target;
    uint32_t depth;
    uint32_t count;
-} search_t;
+};
 
-extern search_t search;
+extern struct search_t search;
 
 /*!
  * initialise

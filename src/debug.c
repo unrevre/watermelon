@@ -16,7 +16,7 @@
 
 transient_t* state = 0;
 
-void init_debug(debug_t* info) {
+void init_debug(struct debug_t* info) {
    info->buffer = calloc(256, sizeof(char));
    info->buffers = calloc(PLYLIMIT, sizeof(char*));
 
@@ -26,7 +26,7 @@ void init_debug(debug_t* info) {
    state = &trunk;
 }
 
-void free_debug(debug_t* info) {
+void free_debug(struct debug_t* info) {
    for (int64_t i = 0; i < PLYLIMIT; ++i)
       free(info->buffers[i]);
 
@@ -43,7 +43,7 @@ void impl_eval(char* buffer) {
    sprintf(buffer, "eval %i", eval(&trunk, red));
 }
 
-char* info_eval(debug_t* info) {
+char* info_eval(struct debug_t* info) {
    impl_eval(info->buffer);
 
    return info->buffer;
@@ -85,7 +85,7 @@ void impl_fen(char* buffer) {
    *b = '\0';
 }
 
-char* info_fen(debug_t* info) {
+char* info_fen(struct debug_t* info) {
    impl_fen(info->buffer);
 
    return info->buffer;
@@ -115,7 +115,7 @@ void impl_game_state(char* buffer) {
    *p = '\0';
 }
 
-char* info_game_state(debug_t* info) {
+char* info_game_state(struct debug_t* info) {
    impl_game_state(info->buffer);
 
    return info->buffer;
@@ -132,7 +132,7 @@ void impl_move(char* buffer, move_t move) {
            fen_char[move._.pfrom], fen_char[move._.pto]);
 }
 
-char* info_move(debug_t* info, move_t move) {
+char* info_move(struct debug_t* info, move_t move) {
    impl_move(info->buffer, move);
 
    return info->buffer;
@@ -148,7 +148,7 @@ void impl_transposition_table_entry(char* buffer, ttentry_t entry) {
    sprintf(buffer + move_length, " %5i (%x)", entry._.score, entry._.flags);
 }
 
-char* info_transposition_table_entry(debug_t* info, ttentry_t entry) {
+char* info_transposition_table_entry(struct debug_t* info, ttentry_t entry) {
    impl_transposition_table_entry(info->buffer, entry);
 
    return info->buffer;
@@ -186,7 +186,7 @@ void trace_principal_variation(char** buffer, int64_t depth) {
    }
 }
 
-char** info_principal_variation(debug_t* info) {
+char** info_principal_variation(struct debug_t* info) {
    trace_principal_variation(info->buffers, 0);
 
    return info->buffers;

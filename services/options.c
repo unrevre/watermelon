@@ -16,7 +16,7 @@ static void sink(int64_t start, int64_t end, char const* argv[]) {
 }
 
 int parse_opts(int64_t argc, char const* argv[], int64_t nopts,
-               option_t* opts) {
+               struct option_t* opts) {
    int positional = 1;
 
    for (int64_t i = 1; i < argc; ++i) {

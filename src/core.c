@@ -10,8 +10,8 @@
 
 #define MAX_THREADS  4
 
-search_t search;
-worker_t workers[MAX_THREADS];
+struct search_t search;
+struct worker_t workers[MAX_THREADS];
 
 void initialise(const char* fen) {
    init_hashes();
@@ -19,7 +19,7 @@ void initialise(const char* fen) {
    set_state(fen);
 
    memset(ttable, 0, HASHSIZE * sizeof(ttentry_t));
-   memset(ktable, 0, PLYLIMIT * sizeof(killer_t));
+   memset(ktable, 0, PLYLIMIT * sizeof(struct killer_t));
 
    search.status = 0;
    search.threads = 1;

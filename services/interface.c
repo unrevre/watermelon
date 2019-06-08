@@ -36,21 +36,21 @@ int wmprintw(WINDOW* w, char const* fmt, va_list args) {
  * @ wrapper for print functions
  */
 
-void wmprint(interface_t* itf, WINDOW* w, char const* fmt, ...) {
+void wmprint(struct interface_t* itf, WINDOW* w, char const* fmt, ...) {
    va_list args;
    va_start(args, fmt);
    itf->print(w, fmt, args);
    va_end(args);
 }
 
-void init_interface(interface_t* itf, uint64_t flags) {
+void init_interface(struct interface_t* itf, uint64_t flags) {
    itf->flags = flags;
    itf->print = flag(itf, ITF_CURSES) ? wmprintw : wmprintf;
    itf->x = 1;
    itf->y = 0;
    itf->index = 0;
 
-   itf->info = malloc(sizeof(debug_t));
+   itf->info = malloc(sizeof(struct debug_t));
    init_debug(itf->info);
 
    if (flag(itf, ITF_CURSES)) {
@@ -77,7 +77,7 @@ void init_interface(interface_t* itf, uint64_t flags) {
    }
 }
 
-void close_interface(interface_t* itf) {
+void close_interface(struct interface_t* itf) {
    wmprint_info(itf, " - exit -\n");
 
    if (flag(itf, ITF_CURSES)) {
@@ -90,7 +90,7 @@ void close_interface(interface_t* itf) {
    free(itf);
 }
 
-void refresh_interface(interface_t* itf) {
+void refresh_interface(struct interface_t* itf) {
    if (flag(itf, ITF_CURSES)) {
       wmove(itf->win_state, itf->y, itf->x);
       wnoutrefresh(itf->win_fen);
@@ -101,14 +101,14 @@ void refresh_interface(interface_t* itf) {
    }
 }
 
-void refresh_board(interface_t* itf) {
+void refresh_board(struct interface_t* itf) {
    if (flag(itf, ITF_CURSES)) {
       wmove(itf->win_state, itf->y, itf->x);
       wrefresh(itf->win_state);
    }
 }
 
-void refresh_state(interface_t* itf) {
+void refresh_state(struct interface_t* itf) {
    if (flag(itf, ITF_CURSES)) {
       wmove(itf->win_state, itf->y, itf->x);
       wnoutrefresh(itf->win_fen);
@@ -118,7 +118,7 @@ void refresh_state(interface_t* itf) {
    }
 }
 
-void wmprint_state(interface_t* itf) {
+void wmprint_state(struct interface_t* itf) {
    if (flag(itf, ITF_CURSES)) {
       wmove(itf->win_fen, 0, 0);
       wmove(itf->win_state, 0, 0);
@@ -130,7 +130,7 @@ void wmprint_state(interface_t* itf) {
    }
 }
 
-void wmprint_search(interface_t* itf, move_t move) {
+void wmprint_search(struct interface_t* itf, move_t move) {
    wmprint(itf, itf->win_info, "%s\n", info_move(itf->info, move));
    if (!flag(itf, ITF_QUIET)) {
       wmprint_info(itf, "\n");
@@ -142,7 +142,7 @@ void wmprint_search(interface_t* itf, move_t move) {
    fflush(stdout);
 }
 
-void wmprint_info(interface_t* itf, char const* fmt, ...) {
+void wmprint_info(struct interface_t* itf, char const* fmt, ...) {
    if (!flag(itf, ITF_QUIET)) {
       va_list args;
       va_start(args, fmt);
@@ -219,7 +219,7 @@ move_t move_for_indices(uint32_t from, uint32_t to) {
  * @ fetch board information
  */
 
-void fetch(interface_t* itf) {
+void fetch(struct interface_t* itf) {
    int32_t x; int32_t y;
    getyx(itf->win_state, y, x);
    int64_t index = index_for(x / 2, RANKS - 1 - y);
@@ -255,7 +255,7 @@ void fetch(interface_t* itf) {
 enum { cmds(list), ncmds };
 static char const* commands[ncmds] = { cmds(string) };
 
-int64_t event_loop(interface_t* itf) {
+int64_t event_loop(struct interface_t* itf) {
    for (;;) {
       if (flag(itf, ITF_CURSES)) {
          switch (getch()) {

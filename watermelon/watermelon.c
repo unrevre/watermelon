@@ -21,11 +21,11 @@ enum options {
    nopts
 };
 
-option_t* set_options(int64_t nopts);
-int watermelon(option_t* options, char const* fen);
+struct option_t* set_options(int64_t nopts);
+int watermelon(struct option_t* options, char const* fen);
 
 int main(int argc, char const* argv[]) {
-   option_t* options = set_options(nopts);
+   struct option_t* options = set_options(nopts);
    argc = parse_opts(argc, argv, nopts, options);
 
    switch (argc) {
@@ -39,7 +39,7 @@ int main(int argc, char const* argv[]) {
    }
 }
 
-int watermelon(option_t* options, char const* fen) {
+int watermelon(struct option_t* options, char const* fen) {
    int64_t afk = options[opt_afk].active;
    int64_t curses = options[opt_curses].active;
    int32_t depth = atoi(options[opt_depth].opt_str);
@@ -61,7 +61,7 @@ int watermelon(option_t* options, char const* fen) {
    set_limit(time);
    set_threads(threads);
 
-   interface_t* itf = malloc(sizeof(interface_t));
+   struct interface_t* itf = malloc(sizeof(struct interface_t));
    init_interface(itf, set(ITF_CURSES, curses) | set(ITF_QUIET, quiet));
 
    move_t move;
@@ -88,17 +88,17 @@ int watermelon(option_t* options, char const* fen) {
    return 0;
 }
 
-option_t* set_options(int64_t nopts) {
-   option_t* options = malloc(nopts * sizeof(option_t));
+struct option_t* set_options(int64_t nopts) {
+   struct option_t* options = malloc(nopts * sizeof(struct option_t));
 
-   options[opt_afk] = (option_t){ "a", "afk", 0, 0, 0 };
-   options[opt_curses] = (option_t){ "c", "curses", 0, 0, 0 };
-   options[opt_depth] = (option_t){ "d", "depth", "4", 0, 1 };
-   options[opt_once] = (option_t){ "1", "once", 0, 0, 0 };
-   options[opt_quiet] = (option_t) { "q", "quiet", 0, 0, 0 };
-   options[opt_side] = (option_t){ "s", "side", "none", 0, 1 };
-   options[opt_threads] = (option_t){ "j", "threads", "1", 0, 1 };
-   options[opt_time] = (option_t){ "t", "time", "144", 0, 1 };
+   options[opt_afk] = (struct option_t){ "a", "afk", 0, 0, 0 };
+   options[opt_curses] = (struct option_t){ "c", "curses", 0, 0, 0 };
+   options[opt_depth] = (struct option_t){ "d", "depth", "4", 0, 1 };
+   options[opt_once] = (struct option_t){ "1", "once", 0, 0, 0 };
+   options[opt_quiet] = (struct option_t) { "q", "quiet", 0, 0, 0 };
+   options[opt_side] = (struct option_t){ "s", "side", "none", 0, 1 };
+   options[opt_threads] = (struct option_t){ "j", "threads", "1", 0, 1 };
+   options[opt_time] = (struct option_t){ "t", "time", "144", 0, 1 };
 
    return options;
 }
