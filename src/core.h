@@ -65,7 +65,7 @@ void set_threads(int64_t threads);
  * @ main search function
  */
 
-void smp_search(int32_t depth);
+union move_t smp_search(int32_t depth);
 
 /*!
  * smp_depth

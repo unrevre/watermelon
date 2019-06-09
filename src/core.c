@@ -55,7 +55,7 @@ void* smp_worker(void* worker __attribute__((unused))) {
    return NULL;
 }
 
-void smp_search(int32_t depth) {
+union move_t smp_search(int32_t depth) {
    debug_counter_reset();
 
    search.status = 1;
@@ -87,6 +87,8 @@ void smp_search(int32_t depth) {
       pthread_join(workers[i].thread, NULL);
 
    pthread_mutex_destroy(&search.lock);
+
+   return move_for_state(&trunk);
 }
 
 int32_t smp_depth(void) {
