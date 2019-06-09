@@ -4,8 +4,40 @@
 #include "magics.h"
 #include "masks.h"
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+
+/*!
+ * add_piecewise
+ * @ add moves (for fixed piece)
+ */
+
+static void add_piecewise(struct transient_t* state, __uint128_t set,
+                          uint64_t from, struct move_array_t* moves) {
+   for (; set; set &= set - 1) {
+      uint64_t to = bsf(set);
+      union move_t move = { ._ = {
+         from, to, state->board[from], state->board[to] } };
+      moves->data[moves->count++] = move;
+   }
+}
+
+/*!
+ * add_shiftwise
+ * @ add moves (for fixed direction)
+ */
+
+static void add_shiftwise(struct transient_t* state, __uint128_t set,
+                          int64_t shift, struct move_array_t* moves) {
+   for (; set; set &= set - 1) {
+      uint64_t to = bsf(set);
+      uint64_t from = to - shift;
+      union move_t move = { ._ = {
+         from, to, state->board[from], state->board[to] } };
+      moves->data[moves->count++] = move;
+   }
+}
 
 struct move_array_t generate_pseudolegal(struct transient_t* state) {
    int64_t side = state->side;
@@ -303,27 +335,6 @@ struct move_array_t generate_captures(struct transient_t* state) {
    }
 
    return moves;
-}
-
-void add_piecewise(struct transient_t* state, __uint128_t set, uint64_t from,
-                   struct move_array_t* moves) {
-   for (; set; set &= set - 1) {
-      uint64_t to = bsf(set);
-      union move_t move = { ._ = {
-         from, to, state->board[from], state->board[to] } };
-      moves->data[moves->count++] = move;
-   }
-}
-
-void add_shiftwise(struct transient_t* state, __uint128_t set, int64_t shift,
-                   struct move_array_t* moves) {
-   for (; set; set &= set - 1) {
-      uint64_t to = bsf(set);
-      uint64_t from = to - shift;
-      union move_t move = { ._ = {
-         from, to, state->board[from], state->board[to] } };
-      moves->data[moves->count++] = move;
-   }
 }
 
 void sort_moves(struct move_array_t* moves) {

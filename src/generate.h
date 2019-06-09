@@ -3,8 +3,6 @@
 
 #include "structs.h"
 
-#include <stdint.h>
-
 /*!
  * generate_pseudolegal
  * @ generate all pseudolegal moves
@@ -19,22 +17,6 @@ struct move_array_t generate_pseudolegal(struct transient_t* state);
  */
 
 struct move_array_t generate_captures(struct transient_t* state);
-
-/*!
- * add_piecewise
- * @ add moves (for fixed piece)
- */
-
-void add_piecewise(struct transient_t* state, __uint128_t set, uint64_t from,
-                   struct move_array_t* moves);
-
-/*!
- * add_shiftwise
- * @ add moves (for fixed direction)
- */
-
-void add_shiftwise(struct transient_t* state, __uint128_t set, int64_t shift,
-                   struct move_array_t* moves);
 
 /*!
  * sort_moves
