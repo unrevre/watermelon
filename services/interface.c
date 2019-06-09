@@ -17,8 +17,8 @@
  * @ wrapper for printf, discarding extra argument
  */
 
-int wmprintf(WINDOW* w __attribute__((unused)),
-             char const* fmt, va_list args) {
+static int wmprintf(WINDOW* w __attribute__((unused)), char const* fmt,
+                    va_list args) {
    return vprintf(fmt, args);
 }
 
@@ -27,7 +27,7 @@ int wmprintf(WINDOW* w __attribute__((unused)),
  * @ wrapper for mvwprintw
  */
 
-int wmprintw(WINDOW* w, char const* fmt, va_list args) {
+static int wmprintw(WINDOW* w, char const* fmt, va_list args) {
    return vwprintw(w, fmt, args);
 }
 
@@ -36,7 +36,7 @@ int wmprintw(WINDOW* w, char const* fmt, va_list args) {
  * @ wrapper for print functions
  */
 
-void wmprint(struct interface_t* itf, WINDOW* w, char const* fmt, ...) {
+static void wmprint(struct interface_t* itf, WINDOW* w, char const* fmt, ...) {
    va_list args;
    va_start(args, fmt);
    itf->print(w, fmt, args);
@@ -48,7 +48,7 @@ void wmprint(struct interface_t* itf, WINDOW* w, char const* fmt, ...) {
  * @ helper function - print into info window
  */
 
-void wmprint_info(struct interface_t* itf, char const* fmt, ...) {
+static void wmprint_info(struct interface_t* itf, char const* fmt, ...) {
    if (!flag(itf, ITF_QUIET)) {
       va_list args;
       va_start(args, fmt);
@@ -104,7 +104,12 @@ void close_interface(struct interface_t* itf) {
    free(itf);
 }
 
-void refresh_board(struct interface_t* itf) {
+/*!
+ * refresh_board
+ * @ helper function to refresh board, cursor position
+ */
+
+static void refresh_board(struct interface_t* itf) {
    if (flag(itf, ITF_CURSES)) {
       wmove(itf->win_state, itf->y, itf->x);
       wrefresh(itf->win_state);
@@ -159,7 +164,7 @@ int64_t advance_if_legal(union move_t move) {
  * @ test if piece at index is on side to move
  */
 
-uint32_t is_index_movable(int64_t index) {
+static uint32_t is_index_movable(int64_t index) {
    return (trunk.board[index] != empty
       && s(trunk.board[index]) == trunk.side);
 }
@@ -169,7 +174,7 @@ uint32_t is_index_movable(int64_t index) {
  * @ return move if indices constitute a valid move
  */
 
-union move_t move_for_indices(uint32_t from, uint32_t to) {
+static union move_t move_for_indices(uint32_t from, uint32_t to) {
    if (is_index_movable(to)) { return (union move_t){0}; }
 
    int64_t side = trunk.side;
@@ -217,7 +222,7 @@ union move_t move_for_indices(uint32_t from, uint32_t to) {
  * @ fetch board information
  */
 
-void fetch(struct interface_t* itf) {
+static void fetch(struct interface_t* itf) {
    int32_t x; int32_t y;
    getyx(itf->win_state, y, x);
    int64_t index = index_for(x / 2, RANKS - 1 - y);

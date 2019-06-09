@@ -14,7 +14,7 @@
 #define move_length 14
 #define entry_length 28
 
-struct transient_t* state = 0;
+static struct transient_t* state = 0;
 
 void init_debug(struct debug_t* info) {
    info->buffer = calloc(256, sizeof(char));
@@ -39,7 +39,7 @@ void free_debug(struct debug_t* info) {
  * @ internal implementation for 'info_eval'
  */
 
-void impl_eval(char* buffer) {
+static void impl_eval(char* buffer) {
    sprintf(buffer, "eval %i", eval(&trunk, red));
 }
 
@@ -54,7 +54,7 @@ char* info_eval(struct debug_t* info) {
  * @ internal implementation for 'info_fen'
  */
 
-void impl_fen(char* buffer) {
+static void impl_fen(char* buffer) {
    char* p = buffer;
    int64_t a = index_for(0, HEIGHT - 1);
    for (int64_t i = 0; i != RANKS; ++i) {
@@ -96,7 +96,7 @@ char* info_fen(struct debug_t* info) {
  * @ internal implementation for 'info_game_state'
  */
 
-void impl_game_state(char* buffer) {
+static void impl_game_state(char* buffer) {
    char* p = buffer;
    int64_t a = index_for(0, HEIGHT - 1);
    for (int64_t i = 0; i != RANKS; ++i) {
@@ -126,7 +126,7 @@ char* info_game_state(struct debug_t* info) {
  * @ internal implementation for 'info_move'
  */
 
-void impl_move(char* buffer, union move_t move) {
+static void impl_move(char* buffer, union move_t move) {
    sprintf(buffer, "move %2i %2i %c/%c",
            to_external(move._.from), to_external(move._.to),
            fen_char[move._.pfrom], fen_char[move._.pto]);
@@ -143,7 +143,8 @@ char* info_move(struct debug_t* info, union move_t move) {
  * @ internal implementation for 'info_transposition_table_entry'
  */
 
-void impl_transposition_table_entry(char* buffer, union ttentry_t entry) {
+static void impl_transposition_table_entry(char* buffer,
+                                           union ttentry_t entry) {
    impl_move(buffer, entry._.move);
    sprintf(buffer + move_length, " %5i (%x)", entry._.score, entry._.flags);
 }
@@ -160,7 +161,7 @@ char* info_transposition_table_entry(struct debug_t* info,
  * @ recursively trace principal variation line
  */
 
-void trace_principal_variation(char** buffer, int64_t depth) {
+static void trace_principal_variation(char** buffer, int64_t depth) {
    **buffer = '\0';
    union ttentry_t entry = entry_for_state(state);
 

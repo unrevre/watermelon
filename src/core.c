@@ -11,7 +11,7 @@
 #define MAX_THREADS  4
 
 struct search_t search;
-struct worker_t workers[MAX_THREADS];
+static struct worker_t workers[MAX_THREADS];
 
 void initialise(const char* fen) {
    init_hashes();

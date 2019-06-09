@@ -8,8 +8,8 @@
 const char fen_side[2] = { 'r', 'b' };
 const char fen_char[15] = "KkRrNnCcAaBbPp ";
 
-const char* fen_default = "rnbakabnr/9/1c5c1/p1p1p1p1p/9/"
-                          "9/P1P1P1P1P/1C5C1/9/RNBAKABNR r";
+static const char* fen_default = "rnbakabnr/9/1c5c1/p1p1p1p1p/9/"
+                                 "9/P1P1P1P1P/1C5C1/9/RNBAKABNR r";
 
 void reset_fen(const char* fen_str) {
    char schar;

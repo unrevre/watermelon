@@ -21,7 +21,7 @@ union ttentry_t ttable[HASHSIZE] __attribute__((aligned(64)));
  * @ helper function to check hash signatures
  */
 
-static inline int64_t matching(union ttentry_t* entry, uint32_t hash) {
+static int64_t matching(union ttentry_t* entry, uint32_t hash) {
    return (entry->_.hash ^ entry->_.move.bits >> HASHBITS) == hash >> HASHBITS;
 }
 
