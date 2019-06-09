@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-uint32_t PSHASH[PIECES][BITS] __attribute__((aligned(64)));
-uint32_t STHASH;
-uint32_t MVHASH;
+static uint32_t PSHASH[PIECES][BITS] __attribute__((aligned(64)));
+static uint32_t STHASH;
+static uint32_t MVHASH;
 
 struct transient_t trunk;
 
@@ -32,7 +32,7 @@ void init_hashes(void) {
  * @ reset zobrist hash
  */
 
-void reset_hashes(void) {
+static void reset_hashes(void) {
    for (int64_t i = 0; i != POINTS; ++i)
       if (trunk.board[i] != empty)
          trunk.hash ^= PSHASH[trunk.board[i]][i];
@@ -54,7 +54,7 @@ void set_state(const char* fen) {
  * @ advance move (update state variables)
  */
 
-void advance_state(union move_t move, struct transient_t* state) {
+static void advance_state(union move_t move, struct transient_t* state) {
    ++state->ply;
    state->side = !state->side;
 
@@ -69,7 +69,7 @@ void advance_state(union move_t move, struct transient_t* state) {
  * @ retract move (update state variables)
  */
 
-void retract_state(union move_t move, struct transient_t* state) {
+static void retract_state(union move_t move, struct transient_t* state) {
    --state->ply;
    state->side = !state->side;
 

@@ -6,9 +6,6 @@
 
 #include <stdint.h>
 
-extern uint32_t PSHASH[PIECES][BITS];
-extern uint32_t MVHASH;
-
 extern struct transient_t trunk;
 
 extern union move_t history[STEPLIMIT];
