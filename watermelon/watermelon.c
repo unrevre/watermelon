@@ -1,9 +1,7 @@
 #include "core.h"
 #include "debug.h"
 #include "interface.h"
-#include "memory.h"
 #include "options.h"
-#include "state.h"
 
 #include <inttypes.h>
 #include <stdlib.h>
@@ -15,7 +13,6 @@ enum options {
    opt_depth,
    opt_once,
    opt_quiet,
-   opt_side,
    opt_threads,
    opt_time,
    nopts
@@ -45,15 +42,8 @@ int watermelon(struct option_t* options, char const* fen) {
    int32_t depth = atoi(options[opt_depth].opt_str);
    int64_t once = options[opt_once].active;
    int64_t quiet = options[opt_quiet].active;
-   char const* side = options[opt_side].opt_str;
    int64_t threads = atoi(options[opt_threads].opt_str);
    double time = atof(options[opt_time].opt_str);
-
-   int64_t idle[2] = {0, 0};
-   if (afk || once) { idle[0] = 1; idle[1] = 1; }
-   char const* sides[2] = { "red", "black" };
-   if (!strcmp(side, sides[0])) { idle[0] = 1; }
-   if (!strcmp(side, sides[1])) { idle[1] = 1; }
 
    free(options);
 
@@ -69,11 +59,9 @@ int watermelon(struct option_t* options, char const* fen) {
    do {
       refresh_state(itf);
 
-      if (!idle[trunk.side] && !event_loop(itf)) { break; }
+      if (!once && !afk && !event_loop(itf)) { break; }
 
-      smp_search(depth);
-
-      move = move_for_state(&trunk);
+      move = smp_search(depth);
       refresh_search(itf, move);
    } while (!once && advance_if_legal(move));
 
@@ -95,7 +83,6 @@ struct option_t* set_options(int64_t nopts) {
    options[opt_depth] = (struct option_t){ "d", "depth", "4", 0, 1 };
    options[opt_once] = (struct option_t){ "1", "once", 0, 0, 0 };
    options[opt_quiet] = (struct option_t) { "q", "quiet", 0, 0, 0 };
-   options[opt_side] = (struct option_t){ "s", "side", "none", 0, 1 };
    options[opt_threads] = (struct option_t){ "j", "threads", "1", 0, 1 };
    options[opt_time] = (struct option_t){ "t", "time", "144", 0, 1 };
 

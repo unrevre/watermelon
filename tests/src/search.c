@@ -1,7 +1,5 @@
 #include "core.h"
 #include "debug.h"
-#include "memory.h"
-#include "state.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,8 +16,8 @@ int main(int argc, char* argv[]) {
    init_debug(info);
 
    printf("%s\n", info_fen(info));
-   smp_search(atoi(argv[1]));
-   printf("%s\n\n", info_move(info, move_for_state(&trunk)));
+   union move_t move = smp_search(atoi(argv[1]));
+   printf("%s\n\n", info_move(info, move));
 
    for (char** pv = info_principal_variation(info); **pv; ++pv)
       printf("%s", *pv);
