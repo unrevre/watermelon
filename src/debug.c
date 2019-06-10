@@ -2,14 +2,13 @@
 
 #include "eval.h"
 #include "fen.h"
-#include "magics.h"
 #include "memory.h"
 #include "position.h"
 #include "state.h"
 
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 
 #define move_length 14
 #define entry_length 28
@@ -17,21 +16,12 @@
 static struct transient_t* state = 0;
 
 void init_debug(struct debug_t* info) {
-   info->buffer = calloc(256, sizeof(char));
-   info->buffers = calloc(PLYLIMIT, sizeof(char*));
+   memset(info, 0, sizeof(struct debug_t));
 
-   for (int64_t i = 0; i < PLYLIMIT; ++i)
-      info->buffers[i] = calloc(entry_length, sizeof(char));
+   for (int64_t i = 0; i != PLYLIMIT; ++i)
+      info->buffers[i] = info->raw[i];
 
    state = &trunk;
-}
-
-void free_debug(struct debug_t* info) {
-   for (int64_t i = 0; i < PLYLIMIT; ++i)
-      free(info->buffers[i]);
-
-   free(info->buffer);
-   free(info->buffers);
 }
 
 /*!

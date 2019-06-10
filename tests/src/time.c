@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
    printf("cpu: %fs\n", (float)cpu / CLOCKS_PER_SEC);
 
    free(state);
-   free_debug(info);
+   free(info);
 
    terminate();
 

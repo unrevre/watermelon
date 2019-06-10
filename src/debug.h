@@ -1,6 +1,7 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#include "magics.h"
 #include "structs.h"
 
 /*!
@@ -9,8 +10,10 @@
  */
 
 struct debug_t {
-   char* buffer;
-   char** buffers;
+   char buffer[256];
+   char* buffers[PLYLIMIT];
+
+   char raw[PLYLIMIT][32];
 };
 
 /*!
@@ -19,13 +22,6 @@ struct debug_t {
  */
 
 void init_debug(struct debug_t* info);
-
-/*!
- * free_debug
- * @ free allocated memory
- */
-
-void free_debug(struct debug_t* info);
 
 /*!
  * info_eval
