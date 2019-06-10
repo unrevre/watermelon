@@ -3,6 +3,7 @@
 #include "magics.h"
 #include "state.h"
 
+#include <stdint.h>
 #include <stdio.h>
 
 const char fen_side[2] = { 'r', 'b' };
@@ -55,12 +56,4 @@ void reset_fen(const char* fen_str) {
    }
 
    trunk.pieces[empty] = ~(trunk.occupancy[0] | trunk.occupancy[1]);
-}
-
-int64_t side_from(char const* fen_str) {
-   if (!fen_str) { fen_str = fen_default; }
-
-   char schar;
-   sscanf(fen_str, "%*s %c", &schar);
-   return schar == 'b' ? black : red;
 }
