@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
       printf("%s", *pv);
    printf("\n");
 
-   free_debug(info);
+   free(info);
 
    terminate();
 

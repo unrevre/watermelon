@@ -100,7 +100,7 @@ void close_interface(struct interface_t* itf) {
       endwin();
    }
 
-   free_debug(itf->info);
+   free(itf->info);
    free(itf);
 }
 
