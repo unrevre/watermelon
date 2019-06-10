@@ -1,6 +1,5 @@
 #include "core.h"
 #include "debug.h"
-#include "memory.h"
 #include "search.h"
 #include "state.h"
 
@@ -30,17 +29,12 @@ int main(int argc, char* argv[]) {
 
    struct transient_t* state = malloc(sizeof(struct transient_t));
    memcpy(state, &trunk, sizeof(struct transient_t));
-   state->ply = 0;
 
    clock_t cpu = clock();
    iter_dfs(state);
    cpu = clock() - cpu;
 
-   printf("cpu: %fs\n\n", (float)cpu / CLOCKS_PER_SEC);
-   printf("%s\n\n", info_move(info, move_for_state(&trunk)));
-   for (char** pv = info_principal_variation(info); **pv; ++pv)
-      printf("%s", *pv);
-   printf("\n");
+   printf("cpu: %fs\n", (float)cpu / CLOCKS_PER_SEC);
 
    free(state);
    free_debug(info);
