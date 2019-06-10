@@ -1,4 +1,3 @@
-#include "fen.h"
 #include "magics.h"
 #include "utilities.h"
 
@@ -14,6 +13,8 @@
 pid_t childpid[2] = {0};
 int fd[2][2] = {{0, 1}};
 
+char const sides[2] = "rb";
+
 void vet(char* token, char const* tag);
 void taste(int64_t side, char* buffer);
 void serve(char* args[], int64_t side);
@@ -24,9 +25,11 @@ int main(int argc, char* argv[]) {
       return 1;
    }
 
+   char* tokens[8];
+
    char* fen = (argc == 3) ? 0 : argv[3];
-   serve(append(slice(malloc(8 * sizeof(char*)), argv[1]), fen), red);
-   serve(append(slice(malloc(8 * sizeof(char*)), argv[2]), fen), black);
+   serve(append(slice(tokens, argv[1]), fen), red);
+   serve(append(slice(tokens, argv[2]), fen), black);
 
    printf("served!\n");
    printf("  pids: %i, %i\n\n", childpid[0], childpid[1]);
@@ -34,23 +37,21 @@ int main(int argc, char* argv[]) {
    char buffer[256];
    sprintf(buffer, "\n");
 
-   int64_t side = side_from(argv[3]);
+   int64_t side = red;
    for (int64_t i = 0; i < STEPLIMIT; ++i, side = o(side)) {
       taste(side, buffer);
 
-      char** tokens = slice(malloc(8 * sizeof(char*)), buffer);
+      slice(tokens, buffer);
       vet(tokens[0], "move");
 
       sprintf(buffer, "move %s %s\n", tokens[1] , tokens[2]);
-      free(tokens);
-
-      printf("[%c] %s", fen_side[side], buffer);
+      printf("[%c] %s", sides[side], buffer);
    }
 
    sprintf(buffer, "eval\n");
    taste(red, buffer);
 
-   char** tokens = slice(malloc(8 * sizeof(char*)), buffer);
+   slice(tokens, buffer);
    vet(tokens[0], "eval");
 
    int64_t adv = atoi(tokens[1]);
@@ -86,7 +87,7 @@ void taste(int64_t side, char* buffer) {
 
    int32_t status;
    if (waitpid(-1, &status, WNOHANG)) {
-      printf("%c loss\n", fen_side[side]);
+      printf("%c loss\n", sides[side]);
       exit(0);
    }
 }
@@ -115,6 +116,4 @@ void serve(char* args[], int64_t side) {
       fd[side][0] = r_pipe[0];
       fd[side][1] = w_pipe[1];
    }
-
-   free(args);
 }
