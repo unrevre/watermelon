@@ -8,7 +8,6 @@
 
 extern struct transient_t trunk;
 
-extern union move_t history[STEPLIMIT];
 extern uint32_t htable[STEPLIMIT];
 
 /*!
@@ -66,26 +65,5 @@ void advance_game(union move_t move);
  */
 
 void retract_game(union move_t move);
-
-/*!
- * advance_history
- * @ advance move history records
- */
-
-void advance_history(union move_t move);
-
-/*!
- * undo_history
- * @ undo last move
- */
-
-void undo_history(void);
-
-/*!
- * redo_history
- * @ redo last undone move
- */
-
-void redo_history(void);
 
 #endif /* STATE_H */
