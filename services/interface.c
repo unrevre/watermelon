@@ -12,6 +12,8 @@
 
 #define flag(itf, flag) (itf->flags & (flag))
 
+static union move_t history[STEPLIMIT];
+
 /*!
  * wmprintf
  * @ wrapper for printf, discarding extra argument
@@ -66,6 +68,8 @@ void init_interface(struct interface_t* itf, uint64_t flags) {
 
    itf->info = malloc(sizeof(struct debug_t));
    init_debug(itf->info);
+
+   memset(history, 0, STEPLIMIT * sizeof(union move_t));
 
    if (flag(itf, ITF_CURSES)) {
       initscr();
@@ -151,6 +155,42 @@ void refresh_search(struct interface_t* itf, union move_t move) {
    if (flag(itf, ITF_CURSES)) {
       wmove(itf->win_state, itf->y, itf->x);
       wrefresh(itf->win_info);
+   }
+}
+
+/*!
+ * advance_history
+ * @ advance move history records
+ */
+
+static void advance_history(union move_t move) {
+   int32_t step = trunk.ply;
+   union move_t future = history[step];
+   if (future.bits && move.bits != future.bits)
+      while (history[++step].bits)
+         history[step] = (union move_t){0};
+
+   history[trunk.ply] = move;
+}
+
+/*!
+ * undo_history
+ * @ undo last move
+ */
+
+static void undo_history(void) {
+   if (trunk.ply) { retract_game(history[trunk.ply - 1]); }
+}
+
+/*!
+ * redo_history
+ * @ redo last undone move
+ */
+
+static void redo_history(void) {
+   if (history[trunk.ply].bits) {
+      advance_history(history[trunk.ply]);
+      advance_game(history[trunk.ply]);
    }
 }
 
