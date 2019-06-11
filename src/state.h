@@ -8,8 +8,6 @@
 
 extern struct transient_t trunk;
 
-extern uint32_t htable[STEPLIMIT];
-
 /*!
  * init_hashes
  * @ initialise zobrist hashes
