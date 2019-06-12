@@ -7,7 +7,6 @@
 #include <string.h>
 
 static uint32_t PSHASH[PIECES][BITS] __attribute__((aligned(64)));
-static uint32_t STHASH;
 static uint32_t MVHASH;
 
 struct transient_t trunk;
@@ -21,7 +20,6 @@ void init_hashes(void) {
    for (int64_t i = 0; i != POINTS; ++i)
       PSHASH[empty][i] = 0x0;
 
-   STHASH = rand();
    MVHASH = rand();
 }
 
@@ -31,11 +29,11 @@ void init_hashes(void) {
  */
 
 static void reset_hashes(void) {
+   trunk.hash = rand();
    for (int64_t i = 0; i != POINTS; ++i)
       if (trunk.board[i] != empty)
          trunk.hash ^= PSHASH[trunk.board[i]][i];
 
-   trunk.hash ^= STHASH;
    trunk.hashes[0] = trunk.hash;
 }
 
