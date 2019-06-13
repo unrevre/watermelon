@@ -40,25 +40,11 @@ extern struct search_t search;
 void initialise(const char* fen);
 
 /*!
- * terminate
- * @ destroy global state variables
+ * settings
+ * @ search settings (move time limit, number of threads)
  */
 
-void terminate(void);
-
-/*!
- * set_limit
- * @ set move time limit
- */
-
-void set_limit(double limit);
-
-/*!
- * set_threads
- * @ set number of threads
- */
-
-void set_threads(int64_t threads);
+void settings(double limit, int64_t threads);
 
 /*!
  * smp_search

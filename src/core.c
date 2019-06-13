@@ -26,15 +26,8 @@ void initialise(const char* fen) {
    search.limit = -1.;
 }
 
-void terminate(void) {
-   ;
-}
-
-void set_limit(double limit) {
+void settings(double limit, int64_t threads) {
    search.limit = limit;
-}
-
-void set_threads(int64_t threads) {
    search.threads = threads < MAX_THREADS ? threads : MAX_THREADS;
 }
 
