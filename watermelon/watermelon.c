@@ -48,8 +48,7 @@ int watermelon(struct option_t* options, char const* fen) {
    free(options);
 
    initialise(fen);
-   set_limit(time);
-   set_threads(threads);
+   settings(time, threads);
 
    struct interface_t* itf = malloc(sizeof(struct interface_t));
    init_interface(itf, set(ITF_CURSES, curses) | set(ITF_QUIET, quiet));
@@ -66,7 +65,6 @@ int watermelon(struct option_t* options, char const* fen) {
    } while (!once && advance_if_legal(move));
 
    close_interface(itf);
-   terminate();
 
    debug_printf("alpha-beta nodes | quiescence nodes |  hash table hits |\n");
    debug_printf("%16"PRIu64" | %16"PRIu64" | %16"PRIu64" |\n\n",

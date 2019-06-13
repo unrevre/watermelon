@@ -20,7 +20,5 @@ int main(int argc, char* argv[]) {
       printf(" %"PRIi64, perft(i));
    printf("\n");
 
-   terminate();
-
    return 0;
 }
