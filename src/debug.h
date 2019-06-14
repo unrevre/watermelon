@@ -24,13 +24,6 @@ struct debug_t {
 void init_debug(struct debug_t* info);
 
 /*!
- * info_eval
- * @ return internal evaluation of current game state
- */
-
-char* info_eval(struct debug_t* info);
-
-/*!
  * info_fen
  * @ return fen string of current game state
  */

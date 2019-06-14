@@ -287,8 +287,8 @@ static void fetch(struct interface_t* itf) {
 }
 
 #define cmds(macro)                       \
-   macro(eval), macro(move), macro(next), \
-   macro(quit), macro(redo), macro(undo)
+   macro(move), macro(next), macro(quit), \
+   macro(redo), macro(undo)
 
 #define list(command)   cmd_##command
 #define string(command) #command
@@ -300,10 +300,6 @@ int64_t event_loop(struct interface_t* itf) {
    for (;;) {
       if (flag(itf, ITF_CURSES)) {
          switch (getch()) {
-            case 'e':
-               wmprint_info(itf, "%s\n\n", info_eval(itf->info));
-               wrefresh(itf->win_info);
-               break;
             case 'f':
                fetch(itf);
                break;
@@ -353,9 +349,6 @@ int64_t event_loop(struct interface_t* itf) {
                break; } }
 
          switch (cmd) {
-            case cmd_eval:
-               wmprint(itf, itf->win_info, "%s\n\n", info_eval(itf->info));
-               break;
             case cmd_move:
                if (tokens[1] && tokens[2]) {
                   union move_t move = move_for_indices(
