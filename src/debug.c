@@ -1,6 +1,5 @@
 #include "debug.h"
 
-#include "eval.h"
 #include "fen.h"
 #include "memory.h"
 #include "position.h"
@@ -22,21 +21,6 @@ void init_debug(struct debug_t* info) {
       info->buffers[i] = info->raw[i];
 
    state = &trunk;
-}
-
-/*!
- * impl_eval
- * @ internal implementation for 'info_eval'
- */
-
-static void impl_eval(char* buffer) {
-   sprintf(buffer, "eval %i", eval(&trunk, red));
-}
-
-char* info_eval(struct debug_t* info) {
-   impl_eval(info->buffer);
-
-   return info->buffer;
 }
 
 /*!
