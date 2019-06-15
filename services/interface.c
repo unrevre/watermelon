@@ -114,10 +114,8 @@ void close_interface(struct interface_t* itf) {
  */
 
 static void refresh_board(struct interface_t* itf) {
-   if (flag(itf, ITF_CURSES)) {
-      wmove(itf->win_state, itf->y, itf->x);
-      wrefresh(itf->win_state);
-   }
+   wmove(itf->win_state, itf->y, itf->x);
+   wrefresh(itf->win_state);
 }
 
 void refresh_state(struct interface_t* itf) {
@@ -141,21 +139,16 @@ void refresh_state(struct interface_t* itf) {
 }
 
 void refresh_search(struct interface_t* itf, union move_t move) {
-   wmprint(itf, itf->win_info, "%s\n", info_move(itf->info, move));
+   wmprint(itf, itf->win_info, "%s\n\n", info_move(itf->info, move));
 
-   if (!flag(itf, ITF_QUIET)) {
-      wmprint_info(itf, "\n");
-      for (char** pv = info_principal_variation(itf->info); **pv; ++pv)
-         wmprint_info(itf, "%s", *pv);
-      wmprint_info(itf, "\n");
-   }
+   for (char** pv = info_principal_variation(itf->info); **pv; ++pv)
+      wmprint_info(itf, "%s", *pv);
+   wmprint_info(itf, "\n");
+
+   if (flag(itf, ITF_CURSES))
+      wrefresh(itf->win_info);
 
    fflush(stdout);
-
-   if (flag(itf, ITF_CURSES)) {
-      wmove(itf->win_state, itf->y, itf->x);
-      wrefresh(itf->win_info);
-   }
 }
 
 /*!
