@@ -45,20 +45,6 @@ static void wmprint(struct interface_t* itf, WINDOW* w, char const* fmt, ...) {
    va_end(args);
 }
 
-/*!
- * wmprint_info
- * @ helper function - print into info window
- */
-
-static void wmprint_info(struct interface_t* itf, char const* fmt, ...) {
-   if (!flag(itf, ITF_QUIET)) {
-      va_list args;
-      va_start(args, fmt);
-      itf->print(itf->win_info, fmt, args);
-      va_end(args);
-   }
-}
-
 void init_interface(struct interface_t* itf, uint64_t flags) {
    itf->flags = flags;
    itf->print = flag(itf, ITF_CURSES) ? wmprintw : wmprintf;
@@ -96,7 +82,7 @@ void init_interface(struct interface_t* itf, uint64_t flags) {
 }
 
 void close_interface(struct interface_t* itf) {
-   wmprint_info(itf, " - exit -\n");
+   wmprint(itf, itf->win_info, "exit\n");
 
    if (flag(itf, ITF_CURSES)) {
       wrefresh(itf->win_info);
@@ -141,9 +127,11 @@ void refresh_state(struct interface_t* itf) {
 void refresh_search(struct interface_t* itf, union move_t move) {
    wmprint(itf, itf->win_info, "%s\n\n", info_move(itf->info, move));
 
-   for (char** pv = info_principal_variation(itf->info); **pv; ++pv)
-      wmprint_info(itf, "%s", *pv);
-   wmprint_info(itf, "\n");
+   if (!flag(itf, ITF_QUIET)) {
+      for (char** pv = info_principal_variation(itf->info); **pv; ++pv)
+         wmprint(itf, itf->win_info, "%s", *pv);
+      wmprint(itf, itf->win_info, "\n");
+   }
 
    if (flag(itf, ITF_CURSES))
       wrefresh(itf->win_info);
@@ -350,7 +338,7 @@ int64_t event_loop(struct interface_t* itf) {
                   if (move.bits && advance_if_legal(move)) {
                      refresh_state(itf);
                   } else {
-                     wmprint_info(itf, " - invalid move -\n");
+                     wmprint(itf, itf->win_info,  "invalid move\n");
                   }
                }
                break;
@@ -367,7 +355,7 @@ int64_t event_loop(struct interface_t* itf) {
                refresh_state(itf);
                break;
             default:
-               wmprint_info(itf, " - unknown command: %s\n", tokens[0]);
+               wmprint(itf, itf->win_info, "unknown command\n");
                break;
          }
       }
