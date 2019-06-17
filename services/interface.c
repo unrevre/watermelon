@@ -324,6 +324,8 @@ int64_t event_loop(struct interface_t* itf) {
          char* buffer = fgets(itf->info->buffer, 128, stdin);
          char** tokens = slice(itf->info->buffers, buffer);
 
+         if (!tokens[0]) { continue; }
+
          int64_t cmd;
          for (cmd = 0; cmd < ncmds; ++cmd) {
             if (!strcmp(tokens[0], commands[cmd])) {
