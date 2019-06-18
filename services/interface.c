@@ -246,7 +246,7 @@ static union move_t move_for_indices(uint32_t from, uint32_t to) {
 static void fetch(struct interface_t* itf) {
    int32_t x; int32_t y;
    getyx(itf->win_state, y, x);
-   int64_t index = index_for(x / 2, RANKS - 1 - y);
+   int64_t index = index_for(x / 2, 9 - y);
 
    if (itf->index == 0) {
       if (is_index_movable(index)) {
