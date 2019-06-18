@@ -248,22 +248,18 @@ static void fetch(struct interface_t* itf) {
    getyx(itf->win_state, y, x);
    int64_t index = index_for(x / 2, 9 - y);
 
-   if (itf->index == 0) {
-      if (is_index_movable(index)) {
-         wchgat(itf->win_state, 1, A_BOLD, 0, NULL);
-         wrefresh(itf->win_state);
-         itf->index = index;
-      }
-   } else if (itf->index == index) {
-      wchgat(itf->win_state, 1, A_NORMAL, 0, NULL);
+   if (itf->index == 0 && is_index_movable(index)) {
+      wchgat(itf->win_state, 1, A_BOLD, 0, NULL);
       wrefresh(itf->win_state);
-      itf->index = 0;
+      itf->index = index;
    } else {
-      union move_t move = move_for_indices(itf->index, index);
-      if (move.bits && advance_if_legal(move)) {
-         refresh_state(itf);
-         itf->index = 0;
+      if (itf->index != index) {
+         union move_t move = move_for_indices(itf->index, index);
+         if (!move.bits || !advance_if_legal(move)) { return; }
       }
+
+      refresh_state(itf);
+      itf->index = 0;
    }
 }
 
