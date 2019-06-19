@@ -31,8 +31,6 @@ struct interface_t {
    WINDOW* win_state;
    WINDOW* win_info;
    WINDOW* win_fen;
-   WINDOW* border_state;
-   WINDOW* border_info;
 };
 
 /*!

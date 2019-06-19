@@ -63,19 +63,20 @@ void init_interface(struct interface_t* itf, uint64_t flags) {
       noecho();
 
       itf->win_fen = newwin(1, 79, 0, 0);
-      itf->border_info = newwin(20, 48, 17, 1);
       itf->win_info = newwin(18, 44, 18, 3);
-      itf->border_state = newwin(14, 23, 2, 1);
       itf->win_state = newwin(10, 20, 4, 3);
 
       scrollok(itf->win_info, TRUE);
-      box(itf->border_state, 0, 0);
-      box(itf->border_info, 0, 0);
+
+      WINDOW* border_info = newwin(20, 48, 17, 1);
+      WINDOW* border_state = newwin(14, 23, 2, 1);
+
+      box(border_state, 0, 0);
+      box(border_info, 0, 0);
 
       wnoutrefresh(stdscr);
-      wnoutrefresh(itf->win_fen);
-      wnoutrefresh(itf->border_info);
-      wnoutrefresh(itf->border_state);
+      wnoutrefresh(border_info);
+      wnoutrefresh(border_state);
 
       doupdate();
    }
