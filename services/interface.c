@@ -79,6 +79,9 @@ void init_interface(struct interface_t* itf, uint64_t flags) {
       wnoutrefresh(border_state);
 
       doupdate();
+
+      delwin(border_info);
+      delwin(border_state);
    }
 }
 
@@ -87,6 +90,11 @@ void close_interface(struct interface_t* itf) {
 
    if (flag(itf, ITF_CURSES)) {
       wrefresh(itf->win_info);
+
+      delwin(itf->win_fen);
+      delwin(itf->win_info);
+      delwin(itf->win_state);
+
       getch();
       endwin();
    }
