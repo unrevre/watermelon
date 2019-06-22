@@ -51,16 +51,16 @@ int watermelon(struct option_t* options, char const* fen) {
    struct interface_t* itf = malloc(sizeof(struct interface_t));
    init_interface(itf, set(ITF_CURSES, curses) | set(ITF_QUIET, quiet));
 
-   union move_t move;
-
    do {
       refresh_state(itf);
 
       if (!once && !event_loop(itf)) { break; }
 
-      move = smp_search(depth);
+      union move_t move = smp_search(depth);
+      if (!advance_if_legal(move)) { break; }
+
       refresh_search(itf, move);
-   } while (!once && advance_if_legal(move));
+   } while (!once);
 
    close_interface(itf);
 
