@@ -8,7 +8,6 @@
 #include <string.h>
 
 enum options {
-   opt_afk,
    opt_curses,
    opt_depth,
    opt_once,
@@ -37,7 +36,6 @@ int main(int argc, char const* argv[]) {
 }
 
 int watermelon(struct option_t* options, char const* fen) {
-   int64_t afk = options[opt_afk].active;
    int64_t curses = options[opt_curses].active;
    int32_t depth = atoi(options[opt_depth].opt_str);
    int64_t once = options[opt_once].active;
@@ -58,7 +56,7 @@ int watermelon(struct option_t* options, char const* fen) {
    do {
       refresh_state(itf);
 
-      if (!once && !afk && !event_loop(itf)) { break; }
+      if (!once && !event_loop(itf)) { break; }
 
       move = smp_search(depth);
       refresh_search(itf, move);
@@ -76,7 +74,6 @@ int watermelon(struct option_t* options, char const* fen) {
 struct option_t* set_options(int64_t nopts) {
    struct option_t* options = malloc(nopts * sizeof(struct option_t));
 
-   options[opt_afk] = (struct option_t){ "a", "afk", 0, 0, 0 };
    options[opt_curses] = (struct option_t){ "c", "curses", 0, 0, 0 };
    options[opt_depth] = (struct option_t){ "d", "depth", "4", 0, 1 };
    options[opt_once] = (struct option_t){ "1", "once", 0, 0, 0 };
