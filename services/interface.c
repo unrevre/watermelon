@@ -86,9 +86,8 @@ void init_interface(struct interface_t* itf, uint64_t flags) {
 }
 
 void close_interface(struct interface_t* itf) {
-   wmprint(itf, itf->win_info, "exit\n");
-
    if (flag(itf, ITF_CURSES)) {
+      waddnstr(itf->win_info, "exit\n", 5);
       wrefresh(itf->win_info);
 
       delwin(itf->win_fen);
