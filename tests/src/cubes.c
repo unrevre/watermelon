@@ -83,8 +83,6 @@ void taste(int64_t side, char* buffer) {
    int32_t nbytes = read(fd[side][0], buffer, 256);
    buffer[nbytes] = '\0';
 
-   sleep(1);
-
    int32_t status;
    if (waitpid(-1, &status, WNOHANG)) {
       printf("%c loss\n", sides[side]);
