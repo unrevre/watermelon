@@ -25,7 +25,8 @@ int main(int argc, char* argv[]) {
    struct debug_t* info = malloc(sizeof(struct debug_t));
    init_debug(info);
 
-   printf("%s\n", info_fen(info));
+   info_fen(info->buffer);
+   printf("%s\n", info->buffer);
 
    struct transient_t* state = malloc(sizeof(struct transient_t));
    memcpy(state, &trunk, sizeof(struct transient_t));

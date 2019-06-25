@@ -15,11 +15,14 @@ int main(int argc, char* argv[]) {
    struct debug_t* info = malloc(sizeof(struct debug_t));
    init_debug(info);
 
-   printf("%s\n", info_fen(info));
+   info_fen(info->buffer);
+   printf("%s\n", info->buffer);
    union move_t move = smp_search(atoi(argv[1]));
-   printf("%s\n\n", info_move(info, move));
+   info_move(info->buffer, move);
+   printf("%s\n\n", info->buffer);
 
-   for (char** pv = info_principal_variation(info); **pv; ++pv)
+   info_principal_variation(info->buffers, 0);
+   for (char** pv = info->buffers; **pv; ++pv)
       printf("%s", *pv);
    printf("\n");
 

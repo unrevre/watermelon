@@ -119,8 +119,10 @@ void refresh_state(struct interface_t* itf) {
    }
 
    if (flag(itf, ITF_CURSES) || !flag(itf, ITF_QUIET)) {
-      wmprint(itf, itf->win_fen, "%s\n", info_fen(itf->info));
-      wmprint(itf, itf->win_state, "%s", info_game_state(itf->info));
+      info_fen(itf->info->buffer);
+      wmprint(itf, itf->win_fen, "%s\n", itf->info->buffer);
+      info_game_state(itf->info->buffer);
+      wmprint(itf, itf->win_state, "%s", itf->info->buffer);
    }
 
    if (flag(itf, ITF_CURSES)) {
@@ -133,10 +135,12 @@ void refresh_state(struct interface_t* itf) {
 }
 
 void refresh_search(struct interface_t* itf, union move_t move) {
-   wmprint(itf, itf->win_info, "%s\n\n", info_move(itf->info, move));
+   info_move(itf->info->buffer, move);
+   wmprint(itf, itf->win_info, "%s\n\n", itf->info->buffer);
 
    if (!flag(itf, ITF_QUIET)) {
-      for (char** pv = info_principal_variation(itf->info); **pv; ++pv)
+      info_principal_variation(itf->info->buffers, 0);
+      for (char** pv = itf->info->buffers; **pv; ++pv)
          wmprint(itf, itf->win_info, "%s", *pv);
       wmprint(itf, itf->win_info, "\n");
    }
