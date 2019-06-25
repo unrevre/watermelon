@@ -25,39 +25,38 @@ void init_debug(struct debug_t* info);
 
 /*!
  * info_fen
- * @ return fen string of current game state
+ * @ fill buffer with fen string of current game state
  */
 
-char* info_fen(struct debug_t* info);
+void info_fen(char* buffer);
 
 /*!
  * info_game_state
- * @ return string of current game state
+ * @ fill buffer with current game state
  */
 
-char* info_game_state(struct debug_t* info);
+void info_game_state(char* buffer);
 
 /*!
  * info_move
- * @ return string of move details
+ * @ fill buffer with move details
  */
 
-char* info_move(struct debug_t* info, union move_t move);
+void info_move(char* buffer, union move_t move);
 
 /*!
  * info_transposition_table_entry
- * @ return string of transposition table entry details
+ * @ fill buffer with transposition table entry details
  */
 
-char* info_transposition_table_entry(struct debug_t* info,
-                                     union ttentry_t entry);
+void info_transposition_table_entry(char* buffer, union ttentry_t entry);
 
 /*!
  * info_principal_variation
- * @ trace and return array of strings of principal variation
+ * @ trace and fill buffers with principal variation
  */
 
-char** info_principal_variation(struct debug_t* info);
+void info_principal_variation(char** buffers, int64_t depth);
 
 #ifdef DEBUG
 #include "inlines.h"

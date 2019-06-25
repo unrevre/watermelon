@@ -23,12 +23,7 @@ void init_debug(struct debug_t* info) {
    state = &trunk;
 }
 
-/*!
- * impl_fen
- * @ internal implementation for 'info_fen'
- */
-
-static void impl_fen(char* buffer) {
+void info_fen(char* buffer) {
    char* p = buffer;
    int64_t a = index_for(0, HEIGHT - 1);
    for (int64_t i = 0; i != RANKS; ++i) {
@@ -59,18 +54,7 @@ static void impl_fen(char* buffer) {
    *b = '\0';
 }
 
-char* info_fen(struct debug_t* info) {
-   impl_fen(info->buffer);
-
-   return info->buffer;
-}
-
-/*!
- * impl_game_state
- * @ internal implementation for 'info_game_state'
- */
-
-static void impl_game_state(char* buffer) {
+void info_game_state(char* buffer) {
    char* p = buffer;
    int64_t a = index_for(0, HEIGHT - 1);
    for (int64_t i = 0; i != RANKS; ++i) {
@@ -89,53 +73,18 @@ static void impl_game_state(char* buffer) {
    *p = '\0';
 }
 
-char* info_game_state(struct debug_t* info) {
-   impl_game_state(info->buffer);
-
-   return info->buffer;
-}
-
-/*!
- * impl_move
- * @ internal implementation for 'info_move'
- */
-
-static void impl_move(char* buffer, union move_t move) {
+void info_move(char* buffer, union move_t move) {
    sprintf(buffer, "move %2i %2i %c/%c",
            to_external(move._.from), to_external(move._.to),
            fen_char[move._.pfrom], fen_char[move._.pto]);
 }
 
-char* info_move(struct debug_t* info, union move_t move) {
-   impl_move(info->buffer, move);
-
-   return info->buffer;
-}
-
-/*!
- * impl_transposition_table_entry
- * @ internal implementation for 'info_transposition_table_entry'
- */
-
-static void impl_transposition_table_entry(char* buffer,
-                                           union ttentry_t entry) {
-   impl_move(buffer, entry._.move);
+void info_transposition_table_entry(char* buffer, union ttentry_t entry) {
+   info_move(buffer, entry._.move);
    sprintf(buffer + move_length, " %5i (%x)", entry._.score, entry._.flags);
 }
 
-char* info_transposition_table_entry(struct debug_t* info,
-                                     union ttentry_t entry) {
-   impl_transposition_table_entry(info->buffer, entry);
-
-   return info->buffer;
-}
-
-/*!
- * trace_principal_variation
- * @ recursively trace principal variation line
- */
-
-static void trace_principal_variation(char** buffer, int64_t depth) {
+void info_principal_variation(char** buffer, int64_t depth) {
    **buffer = '\0';
    union ttentry_t entry = entry_for_state(state);
 
@@ -143,7 +92,7 @@ static void trace_principal_variation(char** buffer, int64_t depth) {
    if (next.bits && is_valid(state, next)) {
       advance(next, state);
       if (!in_check(state, o(state->side))) {
-         impl_transposition_table_entry(*buffer, entry);
+         info_transposition_table_entry(*buffer, entry);
          (*buffer)[entry_length - 4] = ' ';
          (*buffer)[entry_length - 2] = '\n';
 
@@ -152,7 +101,7 @@ static void trace_principal_variation(char** buffer, int64_t depth) {
             **++buffer = '\0';
          } else {
             (*buffer)[entry_length - 3] = ' ';
-            trace_principal_variation(++buffer, ++depth);
+            info_principal_variation(++buffer, ++depth);
          }
       } else if (depth) {
          --buffer;
@@ -160,12 +109,6 @@ static void trace_principal_variation(char** buffer, int64_t depth) {
       }
       retract(next, state);
    }
-}
-
-char** info_principal_variation(struct debug_t* info) {
-   trace_principal_variation(info->buffers, 0);
-
-   return info->buffers;
 }
 
 #ifdef DEBUG
@@ -190,14 +133,14 @@ void tree_debug_state(struct transient_t* external) {
 
 void tree_node_entry(int32_t alpha, int32_t beta) {
    tree_node_depth(state->ply);
-   char buffer[102]; impl_fen(buffer); printf("├┬╸%s\n", buffer);
+   char buffer[102]; info_fen(buffer); printf("├┬╸%s\n", buffer);
    tree_node_depth(state->ply);
    printf("├╸      [%5i, %5i]\n", alpha, beta);
 }
 
 void tree_node_exit(int32_t alpha, int32_t beta, int32_t score) {
    tree_node_depth(state->ply + 1);
-   char buffer[102]; impl_fen(buffer); printf("├╸%s\n", buffer);
+   char buffer[102]; info_fen(buffer); printf("├╸%s\n", buffer);
    tree_node_depth(state->ply + 1);
    printf("└╸%5i [%5i, %5i]\n", -score, -beta, -alpha);
 }
