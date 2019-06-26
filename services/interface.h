@@ -48,31 +48,17 @@ void init_interface(struct interface_t* itf, uint64_t flags);
 void close_interface(struct interface_t* itf);
 
 /*!
- * refresh_state
- * @ helper function - update game state info
- */
-
-void refresh_state(struct interface_t* itf);
-
-/*!
- * refresh_search
- * @ helper function - update search results (move, trace)
- */
-
-void refresh_search(struct interface_t* itf, union move_t move);
-
-/*!
- * advance_if_legal
- * @ helper function - test legality and advance game, history
- */
-
-int64_t advance_if_legal(union move_t move);
-
-/*!
  * event_loop
  * @ event loop handling key events in curses mode
  */
 
 int64_t event_loop(struct interface_t* itf);
+
+/*!
+ * update
+ * @ update interface conditionally
+ */
+
+int64_t update(struct interface_t* itf, union move_t move);
 
 #endif /* INTERFACE_H */

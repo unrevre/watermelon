@@ -45,6 +45,43 @@ static void wmprint(struct interface_t* itf, WINDOW* w, char const* fmt, ...) {
    va_end(args);
 }
 
+/*!
+ * update_board
+ * @ update game state (fen, board)
+ */
+
+static void update_board(struct interface_t* itf) {
+   if (flag(itf, ITF_CURSES)) {
+      wmove(itf->win_fen, 0, 0);
+      wmove(itf->win_state, 0, 0);
+   }
+
+   if (flag(itf, ITF_CURSES) || !flag(itf, ITF_QUIET)) {
+      info_fen(itf->info->buffer);
+      wmprint(itf, itf->win_fen, "%s\n", itf->info->buffer);
+      info_game_state(itf->info->buffer);
+      wmprint(itf, itf->win_state, "%s", itf->info->buffer);
+   }
+
+   if (flag(itf, ITF_CURSES)) {
+      wmove(itf->win_state, itf->y, itf->x);
+      wnoutrefresh(itf->win_fen);
+      wnoutrefresh(itf->win_state);
+
+      doupdate();
+   }
+}
+
+/*!
+ * update_cursor
+ * @ helper function to update cursor position
+ */
+
+static void update_cursor(struct interface_t* itf) {
+   wmove(itf->win_state, itf->y, itf->x);
+   wrefresh(itf->win_state);
+}
+
 void init_interface(struct interface_t* itf, uint64_t flags) {
    itf->flags = flags;
    itf->print = flag(itf, ITF_CURSES) ? wmprintw : wmprintf;
@@ -83,6 +120,8 @@ void init_interface(struct interface_t* itf, uint64_t flags) {
       delwin(border_info);
       delwin(border_state);
    }
+
+   update_board(itf);
 }
 
 void close_interface(struct interface_t* itf) {
@@ -103,38 +142,11 @@ void close_interface(struct interface_t* itf) {
 }
 
 /*!
- * refresh_board
- * @ helper function to refresh board, cursor position
+ * info_search
+ * @ update search results (move, trace)
  */
 
-static void refresh_board(struct interface_t* itf) {
-   wmove(itf->win_state, itf->y, itf->x);
-   wrefresh(itf->win_state);
-}
-
-void refresh_state(struct interface_t* itf) {
-   if (flag(itf, ITF_CURSES)) {
-      wmove(itf->win_fen, 0, 0);
-      wmove(itf->win_state, 0, 0);
-   }
-
-   if (flag(itf, ITF_CURSES) || !flag(itf, ITF_QUIET)) {
-      info_fen(itf->info->buffer);
-      wmprint(itf, itf->win_fen, "%s\n", itf->info->buffer);
-      info_game_state(itf->info->buffer);
-      wmprint(itf, itf->win_state, "%s", itf->info->buffer);
-   }
-
-   if (flag(itf, ITF_CURSES)) {
-      wmove(itf->win_state, itf->y, itf->x);
-      wnoutrefresh(itf->win_fen);
-      wnoutrefresh(itf->win_state);
-
-      doupdate();
-   }
-}
-
-void refresh_search(struct interface_t* itf, union move_t move) {
+static void info_search(struct interface_t* itf, union move_t move) {
    info_move(itf->info->buffer, move);
    wmprint(itf, itf->win_info, "%s\n\n", itf->info->buffer);
 
@@ -187,7 +199,12 @@ static void redo_history(void) {
    }
 }
 
-int64_t advance_if_legal(union move_t move) {
+/*!
+ * advance_if_legal
+ * @ test legality and advance game, history
+ */
+
+static int64_t advance_if_legal(union move_t move) {
    return is_legal(&trunk, move)
       && (advance_history(move), advance_game(move), 1);
 }
@@ -270,7 +287,7 @@ static void fetch(struct interface_t* itf) {
          if (!move.bits || !advance_if_legal(move)) { return; }
       }
 
-      refresh_state(itf);
+      update_board(itf);
       itf->index = 0;
    }
 }
@@ -298,19 +315,19 @@ int64_t event_loop(struct interface_t* itf) {
                return 1;
             case 'h':
                itf->x = itf->x > 1 ? itf->x - 2 : 1;
-               refresh_board(itf);
+               update_cursor(itf);
                break;
             case 'j':
                itf->y = itf->y < 9 ? itf->y + 1 : 9;
-               refresh_board(itf);
+               update_cursor(itf);
                break;
             case 'k':
                itf->y = itf->y > 0 ? itf->y - 1 : 0;
-               refresh_board(itf);
+               update_cursor(itf);
                break;
             case 'l':
                itf->x = itf->x < 17 ? itf->x + 2 : 17;
-               refresh_board(itf);
+               update_cursor(itf);
                break;
             case 'n':
                itf->index = 0;
@@ -319,12 +336,12 @@ int64_t event_loop(struct interface_t* itf) {
                return 0;
             case 'r':
                redo_history();
-               refresh_state(itf);
+               update_board(itf);
                itf->index = 0;
                break;
             case 'u':
                undo_history();
-               refresh_state(itf);
+               update_board(itf);
                itf->index = 0;
                break;
          }
@@ -346,7 +363,7 @@ int64_t event_loop(struct interface_t* itf) {
                      to_internal(atoi(tokens[1])),
                      to_internal(atoi(tokens[2])));
                   if (move.bits && advance_if_legal(move)) {
-                     refresh_state(itf);
+                     update_board(itf);
                   } else {
                      wmprint(itf, itf->win_info,  "invalid move\n");
                   }
@@ -358,11 +375,11 @@ int64_t event_loop(struct interface_t* itf) {
                return 0;
             case cmd_redo:
                redo_history();
-               refresh_state(itf);
+               update_board(itf);
                break;
             case cmd_undo:
                undo_history();
-               refresh_state(itf);
+               update_board(itf);
                break;
             default:
                wmprint(itf, itf->win_info, "unknown command\n");
@@ -370,4 +387,9 @@ int64_t event_loop(struct interface_t* itf) {
          }
       }
    }
+}
+
+int64_t update(struct interface_t* itf, union move_t move) {
+   return advance_if_legal(move)
+      && (info_search(itf, move), update_board(itf), 1);
 }
