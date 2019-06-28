@@ -355,7 +355,7 @@ int64_t event_loop(struct interface_t* itf) {
                      to_internal(atoi(tokens[2])));
                   if (!(is_legal(&trunk, move) && (advance_history(move),
                         update_board(itf), 1)))
-                     wmprint(itf, itf->win_info,  "invalid move\n");
+                     printf("invalid move\n");
                }
                break;
             case cmd_next:
@@ -371,7 +371,7 @@ int64_t event_loop(struct interface_t* itf) {
                update_board(itf);
                break;
             default:
-               wmprint(itf, itf->win_info, "unknown command\n");
+               printf("unknown command\n");
                break;
          }
       }
