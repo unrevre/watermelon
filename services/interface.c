@@ -176,6 +176,8 @@ static void advance_history(union move_t move) {
          history[step] = (union move_t){0};
 
    history[trunk.ply] = move;
+
+   advance_game(move);
 }
 
 /*!
@@ -193,10 +195,8 @@ static void undo_history(void) {
  */
 
 static void redo_history(void) {
-   if (history[trunk.ply].bits) {
+   if (history[trunk.ply].bits)
       advance_history(history[trunk.ply]);
-      advance_game(history[trunk.ply]);
-   }
 }
 
 /*!
@@ -274,9 +274,8 @@ static void fetch(struct interface_t* itf) {
    } else {
       if (itf->index != index) {
          union move_t move = move_for_indices(itf->index, index);
-         if (!move.bits || !is_legal(&trunk, move)) { return; }
-         advance_history(move);
-         advance_game(move);
+         if (!(is_legal(&trunk, move), advance_history(move), 1))
+            return;
       }
 
       update_board(itf);
@@ -354,13 +353,9 @@ int64_t event_loop(struct interface_t* itf) {
                   union move_t move = move_for_indices(
                      to_internal(atoi(tokens[1])),
                      to_internal(atoi(tokens[2])));
-                  if (move.bits && is_legal(&trunk, move)) {
-                     advance_history(move);
-                     advance_game(move);
-                     update_board(itf);
-                  } else {
+                  if (!(is_legal(&trunk, move) && (advance_history(move),
+                        update_board(itf), 1)))
                      wmprint(itf, itf->win_info,  "invalid move\n");
-                  }
                }
                break;
             case cmd_next:
@@ -384,6 +379,6 @@ int64_t event_loop(struct interface_t* itf) {
 }
 
 int64_t update(struct interface_t* itf, union move_t move) {
-   return is_legal(&trunk, move) && (advance_history(move), advance_game(move),
+   return is_legal(&trunk, move) && (advance_history(move),
       info_search(itf, move), update_board(itf), 1);
 }
