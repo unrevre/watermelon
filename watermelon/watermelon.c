@@ -2,10 +2,15 @@
 #include "debug.h"
 #include "interface.h"
 #include "options.h"
+#include "structs.h"
 
-#include <inttypes.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+
+#ifdef DEBUG
+#include <inttypes.h>
+#endif /* DEBUG */
 
 enum options {
    opt_curses,

@@ -1,10 +1,9 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-#include "debug.h"
 #include "structs.h"
 
-#include <ncurses.h>
+#include <curses.h>
 
 #include <stdarg.h>
 #include <stdint.h>

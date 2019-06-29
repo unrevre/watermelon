@@ -1,10 +1,7 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include "magics.h"
 #include "structs.h"
-
-#include <stdint.h>
 
 extern struct transient_t trunk;
 

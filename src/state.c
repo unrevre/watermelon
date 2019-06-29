@@ -1,8 +1,10 @@
 #include "state.h"
 
 #include "fen.h"
+#include "magics.h"
 #include "masks.h"
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
