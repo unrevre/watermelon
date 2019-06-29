@@ -1,6 +1,7 @@
 #include "memory.h"
 
 #include "debug.h"
+#include "magics.h"
 #include "position.h"
 #include "state.h"
 

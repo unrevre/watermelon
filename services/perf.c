@@ -4,6 +4,7 @@
 #include "magics.h"
 #include "position.h"
 #include "state.h"
+#include "structs.h"
 
 #include <stdlib.h>
 

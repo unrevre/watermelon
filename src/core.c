@@ -1,9 +1,11 @@
 #include "core.h"
 
 #include "debug.h"
+#include "magics.h"
 #include "memory.h"
 #include "search.h"
 #include "state.h"
+#include "structs.h"
 
 #include <stdlib.h>
 #include <string.h>

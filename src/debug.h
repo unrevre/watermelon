@@ -4,6 +4,8 @@
 #include "magics.h"
 #include "structs.h"
 
+#include <stdint.h>
+
 /*!
  * debug_t
  * @ string buffers for informative/debugging purposes
@@ -61,7 +63,6 @@ void info_principal_variation(char** buffers, int64_t depth);
 #ifdef DEBUG
 #include "inlines.h"
 
-#include <stdint.h>
 #include <stdio.h>
 
 extern uint64_t nodes;
@@ -96,7 +97,6 @@ void debug_counter_reset(void);
 #endif /* DEBUG */
 
 #ifdef TREE
-#include <stdint.h>
 #include <stdio.h>
 
 /*!

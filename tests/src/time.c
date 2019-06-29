@@ -2,6 +2,7 @@
 #include "debug.h"
 #include "search.h"
 #include "state.h"
+#include "structs.h"
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,7 +1,6 @@
 #include "utilities.h"
 
 #include <stdint.h>
-#include <stdlib.h>
 
 char** slice(char** slices, char* string) {
    int64_t state = 0;

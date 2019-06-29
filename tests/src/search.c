@@ -1,5 +1,6 @@
 #include "core.h"
 #include "debug.h"
+#include "structs.h"
 
 #include <stdio.h>
 #include <stdlib.h>
