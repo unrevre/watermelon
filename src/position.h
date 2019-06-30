@@ -1,9 +1,10 @@
 #ifndef POSITION_H
 #define POSITION_H
 
-#include "structs.h"
-
 #include <stdint.h>
+
+union move_t;
+struct transient_t;
 
 /*!
  * in_check
