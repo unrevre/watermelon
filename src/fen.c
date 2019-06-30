@@ -2,6 +2,7 @@
 
 #include "magics.h"
 #include "state.h"
+#include "structs.h"
 
 #include <stdint.h>
 #include <stdio.h>

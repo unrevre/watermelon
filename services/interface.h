@@ -1,12 +1,12 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-#include "structs.h"
-
 #include <curses.h>
 
 #include <stdarg.h>
 #include <stdint.h>
+
+union move_t;
 
 #define ITF_CURSES   0x1
 #define ITF_QUIET    0x1 << 1

@@ -2,9 +2,11 @@
 #define DEBUG_H
 
 #include "magics.h"
-#include "structs.h"
 
 #include <stdint.h>
+
+union move_t;
+union ttentry_t;
 
 /*!
  * debug_t
@@ -98,6 +100,8 @@ void debug_counter_reset(void);
 
 #ifdef TREE
 #include <stdio.h>
+
+struct transient_t;
 
 /*!
  * tree_debug_state

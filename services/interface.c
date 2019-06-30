@@ -5,6 +5,7 @@
 #include "masks.h"
 #include "position.h"
 #include "state.h"
+#include "structs.h"
 #include "utilities.h"
 
 #include <stdio.h>
