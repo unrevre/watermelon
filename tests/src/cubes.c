@@ -48,18 +48,7 @@ int main(int argc, char* argv[]) {
       printf("[%c] %s", sides[side], buffer);
    }
 
-   sprintf(buffer, "eval\n");
-   taste(red, buffer);
-
-   slice(tokens, buffer);
-   vet(tokens[0], "eval");
-
-   int64_t adv = atoi(tokens[1]);
-   switch ((adv > 0) - (0 > adv)) {
-      case 1: printf("r adv\n"); break;
-      case 0: printf("even\n"); break;
-      case -1: printf("b adv\n"); break;
-   }
+   printf("move limit exceeded\n");
 
    return 0;
 }
