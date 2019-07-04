@@ -22,7 +22,7 @@ void serve(char* args[], int64_t side);
 int main(int argc, char* argv[]) {
    if (argc != 3 && argc != 4) {
       printf("usage: %s [red] [black] [fen]\n", argv[0]);
-      return 1;
+      return -1;
    }
 
    char* tokens[8];
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 
    printf("move limit exceeded\n");
 
-   return 0;
+   return -1;
 }
 
 void vet(char* token, char const* tag) {
@@ -73,7 +73,7 @@ void taste(int64_t side, char* buffer) {
    int32_t status;
    if (waitpid(-1, &status, WNOHANG)) {
       printf("%c loss\n", sides[side]);
-      exit(0);
+      exit(side);
    }
 }
 
