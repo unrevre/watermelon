@@ -45,4 +45,4 @@ script:
     tests/logs/search-canju.log
   - ./tests/bin/time 12
   - ./tests/bin/cubes './bin/watermelon -d 12 -q' './bin/watermelon -d 12 -q'
-    '3a1kb2/2R3R2/3ab4/9/9/9/4cr3/4B4/4A4/2BAK4 r' || true
+    '3a1kb2/2R3R2/3ab4/9/9/9/4cr3/4B4/4A4/2BAK4 r' || [ $? -eq 1 ]
