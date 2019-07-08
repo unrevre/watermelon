@@ -1,10 +1,9 @@
 #ifndef EVAL_H
 #define EVAL_H
 
-#include <stdint.h>
+#include "structs.h"
 
-union move_t;
-struct transient_t;
+#include <stdint.h>
 
 /*!
  * eval

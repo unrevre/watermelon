@@ -2,6 +2,7 @@
 #define DEBUG_H
 
 #include "magics.h"
+#include "structs.h"
 
 #include <stdint.h>
 

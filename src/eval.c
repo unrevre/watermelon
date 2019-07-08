@@ -2,7 +2,6 @@
 
 #include "inlines.h"
 #include "magics.h"
-#include "structs.h"
 
 static int32_t weights[7] = {4096, 32, 16, 16, 4, 4, 4};
 
