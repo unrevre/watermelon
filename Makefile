@@ -61,6 +61,12 @@ MAKE = make
 tests: $(OBJS)
 	$(MAKE) -C $(TSTDIR)
 
+iwyu:
+	$(MAKE) clean
+	$(MAKE) -k CC='include-what-you-use \
+		-Xiwyu --no_fwd_decls \
+		-Xiwyu --mapping_file=.watermelon.imp'
+
 mkdir:
 	@mkdir -p $(BINDIR)
 	@mkdir -p $(BLDDIR)
@@ -70,6 +76,6 @@ clean:
 	$(RM) $(BINDIR)/* $(BLDDIR)/* $(ASMDIR)/*
 	$(MAKE) -C $(TSTDIR) clean
 
-.PHONY: all debug tree objects binary asm tests mkdir clean
+.PHONY: all debug tree objects binary asm tests iwyu mkdir clean
 
 -include $(DEPS) $(TDEPS)
