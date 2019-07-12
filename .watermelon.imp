@@ -1,3 +1,5 @@
 [
-    { include: ["@<.*_pthread.*>", "private", "<pthread.h>", "public"] }
+    { include: ["@<.*_pthread.*>", "private", "<pthread.h>", "public"] },
+    { include: ["@<.*_select.*>", "private", "<sys/select.h>", "public"] },
+    { include: ["@<.*_types.*>", "private", "<sys/types.h>", "public"] }
 ]
