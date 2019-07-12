@@ -31,6 +31,14 @@ tests: mkdir $(BINS)
 $(BINDIR)/%: $(SRCDIR)/%.c $(OBJS)
 	$(CC) $(CFLAGS) -O3 -pthread -I$(PSRCDIR) -I$(PSVCDIR) $^ $(LIBS) -o $@
 
+MAKE = make
+
+iwyu:
+	$(MAKE) clean
+	$(MAKE) -k CC='include-what-you-use \
+		-Xiwyu --no_fwd_decls \
+		-Xiwyu --mapping_file=./../.watermelon.imp'
+
 mkdir:
 	@mkdir -p $(BINDIR)
 	@mkdir -p $(BLDDIR)
@@ -38,6 +46,6 @@ mkdir:
 clean:
 	$(RM) $(BINDIR)/* $(BLDDIR)/*
 
-.PHONY: tests mkdir clean
+.PHONY: tests iwyu mkdir clean
 
 -include $(DEPS)
