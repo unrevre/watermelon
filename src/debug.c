@@ -29,11 +29,11 @@ void info_fen(char* buffer) {
    for (int64_t i = 0; i != RANKS; ++i) {
       char blanks = '0';
       for (int64_t j = 0; j != FILES; ++a, ++j) {
-         if (trunk.board[a] == empty) {
+         if (state->board[a] == empty) {
             ++blanks;
          } else {
             *p++ = blanks;
-            *p++ = fen_char[trunk.board[a]];
+            *p++ = fen_char[state->board[a]];
             blanks = '0';
          }
       }
@@ -61,8 +61,8 @@ void info_game_state(char* buffer) {
       char filler = (i == 4 || i == 5) ? '-' : ' ';
       for (int64_t j = 0; j != FILES; ++a, ++j) {
          *p++ = filler;
-         *p++ = trunk.board[a] == empty
-            ? filler : fen_char[trunk.board[a]];
+         *p++ = state->board[a] == empty
+            ? filler : fen_char[state->board[a]];
       }
 
       *p++ = filler;
@@ -132,21 +132,21 @@ void tree_debug_state(struct transient_t* external) {
    for (int32_t t = 0; t != depth; ++t) { printf("│"); } } while (0)
 
 void tree_node_entry(int32_t alpha, int32_t beta) {
-   tree_node_depth(state->ply);
+   tree_node_depth(state->ply + trunk.ply);
    char buffer[102]; info_fen(buffer); printf("├┬╸%s\n", buffer);
-   tree_node_depth(state->ply);
+   tree_node_depth(state->ply + trunk.ply + 1);
    printf("├╸      [%5i, %5i]\n", alpha, beta);
 }
 
 void tree_node_exit(int32_t alpha, int32_t beta, int32_t score) {
-   tree_node_depth(state->ply + 1);
+   tree_node_depth(state->ply + trunk.ply + 1);
    char buffer[102]; info_fen(buffer); printf("├╸%s\n", buffer);
-   tree_node_depth(state->ply + 1);
+   tree_node_depth(state->ply + trunk.ply + 1);
    printf("└╸%5i [%5i, %5i]\n", -score, -beta, -alpha);
 }
 
 void tree_node_message(char const* fmt, ...) {
-   tree_node_depth(state->ply + 1); printf("├╸");
+   tree_node_depth(state->ply + trunk.ply + 1); printf("├╸");
    va_list args; va_start(args, fmt); printf(fmt, args); va_end(args);
 }
 #endif /* TREE */
