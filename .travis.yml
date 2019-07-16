@@ -28,8 +28,8 @@ matrix:
 
 script:
   - $COMPILER --version
-  - make clean && make CC=$COMPILER tree
-  - ./bin/watermelon -d 2 -1
+  - make clean && make CC=$COMPILER tree && make -C tests CC=$COMPILER tree
+  - ./tests/bin/tree 1
   - make clean && make CC=$COMPILER debug
   - ./bin/watermelon -d 10 -1
   - make clean && make CC=$COMPILER
