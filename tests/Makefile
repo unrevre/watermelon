@@ -28,6 +28,9 @@ OBJS = $(wildcard $(PBLDDIR)/*.o)
 
 tests: mkdir $(BINS)
 
+tree: CFLAGS += -DTREE
+tree: mkdir $(BINS)
+
 $(BINDIR)/%: $(SRCDIR)/%.c $(OBJS)
 	$(CC) $(CFLAGS) -O3 -pthread -I$(PSRCDIR) -I$(PSVCDIR) $^ $(LIBS) -o $@
 
@@ -46,6 +49,6 @@ mkdir:
 clean:
 	$(RM) $(BINDIR)/* $(BLDDIR)/*
 
-.PHONY: tests iwyu mkdir clean
+.PHONY: tests tree iwyu mkdir clean
 
 -include $(DEPS)
