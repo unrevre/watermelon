@@ -10,7 +10,7 @@ TSTDIR = ./tests
 WMNDIR = ./watermelon
 
 CC = clang
-CFLAGS += -std=c99 -march=native -Wall -Wextra \
+CFLAGS += -std=c99 -march=native -Wall -Wextra -flto \
 	  -fno-exceptions -fno-strict-aliasing -fno-stack-protector \
 	  -fomit-frame-pointer -fno-asynchronous-unwind-tables \
 	  -D_POSIX_C_SOURCE=199309L
@@ -20,6 +20,12 @@ ifneq (,$(findstring gcc,$(CC)))
 endif
 
 LIBS += -lncurses
+LDFLAGS += $(LIBS)
+
+UNAME := $(shell uname -s)
+ifeq ($(UNAME),Darwin)
+	LDFLAGS += -dead_strip
+endif
 
 SRCS = $(wildcard $(SRCDIR)/*.c)
 ASML = $(patsubst $(SRCDIR)/%.c,$(ASMDIR)/%.S,$(SRCS))
@@ -41,7 +47,7 @@ tree: mkdir objects binary
 objects: $(OBJS)
 
 $(BLDDIR)/%.o: $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) -O3 -pthread -flto -MMD -c $< -o $@
+	$(CC) $(CFLAGS) -O3 -pthread -MMD -c $< -o $@
 
 $(BLDDIR)/%.o: $(SVCDIR)/%.c
 	$(CC) $(CFLAGS) -Os -I$(SRCDIR) -MMD -c $< -o $@
@@ -49,8 +55,9 @@ $(BLDDIR)/%.o: $(SVCDIR)/%.c
 binary: $(BINDIR)/$(BIN)
 
 $(BINDIR)/$(BIN): $(WMNDIR)/$(MAIN).c $(OBJS)
-	$(CC) $(CFLAGS) -O3 -pthread -I$(SRCDIR) -I$(SVCDIR) $^ $(LIBS) -o $@
+	$(CC) $(CFLAGS) -pthread -O3 -I$(SRCDIR) -I$(SVCDIR) $^ $(LDFLAGS) -o $@
 
+asm: CFLAGS :=$(filter-out -flto,$(CFLAGS))
 asm: mkdir $(ASML)
 
 $(ASMDIR)/%.S: $(SRCDIR)/%.c
