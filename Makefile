@@ -85,4 +85,4 @@ clean:
 
 .PHONY: all debug tree objects binary asm tests iwyu mkdir clean
 
--include $(DEPS) $(TDEPS)
+-include $(DEPS)
