@@ -6,9 +6,6 @@
 
 #include <stdint.h>
 
-union move_t;
-union ttentry_t;
-
 /*!
  * debug_t
  * @ string buffers for informative/debugging purposes
