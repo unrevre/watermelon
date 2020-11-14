@@ -26,7 +26,7 @@
 #define d1r         (WIDTH)
 #define d1c         (1)
 
-#define d2r         (WIDTH << 1)
+#define d2r         (d1r << 1)
 
 #define d1n         (d1r)
 #define d1e         (d1c)
@@ -109,12 +109,17 @@
 #define i1n2e(i)    (PMASK[i + d1n2e])
 #define i1n2w(i)    (PMASK[i + d1n2w])
 #define i1s2e(i)    (PMASK[i + d1s2e])
+#define i1s2w(i)    (PMASK[i + d1s2w])
 
 #define i2n1e(i)    (PMASK[i + d2n1e])
 #define i2n1w(i)    (PMASK[i + d2n1w])
+#define i2s1e(i)    (PMASK[i + d2s1e])
+#define i2s1w(i)    (PMASK[i + d2s1w])
 
 #define i2n2e(i)    (PMASK[i + d2n2e])
 #define i2n2w(i)    (PMASK[i + d2n2w])
+#define i2s2e(i)    (PMASK[i + d2s2e])
+#define i2s2w(i)    (PMASK[i + d2s2w])
 
 /* search */
 
