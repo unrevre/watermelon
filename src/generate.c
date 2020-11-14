@@ -146,20 +146,22 @@ struct move_array_t generate_pseudolegal(struct transient_t* state) {
    zset &= ZMASK[side] & ~state->occupancy[side];
    add_shiftwise(state, zset, -1, &moves);
 
-   __uint128_t xset = state->pieces[ps(side, 0x5)];
-   while (xset) {
-      uint64_t index = bsf(xset);
-      xset = xset ^ PMASK[index];
+   __uint128_t xset;
+   xset = s2n2e(state->pieces[ps(side, 0x5)]) & s1n1e(state->pieces[empty]);
+   xset = xset & XMASK[side] & ~state->occupancy[side];
+   add_shiftwise(state, xset, d2n2e, &moves);
 
-      __uint128_t moveset;
-      moveset = (i2n2e(index) & s1n1e(state->pieces[empty]))
-         | (i2n2w(index) & s1n1w(state->pieces[empty]))
-         | (s2s2e(PMASK[index]) & s1s1e(state->pieces[empty]))
-         | (s2s2w(PMASK[index]) & s1s1w(state->pieces[empty]));
-      moveset = moveset & XMASK[side] & ~state->occupancy[side];
+   xset = s2n2w(state->pieces[ps(side, 0x5)]) & s1n1w(state->pieces[empty]);
+   xset = xset & XMASK[side] & ~state->occupancy[side];
+   add_shiftwise(state, xset, d2n2w, &moves);
 
-      add_piecewise(state, moveset, index, &moves);
-   }
+   xset = s2s2e(state->pieces[ps(side, 0x5)]) & s1s1e(state->pieces[empty]);
+   xset = xset & XMASK[side] & ~state->occupancy[side];
+   add_shiftwise(state, xset, d2s2e, &moves);
+
+   xset = s2s2w(state->pieces[ps(side, 0x5)]) & s1s1w(state->pieces[empty]);
+   xset = xset & XMASK[side] & ~state->occupancy[side];
+   add_shiftwise(state, xset, d2s2w, &moves);
 
    __uint128_t sset = state->pieces[ps(side, 0x4)];
    while (sset) {
@@ -292,20 +294,22 @@ struct move_array_t generate_captures(struct transient_t* state) {
    zset &= ZMASK[side] & state->occupancy[!side];
    add_shiftwise(state, zset, -1, &moves);
 
-   __uint128_t xset = state->pieces[ps(side, 0x5)];
-   while (xset) {
-      uint64_t index = bsf(xset);
-      xset = xset ^ PMASK[index];
+   __uint128_t xset;
+   xset = s2n2e(state->pieces[ps(side, 0x5)]) & s1n1e(state->pieces[empty]);
+   xset = xset & XMASK[side] & state->occupancy[!side];
+   add_shiftwise(state, xset, d2n2e, &moves);
 
-      __uint128_t moveset;
-      moveset = (i2n2e(index) & s1n1e(state->pieces[empty]))
-         | (i2n2w(index) & s1n1w(state->pieces[empty]))
-         | (s2s2e(PMASK[index]) & s1s1e(state->pieces[empty]))
-         | (s2s2w(PMASK[index]) & s1s1w(state->pieces[empty]));
-      moveset = moveset & XMASK[side] & state->occupancy[!side];
+   xset = s2n2w(state->pieces[ps(side, 0x5)]) & s1n1w(state->pieces[empty]);
+   xset = xset & XMASK[side] & state->occupancy[!side];
+   add_shiftwise(state, xset, d2n2w, &moves);
 
-      add_piecewise(state, moveset, index, &moves);
-   }
+   xset = s2s2e(state->pieces[ps(side, 0x5)]) & s1s1e(state->pieces[empty]);
+   xset = xset & XMASK[side] & state->occupancy[!side];
+   add_shiftwise(state, xset, d2s2e, &moves);
+
+   xset = s2s2w(state->pieces[ps(side, 0x5)]) & s1s1w(state->pieces[empty]);
+   xset = xset & XMASK[side] & state->occupancy[!side];
+   add_shiftwise(state, xset, d2s2w, &moves);
 
    __uint128_t sset = state->pieces[ps(side, 0x4)];
    while (sset) {
