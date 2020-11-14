@@ -8,6 +8,9 @@
 #include <stdlib.h>
 
 uint32_t in_check(struct transient_t* state, int64_t side) {
+   if (!state->pieces[ps(side, 0x0)])
+      return 0;
+
    uint64_t index = bsf(state->pieces[ps(side, 0x0)]);
 
    __uint128_t pmask = PMASK[index];
