@@ -163,17 +163,22 @@ struct move_array_t generate_pseudolegal(struct transient_t* state) {
    xset = xset & XMASK[side] & ~state->occupancy[side];
    add_shiftwise(state, xset, d2s2w, &moves);
 
-   __uint128_t sset = state->pieces[ps(side, 0x4)];
-   while (sset) {
-      uint64_t index = bsf(sset);
-      sset = sset ^ PMASK[index];
+   __uint128_t sset;
+   sset = s1n1e(state->pieces[ps(side, 0x4)]);
+   sset = sset & SMASK[side] & ~state->occupancy[side];
+   add_shiftwise(state, sset, d1n1e, &moves);
 
-      __uint128_t moveset;
-      moveset = i1n1e(index) | i1n1w(index) | i1s1e(index) | i1s1w(index);
-      moveset = moveset & SMASK[side] & ~state->occupancy[side];
+   sset = s1n1w(state->pieces[ps(side, 0x4)]);
+   sset = sset & SMASK[side] & ~state->occupancy[side];
+   add_shiftwise(state, sset, d1n1w, &moves);
 
-      add_piecewise(state, moveset, index, &moves);
-   }
+   sset = s1s1e(state->pieces[ps(side, 0x4)]);
+   sset = sset & SMASK[side] & ~state->occupancy[side];
+   add_shiftwise(state, sset, d1s1e, &moves);
+
+   sset = s1s1w(state->pieces[ps(side, 0x4)]);
+   sset = sset & SMASK[side] & ~state->occupancy[side];
+   add_shiftwise(state, sset, d1s1w, &moves);
 
    {
       uint64_t index = bsf(state->pieces[ps(side, 0x0)]);
@@ -311,17 +316,22 @@ struct move_array_t generate_captures(struct transient_t* state) {
    xset = xset & XMASK[side] & state->occupancy[!side];
    add_shiftwise(state, xset, d2s2w, &moves);
 
-   __uint128_t sset = state->pieces[ps(side, 0x4)];
-   while (sset) {
-      uint64_t index = bsf(sset);
-      sset = sset ^ PMASK[index];
+   __uint128_t sset;
+   sset = s1n1e(state->pieces[ps(side, 0x4)]);
+   sset = sset & SMASK[side] & state->occupancy[!side];
+   add_shiftwise(state, sset, d1n1e, &moves);
 
-      __uint128_t moveset;
-      moveset = i1n1e(index) | i1n1w(index) | i1s1e(index) | i1s1w(index);
-      moveset = moveset & SMASK[side] & state->occupancy[!side];
+   sset = s1n1w(state->pieces[ps(side, 0x4)]);
+   sset = sset & SMASK[side] & state->occupancy[!side];
+   add_shiftwise(state, sset, d1n1w, &moves);
 
-      add_piecewise(state, moveset, index, &moves);
-   }
+   sset = s1s1e(state->pieces[ps(side, 0x4)]);
+   sset = sset & SMASK[side] & state->occupancy[!side];
+   add_shiftwise(state, sset, d1s1e, &moves);
+
+   sset = s1s1w(state->pieces[ps(side, 0x4)]);
+   sset = sset & SMASK[side] & state->occupancy[!side];
+   add_shiftwise(state, sset, d1s1w, &moves);
 
    {
       uint64_t index = bsf(state->pieces[ps(side, 0x0)]);
