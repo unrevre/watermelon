@@ -8,7 +8,7 @@
  * @ returns index of least significant bit of __uint128_t
  */
 
-__inline__ uint64_t bsf(__uint128_t bits) {
+static __inline__ uint64_t bsf(__uint128_t bits) {
    uint64_t high = bits >> 64;
    uint64_t low = bits;
 
@@ -35,7 +35,7 @@ __inline__ uint64_t bsf(__uint128_t bits) {
  * @ returns index of most significant bit of __uint128_t
  */
 
-__inline__ uint64_t bsr(__uint128_t bits) {
+static __inline__ uint64_t bsr(__uint128_t bits) {
    uint64_t high = bits >> 64;
    uint64_t low = bits;
 
@@ -64,7 +64,7 @@ __inline__ uint64_t bsr(__uint128_t bits) {
  * # implemented with compiler intrinsics
  */
 
-__inline__ uint32_t popcnt(__uint128_t bits) {
+static __inline__ int32_t popcnt(__uint128_t bits) {
    return __builtin_popcountll(bits >> 64) + __builtin_popcountll(bits);
 }
 
@@ -73,7 +73,7 @@ __inline__ uint32_t popcnt(__uint128_t bits) {
  * @ atomic addition operation (long)
  */
 
-__inline__ void atomaddl(uint32_t* m, int32_t val) {
+static __inline__ void atomaddl(uint32_t* m, int32_t val) {
    __asm__ ("                  \n\
             lock; xaddl %0, %1 \n\
             "
@@ -88,7 +88,7 @@ __inline__ void atomaddl(uint32_t* m, int32_t val) {
  * @ atomic addition operation (quadword)
  */
 
-__inline__ void atomaddq(uint64_t* m, int64_t val) {
+static __inline__ void atomaddq(uint64_t* m, int64_t val) {
    __asm__ ("                  \n\
             lock; xaddq %0, %1 \n\
             "
