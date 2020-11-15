@@ -8,8 +8,7 @@
 extern const __uint128_t BMASK;
 extern const __uint128_t OMASK;
 
-extern const __uint128_t PMASK[PADDED];
-
+extern const __uint128_t PMASK[POINTS];
 extern const __uint128_t UMASK[POINTS];
 extern const __uint128_t LMASK[POINTS];
 extern const __uint128_t RMASK[POINTS];

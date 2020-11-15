@@ -58,10 +58,10 @@ uint32_t in_check(struct transient_t* state, int64_t side) {
       if (!range) { return 1; }
    }
 
-   __uint128_t mset = ((i2n1w(index) | i2n1e(index)) & s1n(emask))
+   __uint128_t mset = ((s2n1w(pmask) | s2n1e(pmask)) & s1n(emask))
       | ((s2s1e(pmask) | s2s1w(pmask)) & s1s(emask))
       | ((i1s2e(index) | i1n2e(index)) & s1e(emask))
-      | ((i1n2w(index) | s1s2w(pmask)) & s1w(emask));
+      | ((i1n2w(index) | i1s2w(index)) & s1w(emask));
    mset = mset & state->pieces[po(side, 0x2)];
    if (mset) { return 1; }
 

@@ -8,7 +8,7 @@ const __uint128_t BMASK =
 const __uint128_t OMASK =
    (((__uint128_t)0xffc0180300600c01) << 64) + 0x80300600c01803ff;
 
-const __uint128_t PMASK[PADDED] __attribute__((aligned(64))) = {
+const __uint128_t PMASK[POINTS] __attribute__((aligned(64))) = {
    (((__uint128_t)0x0) << 64) + 0x1,
    (((__uint128_t)0x0) << 64) + 0x2,
    (((__uint128_t)0x0) << 64) + 0x4,
@@ -136,23 +136,7 @@ const __uint128_t PMASK[PADDED] __attribute__((aligned(64))) = {
    (((__uint128_t)0x1000000000000000) << 64) + 0x0,
    (((__uint128_t)0x2000000000000000) << 64) + 0x0,
    (((__uint128_t)0x4000000000000000) << 64) + 0x0,
-   (((__uint128_t)0x8000000000000000) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0,
-   (((__uint128_t)0x0) << 64) + 0x0
+   (((__uint128_t)0x8000000000000000) << 64) + 0x0
 };
 
 const __uint128_t UMASK[POINTS] __attribute__((aligned(64))) = {
