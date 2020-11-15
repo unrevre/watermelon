@@ -38,10 +38,10 @@ OBJS += $(patsubst $(SVCDIR)/%.c,$(BLDDIR)/%.o,$(SVCS))
 
 all: mkdir objects binary tests
 
-debug: CFLAGS += -DDEBUG
-debug: mkdir objects binary
+info: CFLAGS += -DINFO
+info: mkdir objects binary
 
-tree: CFLAGS += -DDEBUG -DTREE
+tree: CFLAGS += -DINFO -DTREE
 tree: mkdir objects binary
 
 objects: $(OBJS)
@@ -83,6 +83,6 @@ clean:
 	$(RM) $(BINDIR)/* $(BLDDIR)/* $(ASMDIR)/*
 	$(MAKE) -C $(TSTDIR) clean
 
-.PHONY: all debug tree objects binary asm tests iwyu mkdir clean
+.PHONY: all info tree objects binary asm tests iwyu mkdir clean
 
 -include $(DEPS)

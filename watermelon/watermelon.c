@@ -8,9 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef DEBUG
+#ifdef INFO
 #include <inttypes.h>
-#endif /* DEBUG */
+#endif /* INFO */
 
 enum options {
    opt_curses,

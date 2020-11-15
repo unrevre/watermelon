@@ -111,7 +111,7 @@ void info_principal_variation(char** buffer, int64_t depth) {
    }
 }
 
-#ifdef DEBUG
+#ifdef INFO
 uint64_t nodes;
 uint64_t qnodes;
 uint64_t tthits;
@@ -119,7 +119,7 @@ uint64_t tthits;
 void debug_counter_reset(void) {
    nodes = qnodes = tthits = 0;
 }
-#endif /* DEBUG */
+#endif /* INFO */
 
 #ifdef TREE
 #include <stdarg.h>
