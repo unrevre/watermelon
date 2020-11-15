@@ -12,7 +12,7 @@ WMNDIR = ./watermelon
 CC = clang
 CFLAGS += -std=c99 -march=native -Wall -Wextra -flto \
 	  -fno-exceptions -fno-strict-aliasing -fno-stack-protector \
-	  -fomit-frame-pointer -fno-asynchronous-unwind-tables \
+	  -fno-asynchronous-unwind-tables \
 	  -D_POSIX_C_SOURCE=199309L
 
 ifneq (,$(findstring gcc,$(CC)))
@@ -36,18 +36,22 @@ SVCS = $(wildcard $(SVCDIR)/*.c)
 DEPS += $(patsubst $(SVCDIR)/%.c,$(BLDDIR)/%.d,$(SVCS))
 OBJS += $(patsubst $(SVCDIR)/%.c,$(BLDDIR)/%.o,$(SVCS))
 
+all: CFLAGS += -fomit-frame-pointer -O3
 all: mkdir objects binary tests
 
-info: CFLAGS += -DINFO
+info: CFLAGS += -DINFO -fomit-frame-pointer -O3
 info: mkdir objects binary
 
-tree: CFLAGS += -DINFO -DTREE
+tree: CFLAGS += -DINFO -DTREE -fomit-frame-pointer -O3
 tree: mkdir objects binary
+
+debug: CFLAGS += -g -O1
+debug: mkdir objects binary
 
 objects: $(OBJS)
 
 $(BLDDIR)/%.o: $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) -O3 -pthread -MMD -c $< -o $@
+	$(CC) $(CFLAGS) -pthread -MMD -c $< -o $@
 
 $(BLDDIR)/%.o: $(SVCDIR)/%.c
 	$(CC) $(CFLAGS) -Os -I$(SRCDIR) -MMD -c $< -o $@
@@ -80,9 +84,9 @@ mkdir:
 	@mkdir -p $(ASMDIR)
 
 clean:
-	$(RM) $(BINDIR)/* $(BLDDIR)/* $(ASMDIR)/*
+	$(RM) -r $(BINDIR)/* $(BLDDIR)/* $(ASMDIR)/*
 	$(MAKE) -C $(TSTDIR) clean
 
-.PHONY: all info tree objects binary asm tests iwyu mkdir clean
+.PHONY: all info tree debug objects binary asm tests iwyu mkdir clean
 
 -include $(DEPS)
