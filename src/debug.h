@@ -60,7 +60,7 @@ void info_transposition_table_entry(char* buffer, union ttentry_t entry);
 
 void info_principal_variation(char** buffers, int64_t depth);
 
-#ifdef DEBUG
+#ifdef INFO
 #include "inlines.h"
 
 #include <stdio.h>
@@ -94,7 +94,7 @@ void debug_counter_reset(void);
 #define debug_counter_reset(...)
 #define debug_counter_increment(...)
 #define debug_printf(...)
-#endif /* DEBUG */
+#endif /* INFO */
 
 #ifdef TREE
 #include <stdio.h>

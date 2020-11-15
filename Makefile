@@ -38,10 +38,10 @@ OBJS += $(patsubst $(SVCDIR)/%.c,$(BLDDIR)/%.o,$(SVCS))
 
 all: mkdir objects binary tests
 
-debug: CFLAGS += -DDEBUG
-debug: mkdir objects binary
+info: CFLAGS += -DINFO
+info: mkdir objects binary
 
-tree: CFLAGS += -DDEBUG -DTREE
+tree: CFLAGS += -DINFO -DTREE
 tree: mkdir objects binary
 
 objects: $(OBJS)
