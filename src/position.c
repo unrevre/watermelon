@@ -129,6 +129,10 @@ uint32_t is_legal(struct transient_t* state, union move_t move) {
 
 uint32_t is_repetition(struct transient_t* state) {
    int32_t step = trunk.ply + state->ply;
-   return step > 4 ? *((uint64_t*)(state->hashes + step - 1))
-      == *((uint64_t*)(state->hashes + step - 5)) : 0;
+
+   if (step < 5) { return 0; }
+
+   uint32_t* h = state->hashes + step;
+
+   return !((h[0] ^ h[-4]) | (h[-1] ^ h[-5]));
 }
