@@ -39,6 +39,10 @@ OBJS += $(patsubst $(SVCDIR)/%.c,$(BLDDIR)/%.o,$(SVCS))
 all: CFLAGS += -fomit-frame-pointer -O3
 all: mkdir objects binary tests
 
+icc: CC = icc
+icc: CFLAGS += -isysroot $(SDKROOT) -fomit-frame-pointer -O3
+icc: mkdir objects binary
+
 info: CFLAGS += -DINFO -fomit-frame-pointer -O3
 info: mkdir objects binary
 
@@ -87,6 +91,6 @@ clean:
 	$(RM) -r $(BINDIR)/* $(BLDDIR)/* $(ASMDIR)/*
 	$(MAKE) -C $(TSTDIR) clean
 
-.PHONY: all info tree debug objects binary asm tests iwyu mkdir clean
+.PHONY: all icc info tree debug objects binary asm tests iwyu mkdir clean
 
 -include $(DEPS)
