@@ -32,10 +32,13 @@ DEPS = $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.d,$(SRCS))
 
 OBJS = $(wildcard $(PBLDDIR)/*.o)
 
-tests: mkdir $(BINS)
+all: mkdir $(BINS)
 
-tree: CFLAGS += -DTREE
-tree: mkdir $(BINS)
+info: CFLAGS += -DINFO
+info: all
+
+tree: CFLAGS += -DINFO -DTREE
+tree: all
 
 $(BINDIR)/%: $(SRCDIR)/%.c $(OBJS)
 	$(CC) $(CFLAGS) -pthread -O3 -I$(PSRCDIR) -I$(PSVCDIR) $^ $(LDFLAGS) -o $@
@@ -53,8 +56,8 @@ mkdir:
 	@mkdir -p $(BLDDIR)
 
 clean:
-	$(RM) $(BINDIR)/* $(BLDDIR)/*
+	$(RM) -r $(BINDIR)/* $(BLDDIR)/*
 
-.PHONY: tests tree iwyu mkdir clean
+.PHONY: all info tree iwyu mkdir clean
 
 -include $(DEPS)
