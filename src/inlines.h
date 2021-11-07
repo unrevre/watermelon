@@ -15,12 +15,10 @@ static __inline__ uint64_t bsf(__uint128_t bits) {
    uint64_t clobber;
    uint64_t index;
    __asm__ ("                  \n\
-            movq   $64, %0     \n\
-            bsfq   %3, %1      \n\
-            cmovnz %1, %0      \n\
+            tzcntq %3, %0      \n\
             addq   $64, %0     \n\
-            bsfq   %2, %1      \n\
-            cmovnz %1, %0      \n\
+            tzcntq %2, %1      \n\
+            cmovnc %1, %0      \n\
             "
             : "=&r" (index), "=&r" (clobber)
             : "r" (low), "r" (high)
@@ -42,13 +40,13 @@ static __inline__ uint64_t bsr(__uint128_t bits) {
    uint64_t clobber;
    uint64_t index;
    __asm__ ("                  \n\
-            movq   $128, %1    \n\
-            bsrq   %2, %0      \n\
-            cmovnz %0, %1      \n\
-            xorq   $64, %1     \n\
-            bsrq   %3, %0      \n\
-            cmovz  %1, %0      \n\
-            xorq   $64, %0     \n\
+            movq   $191, %0    \n\
+            lzcntq %2, %1      \n\
+            cmovnc %1, %0      \n\
+            addq   $64, %0     \n\
+            lzcntq %3, %1      \n\
+            cmovnc %1, %0      \n\
+            xorq   $127, %0    \n\
             "
             : "=&r" (index), "=&r" (clobber)
             : "r" (low), "r" (high)
