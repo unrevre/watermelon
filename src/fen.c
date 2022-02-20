@@ -36,24 +36,26 @@ void reset_fen(const char* fen_str) {
       switch (*fstr_p) {
          case '/':
             i = i - FILES - WIDTH - 1;
-            break;
+            continue;
          case '1': case '2': case '3': case '4': case '5':
          case '6': case '7': case '8': case '9':
             i += *fstr_p - '1';
-            break;
+            continue;
          case 'p': case 'P': ++p;
          case 'b': case 'B': ++p;
          case 'a': case 'A': ++p;
          case 'c': case 'C': ++p;
          case 'n': case 'N': ++p;
          case 'r': case 'R': ++p;
-         case 'k': case 'K': ;
-            int64_t side = *fstr_p > 'Z';
-            uint32_t piece = ps(side, p);
-            trunk.pieces[piece] |= ((__uint128_t)0x1) << i;
-            trunk.occupancy[side] |= ((__uint128_t)0x1) << i;
-            trunk.board[i] = piece;
+         case 'k': case 'K':
+            break;
       }
+
+      int64_t side = *fstr_p > 'Z';
+      int64_t piece = ps(side, p);
+      trunk.pieces[piece] |= ((__uint128_t)0x1) << i;
+      trunk.occupancy[side] |= ((__uint128_t)0x1) << i;
+      trunk.board[i] = piece;
    }
 
    trunk.pieces[empty] = ~(trunk.occupancy[0] | trunk.occupancy[1]);
