@@ -43,6 +43,9 @@ icc: CC = icc
 icc: CFLAGS += -isysroot $(SDKROOT) -fomit-frame-pointer -O3
 icc: mkdir objects binary
 
+san: CFLAGS += -fsanitize=address,integer,undefined
+san: mkdir objects binary
+
 info: CFLAGS += -DINFO -fomit-frame-pointer -O3
 info: mkdir objects binary
 
@@ -91,6 +94,6 @@ clean:
 	$(RM) -r $(BINDIR)/* $(BLDDIR)/* $(ASMDIR)/*
 	$(MAKE) -C $(TSTDIR) clean
 
-.PHONY: all icc info tree debug objects binary asm tests iwyu mkdir clean
+.PHONY: all icc san info tree debug objects binary asm tests iwyu mkdir clean
 
 -include $(DEPS)
