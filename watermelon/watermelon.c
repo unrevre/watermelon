@@ -65,6 +65,8 @@ int watermelon(struct option_t* options, char const* fen) {
 
    close_interface(itf);
 
+   terminate();
+
    debug_printf("alpha-beta nodes | quiescence nodes |  hash table hits |\n");
    debug_printf("%16"PRIu64" | %16"PRIu64" | %16"PRIu64" |\n\n",
                 nodes, qnodes, tthits);

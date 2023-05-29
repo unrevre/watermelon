@@ -1,5 +1,6 @@
 #include "search.h"
 
+#include "bucket.h"
 #include "core.h"
 #include "debug.h"
 #include "eval.h"
@@ -96,7 +97,7 @@ int32_t negamax(int32_t depth, struct transient_t* state, int32_t alpha,
    }
 
    int32_t base = INFMINUS + state->ply;
-   struct generator_t engine = { 0, 0, { 0, 0, 0 }, store };
+   struct generator_t engine = { 0, 0, { 0, 0, 0, 0 }, store };
 
    int32_t best = base;
    union move_t move;
@@ -157,7 +158,7 @@ int32_t negamax(int32_t depth, struct transient_t* state, int32_t alpha,
       break;
    }
 
-   if (engine.state > 1) { free(engine.moves.data); }
+   if (engine.state > 1) { release_slot(&bucket, engine.moves.index); }
 
    store_hash(state, depth, alpha_parent, beta, best, store);
 
@@ -187,7 +188,7 @@ int32_t quiescence(struct transient_t* state, int32_t alpha, int32_t beta) {
       if (alpha >= beta) { break; }
    }
 
-   free(moves.data);
+   release_slot(&bucket, moves.index);
 
    return alpha;
 }

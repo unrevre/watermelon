@@ -1,11 +1,11 @@
 #include "generate.h"
 
+#include "bucket.h"
 #include "inlines.h"
 #include "magics.h"
 #include "masks.h"
 
 #include <stdint.h>
-#include <stdlib.h>
 #include <string.h>
 
 /*!
@@ -42,7 +42,10 @@ static void add_shiftwise(struct transient_t* state, __uint128_t set,
 struct move_array_t generate_pseudolegal(struct transient_t* state) {
    int64_t side = state->side;
 
-   struct move_array_t moves = {malloc(111 * sizeof(union move_t)), 0, 0};
+   int64_t slot = acquire_slot(&bucket);
+   union move_t* data = (union move_t*)&((struct set_t*)bucket.data)[slot];
+
+   struct move_array_t moves = {data, slot, 0, 0};
    if (!state->pieces[ps(side, 0x0)]) { return moves; }
 
    __uint128_t C3U128 = 0x3;
@@ -201,7 +204,10 @@ struct move_array_t generate_pseudolegal(struct transient_t* state) {
 struct move_array_t generate_captures(struct transient_t* state) {
    int64_t side = state->side;
 
-   struct move_array_t moves = {malloc(40 * sizeof(union move_t)), 0, 0};
+   int64_t slot = acquire_slot(&bucket);
+   union move_t* data = (union move_t*)&((struct set_t*)bucket.data)[slot];
+
+   struct move_array_t moves = {data, slot, 0, 0};
    if (!state->pieces[ps(side, 0x0)]) { return moves; }
 
    __uint128_t C3U128 = 0x3;

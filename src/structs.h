@@ -28,6 +28,7 @@ union move_t {
 
 struct move_array_t {
    union move_t* data;
+   int64_t index;
    int64_t count;
    int64_t quiet;
 };

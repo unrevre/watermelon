@@ -1,12 +1,11 @@
 #include "perf.h"
 
+#include "bucket.h"
 #include "generate.h"
 #include "magics.h"
 #include "position.h"
 #include "state.h"
 #include "structs.h"
-
-#include <stdlib.h>
 
 int64_t perft(int32_t depth) {
    if (!depth) { return 1; }
@@ -23,7 +22,7 @@ int64_t perft(int32_t depth) {
    }
 
    trunk.side = o(trunk.side);
-   free(moves.data);
+   release_slot(&bucket, moves.index);
 
    return nmoves;
 }
@@ -43,7 +42,7 @@ int64_t perft_capture(int32_t depth) {
    }
 
    trunk.side = o(trunk.side);
-   free(moves.data);
+   release_slot(&bucket, moves.index);
 
    return nmoves;
 }

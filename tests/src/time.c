@@ -41,5 +41,7 @@ int main(int argc, char* argv[]) {
    free(state);
    free(info);
 
+   terminate();
+
    return 0;
 }

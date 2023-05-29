@@ -1,5 +1,6 @@
 #include "core.h"
 
+#include "bucket.h"
 #include "debug.h"
 #include "magics.h"
 #include "memory.h"
@@ -23,9 +24,15 @@ void initialise(const char* fen) {
    memset(ttable, 0, HASHSIZE * sizeof(union ttentry_t));
    memset(ktable, 0, PLYLIMIT * sizeof(struct killer_t));
 
+   init_bucket(&bucket, 1024);
+
    search.status = 0;
    search.threads = 1;
    search.limit = -1.;
+}
+
+void terminate(void) {
+   free_bucket(&bucket);
 }
 
 void settings(double limit, int64_t threads) {

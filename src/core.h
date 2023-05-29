@@ -40,6 +40,13 @@ extern struct search_t search;
 void initialise(const char* fen);
 
 /*!
+ * terminate
+ * @ destroy global state variables
+ */
+
+void terminate(void);
+
+/*!
  * settings
  * @ search settings (move time limit, number of threads)
  */
